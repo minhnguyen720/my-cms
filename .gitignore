@@ -1,0 +1,16 @@
+/my-cms-be/dist
+/my-cms-fe/dist
+
+/my-cms-be/build
+/my-cms-fe/build
+
+/my-cms-be/node_modules
+/my-cms-fe/node_modules
+
+/my-cms-be/storage
+
+/my-cms-be/.env
+/my-cms-fe/.env
+.env
+pgdata
+.idea
