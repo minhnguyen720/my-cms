@@ -6,11 +6,12 @@ interface props {
   src: string;
   name: string;
   id: string;
+  setIsMenuFocus: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const { Target, Dropdown, Label, Item } = Menu;
 
-function UserFooter({ src, name, id }: props) {
+function UserFooter({ src, name, id, setIsMenuFocus }: props) {
   const router = useRouter();
   const ACCOUNT_URL = `/user/${id}`;
   const SIGNOUT_URL = `/signout`;
@@ -31,6 +32,7 @@ function UserFooter({ src, name, id }: props) {
           <Item
             icon={<IconUser />}
             onClick={() => {
+              setIsMenuFocus(false);
               router.push(ACCOUNT_URL);
             }}
           >
@@ -39,6 +41,7 @@ function UserFooter({ src, name, id }: props) {
           <Item
             icon={<IconLogout />}
             onClick={() => {
+              setIsMenuFocus(false);
               console.log("Sign out");
             }}
           >

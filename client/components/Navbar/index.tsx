@@ -12,7 +12,7 @@ interface props {
 interface iNavlink {
   icon?: JSX.Element | any;
   label: string;
-  href: string;
+  href?: string;
   children?: iNavlink[];
 }
 
@@ -27,11 +27,16 @@ const projects: iNavlink[] = [
 
 const navbarData: iNavlink[] = [
   { icon: IconHome2, href: "/", label: "Home" },
-  { icon: IconBook, href: "/", label: "Projects", children: projects },
+  { icon: IconBook, label: "Projects", children: projects },
 ];
 
 function Navbar({ hidden, hiddenBreakpoint }: props) {
-  const [active, setActive] = useState<number>(0);
+  const [active, setActive] = useState<number | undefined>(0);
+  const [isMenuFocus, setIsMenuFocus] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (!isMenuFocus) setActive(undefined);
+  }, [isMenuFocus]);
 
   return (
     <MantineNavbar
@@ -46,18 +51,23 @@ function Navbar({ hidden, hiddenBreakpoint }: props) {
             <NavLink
               active={index === active}
               icon={<item.icon />}
-              href={item.href}
+              href={item.href ? item.href : ""}
               label={item.label}
               key={index}
               handleActive={() => {
                 setActive(index);
+                setIsMenuFocus(true);
               }}
             >
               {item.children &&
                 item.children?.length > 0 &&
                 item.children.map((el) => {
                   return (
-                    <NavLink key={el.href} label={el.label} href={el.href} />
+                    <NavLink
+                      key={el.href}
+                      label={el.label}
+                      href={el.href ? el.href : ""}
+                    />
                   );
                 })}
             </NavLink>
@@ -70,6 +80,7 @@ function Navbar({ hidden, hiddenBreakpoint }: props) {
           name="Walter White"
           src="https://i.pinimg.com/564x/61/a6/a7/61a6a7a95da03f34242d3a70a73d2f4b.jpg"
           id="heisenberg"
+          setIsMenuFocus={setIsMenuFocus}
         />
       </MantineNavbar.Section>
     </MantineNavbar>
