@@ -7,11 +7,12 @@ interface props {
   name: string;
   id: string;
   setIsMenuFocus: React.Dispatch<React.SetStateAction<boolean>>;
+  handleCurrentMenu: (menu: string) => void;
 }
 
 const { Target, Dropdown, Label, Item } = Menu;
 
-function UserFooter({ src, name, id, setIsMenuFocus }: props) {
+function UserFooter({ src, name, id, setIsMenuFocus, handleCurrentMenu }: props) {
   const router = useRouter();
   const ACCOUNT_URL = `/user/${id}`;
   const SIGNOUT_URL = `/signout`;
@@ -32,6 +33,7 @@ function UserFooter({ src, name, id, setIsMenuFocus }: props) {
           <Item
             icon={<IconUser />}
             onClick={() => {
+              handleCurrentMenu("Account information");
               setIsMenuFocus(false);
               router.push(ACCOUNT_URL);
             }}

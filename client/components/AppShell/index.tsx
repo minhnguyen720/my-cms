@@ -8,9 +8,13 @@ import {
   Burger,
   useMantineTheme,
   Text,
+  Group,
+  Box,
 } from "@mantine/core";
 import Navbar from "@/components/Navbar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import useCurrentMenu from "./hooks/useCurrentMenu";
 
 interface props {
   children: any;
@@ -19,6 +23,7 @@ interface props {
 function AppShell({ children }: props) {
   const [opened, setOpened] = useState(false);
   const theme = useMantineTheme();
+  const { currentMenu, handleCurrentMenu } = useCurrentMenu();
 
   return (
     <MantineProvider
@@ -27,7 +32,13 @@ function AppShell({ children }: props) {
       theme={{ colorScheme: "dark" }}
     >
       <MantineAppShell
-        navbar={<Navbar hidden={!opened} hiddenBreakpoint="sm" />}
+        navbar={
+          <Navbar
+            hidden={!opened}
+            hiddenBreakpoint="sm"
+            handleCurrentMenu={handleCurrentMenu}
+          />
+        }
         header={
           <Header height={{ base: 50, md: 70 }} p="md">
             <div
@@ -47,7 +58,15 @@ function AppShell({ children }: props) {
                 />
               </MediaQuery>
 
-              <Text>MyCMS</Text>
+              <Group>
+                <Image
+                  src={"/images/icon/android-chrome-192x192.png"}
+                  alt="my cms logo"
+                  width={40}
+                  height={40}
+                />
+                <Text>{currentMenu}</Text>
+              </Group>
             </div>
           </Header>
         }

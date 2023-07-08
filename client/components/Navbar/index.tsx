@@ -7,6 +7,7 @@ import UserFooter from "../UserFooter";
 interface props {
   hidden: boolean;
   hiddenBreakpoint: string;
+  handleCurrentMenu: (menu: string) => void;
 }
 
 interface iNavlink {
@@ -30,7 +31,7 @@ const navbarData: iNavlink[] = [
   { icon: IconBook, label: "Projects", children: projects },
 ];
 
-function Navbar({ hidden, hiddenBreakpoint }: props) {
+function Navbar({ hidden, hiddenBreakpoint, handleCurrentMenu }: props) {
   const [active, setActive] = useState<number | undefined>(0);
   const [isMenuFocus, setIsMenuFocus] = useState<boolean>(true);
 
@@ -55,6 +56,7 @@ function Navbar({ hidden, hiddenBreakpoint }: props) {
               label={item.label}
               key={index}
               handleActive={() => {
+                handleCurrentMenu(item.label);
                 setActive(index);
                 setIsMenuFocus(true);
               }}
@@ -81,6 +83,7 @@ function Navbar({ hidden, hiddenBreakpoint }: props) {
           src="https://i.pinimg.com/564x/61/a6/a7/61a6a7a95da03f34242d3a70a73d2f4b.jpg"
           id="heisenberg"
           setIsMenuFocus={setIsMenuFocus}
+          handleCurrentMenu={handleCurrentMenu}
         />
       </MantineNavbar.Section>
     </MantineNavbar>
