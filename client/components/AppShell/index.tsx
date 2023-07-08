@@ -27,7 +27,7 @@ function AppShell({ children }: props) {
       theme={{ colorScheme: "dark" }}
     >
       <MantineAppShell
-        navbar={<Navbar />}
+        navbar={<Navbar hidden={!opened} hiddenBreakpoint="sm" />}
         header={
           <Header height={{ base: 50, md: 70 }} p="md">
             <div

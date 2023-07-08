@@ -1,19 +1,51 @@
-import { Avatar, Box, NavLink } from "@mantine/core";
-import { IconChevronRight } from "@tabler/icons-react";
+import { Avatar, Box, NavLink, Menu } from "@mantine/core";
+import { IconChevronRight, IconUser, IconLogout } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
 
 interface props {
   src: string;
   name: string;
+  id: string;
 }
 
-function UserFooter({ src, name }: props) {
+const { Target, Dropdown, Label, Item } = Menu;
+
+function UserFooter({ src, name, id }: props) {
+  const router = useRouter();
+  const ACCOUNT_URL = `/user/${id}`;
+  const SIGNOUT_URL = `/signout`;
+
   return (
     <Box py={"sm"}>
-      <NavLink
-        icon={<Avatar src={src} alt="user footer avatar" radius={"xl"} />}
-        label={name}
-        rightSection={<IconChevronRight size="0.8rem" stroke={1.5} />}
-      />
+      <Menu width={200} position="right-end">
+        <Target>
+          <NavLink
+            icon={<Avatar src={src} alt="user footer avatar" radius={"xl"} />}
+            label={name}
+            rightSection={<IconChevronRight size="0.8rem" stroke={1.5} />}
+          />
+        </Target>
+
+        <Dropdown>
+          <Label>Account options</Label>
+          <Item
+            icon={<IconUser />}
+            onClick={() => {
+              router.push(ACCOUNT_URL);
+            }}
+          >
+            Account
+          </Item>
+          <Item
+            icon={<IconLogout />}
+            onClick={() => {
+              console.log("Sign out");
+            }}
+          >
+            Sign out
+          </Item>
+        </Dropdown>
+      </Menu>
     </Box>
   );
 }
