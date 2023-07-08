@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Divider, Navbar as MantineNavbar } from "@mantine/core";
 import NavLink from "@/components/NavLink";
 import { IconHome2, IconBook } from "@tabler/icons-react";
@@ -9,7 +9,30 @@ interface props {
   hiddenBreakpoint: string;
 }
 
+interface iNavlink {
+  icon?: JSX.Element | any;
+  label: string;
+  href: string;
+  children?: iNavlink[];
+}
+
+const projects: iNavlink[] = [
+  {
+    label: "Champions",
+    href: "/project/chmp",
+  },
+  { label: "CLV Homepage", href: "/project/clgh" },
+  { label: "Asset Management", href: "/project/asm" },
+];
+
+const navbarData: iNavlink[] = [
+  { icon: IconHome2, href: "/", label: "Home" },
+  { icon: IconBook, href: "/", label: "Projects", children: projects },
+];
+
 function Navbar({ hidden, hiddenBreakpoint }: props) {
+  const [active, setActive] = useState<number>(0);
+
   return (
     <MantineNavbar
       width={{ sm: 200, lg: 300 }}
@@ -18,8 +41,28 @@ function Navbar({ hidden, hiddenBreakpoint }: props) {
       hiddenBreakpoint={hiddenBreakpoint}
     >
       <MantineNavbar.Section grow mt={"md"}>
-        <NavLink icon={<IconHome2 />} href="/" label="Home" />
-        <NavLink icon={<IconBook />} href="/" label="Documents" />
+        {navbarData.map((item, index) => {
+          return (
+            <NavLink
+              active={index === active}
+              icon={<item.icon />}
+              href={item.href}
+              label={item.label}
+              key={index}
+              handleActive={() => {
+                setActive(index);
+              }}
+            >
+              {item.children &&
+                item.children?.length > 0 &&
+                item.children.map((el) => {
+                  return (
+                    <NavLink key={el.href} label={el.label} href={el.href} />
+                  );
+                })}
+            </NavLink>
+          );
+        })}
       </MantineNavbar.Section>
       <Divider />
       <MantineNavbar.Section>
