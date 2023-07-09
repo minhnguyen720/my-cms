@@ -1,76 +1,32 @@
 "use client";
 
 import { User } from "@/interfaces/User";
-import {
-  Avatar,
-  Center,
-  Stack,
-  Text,
-  Title,
-  TextInput,
-  Box,
-  PasswordInput,
-  Button,
-  Group,
-} from "@mantine/core";
-import useUserFormValidate from "./hooks/useUserFormValidate";
+import React from "react";
+import { Tabs, rem } from "@mantine/core";
+import { IconUserCircle, IconUserCog } from "@tabler/icons-react";
+import ViewUserDetail from "./components/ViewUserDetail";
+import EditUserDetail from "./components/EditUserDetail";
 
-interface props {
-  userData: User;
-}
+const { List, Tab, Panel } = Tabs;
 
-function UserDetail({ userData }: props) {
-  const { form } = useUserFormValidate(userData);
-
+function UserDetail({ userData }: { userData: User }) {
   return (
-    <Box>
-      <Center>
-        <Stack spacing={"xs"}>
-          <Center>
-            <Avatar src={userData.avatar} alt="user avatar" radius={"xl"} />
-          </Center>
-          <Title order={5} align="center">
-            {userData.name}
-          </Title>
-          {userData.bio && <Text align="center">{userData.bio}</Text>}
-        </Stack>
-      </Center>
-
-      <Box
-        sx={{
-          padding: "2rem 25%",
-        }}
-      >
-        <Stack spacing={"md"}>
-          <form onSubmit={form.onSubmit((values) => console.log(values))}>
-            <TextInput
-              label="Email"
-              withAsterisk
-              {...form.getInputProps("email")}
-            />
-            <TextInput
-              label="Name"
-              withAsterisk
-              {...form.getInputProps("name")}
-            />
-            <TextInput
-              label="Username"
-              withAsterisk
-              {...form.getInputProps("userName")}
-            />
-            <PasswordInput
-              disabled
-              label="Password"
-              withAsterisk
-              {...form.getInputProps("password")}
-            />
-            <Group position="right" mt={"md"}>
-              <Button type="submit">Save</Button>
-            </Group>
-          </form>
-        </Stack>
-      </Box>
-    </Box>
+    <Tabs defaultValue="view" radius="md">
+      <List>
+        <Tab value="view" icon={<IconUserCircle />}>
+          User detail
+        </Tab>
+        <Tab value="edit" icon={<IconUserCog />}>
+          Edit user detail
+        </Tab>
+      </List>
+      <Panel value="view" pt={"1.5rem"}>
+        <ViewUserDetail userData={userData} />
+      </Panel>
+      <Panel value="edit" pt={"1.5rem"}>
+        <EditUserDetail userData={userData} />
+      </Panel>
+    </Tabs>
   );
 }
 
