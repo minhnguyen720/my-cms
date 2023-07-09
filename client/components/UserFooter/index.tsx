@@ -1,20 +1,19 @@
+import { User } from "@/interfaces/User";
 import { Avatar, Box, NavLink, Menu } from "@mantine/core";
 import { IconChevronRight, IconUser, IconLogout } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 
 interface props {
-  src: string;
-  name: string;
-  id: string;
+  userData: User;
   setIsMenuFocus: React.Dispatch<React.SetStateAction<boolean>>;
   handleCurrentMenu: (menu: string) => void;
 }
 
 const { Target, Dropdown, Label, Item } = Menu;
 
-function UserFooter({ src, name, id, setIsMenuFocus, handleCurrentMenu }: props) {
+function UserFooter({ userData, setIsMenuFocus, handleCurrentMenu }: props) {
   const router = useRouter();
-  const ACCOUNT_URL = `/user/${id}`;
+  const ACCOUNT_URL = `/user/${userData.id}`;
   const SIGNOUT_URL = `/signout`;
 
   return (
@@ -22,8 +21,14 @@ function UserFooter({ src, name, id, setIsMenuFocus, handleCurrentMenu }: props)
       <Menu width={200} position="right-end">
         <Target>
           <NavLink
-            icon={<Avatar src={src} alt="user footer avatar" radius={"xl"} />}
-            label={name}
+            icon={
+              <Avatar
+                src={userData.avatar}
+                alt="user footer avatar"
+                radius={"xl"}
+              />
+            }
+            label={userData.name}
             rightSection={<IconChevronRight size="0.8rem" stroke={1.5} />}
           />
         </Target>

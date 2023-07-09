@@ -3,18 +3,13 @@ import { Divider, Navbar as MantineNavbar } from "@mantine/core";
 import NavLink from "@/components/NavLink";
 import { IconHome2, IconBook } from "@tabler/icons-react";
 import UserFooter from "../UserFooter";
+import { iNavlink } from "@/interfaces/NavLink";
+import { userData } from "@/static/dummyUser";
 
 interface props {
   hidden: boolean;
   hiddenBreakpoint: string;
   handleCurrentMenu: (menu: string) => void;
-}
-
-interface iNavlink {
-  icon?: JSX.Element | any;
-  label: string;
-  href?: string;
-  children?: iNavlink[];
 }
 
 const projects: iNavlink[] = [
@@ -79,9 +74,7 @@ function Navbar({ hidden, hiddenBreakpoint, handleCurrentMenu }: props) {
       <Divider />
       <MantineNavbar.Section>
         <UserFooter
-          name="Walter White"
-          src="https://i.pinimg.com/564x/61/a6/a7/61a6a7a95da03f34242d3a70a73d2f4b.jpg"
-          id="heisenberg"
+          userData={userData}
           setIsMenuFocus={setIsMenuFocus}
           handleCurrentMenu={handleCurrentMenu}
         />

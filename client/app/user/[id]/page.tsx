@@ -1,11 +1,14 @@
+import UserDetail from "@/components/UserDetail";
+import { userData } from "@/static/dummyUser";
+
 interface props {
   params: {
     id: string;
   };
 }
 
-function UserDetail({ params }: props) {
-  return <div>Hello {params.id}</div>;
+function UserDetailPage({ params }: props) {
+  return <UserDetail userData={userData} />;
 }
 
-export default UserDetail;
+export default UserDetailPage;
