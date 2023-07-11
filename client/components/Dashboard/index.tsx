@@ -1,4 +1,12 @@
-import { createStyles, Group, Paper, Text, SimpleGrid } from "@mantine/core";
+import {
+  createStyles,
+  Group,
+  Paper,
+  Text,
+  SimpleGrid,
+  Title,
+  Divider,
+} from "@mantine/core";
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -18,7 +26,20 @@ export function Dashboard({ data }: StatsGridIconsProps) {
   const { classes } = useStyles();
   const stats = data.map((stat) => {
     return (
-      <Paper withBorder p="md" radius="md" key={stat.title}>
+      <Paper
+        withBorder
+        p="md"
+        radius="md"
+        key={stat.title}
+        sx={(theme) => ({
+          transition: "all 200ms linear",
+          cursor: "pointer",
+
+          "&:hover": {
+            borderColor: theme.colors.cyan[5],
+          },
+        })}
+      >
         <Group position="apart">
           <div>
             <Text
@@ -41,6 +62,11 @@ export function Dashboard({ data }: StatsGridIconsProps) {
 
   return (
     <div className={classes.root}>
+      <Title order={2}>Welcome back!</Title>
+      <Divider className="my-8" />
+      <Title order={3} className="py-5">
+        Projects overview
+      </Title>
       <SimpleGrid cols={3} breakpoints={[{ maxWidth: "sm", cols: 1 }]}>
         {stats}
       </SimpleGrid>
