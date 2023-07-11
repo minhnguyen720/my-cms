@@ -4,28 +4,14 @@ import {
   Avatar,
   Title,
   Flex,
-  createStyles,
   Box,
   Divider,
   Group,
 } from "@mantine/core";
 import dayjs from "dayjs";
-
-const useStyles = createStyles((theme) => ({
-  box_item: {
-    flexBasis: "50%",
-    marginBottom: "1rem",
-  },
-  box_text: {
-    fontWeight: 600,
-  },
-  box_label: {
-    color: "#848484",
-  },
-}));
+import TextFieldDisplay from "./components/TextFieldDisplay";
 
 function ViewUserDetail({ userData }: { userData: User }) {
-  const { classes } = useStyles();
   const displayData = [
     {
       label: "Name",
@@ -37,11 +23,11 @@ function ViewUserDetail({ userData }: { userData: User }) {
     },
     {
       label: "Account created date",
-      text: dayjs(userData.createDated).format("DD/MM/YYYY"),
+      text: dayjs(userData.createDated).format("DD/MM/YYYY").toString(),
     },
     {
       label: "Account last update",
-      text: dayjs(userData.updatedDate).format("DD/MM/YYYY"),
+      text: dayjs(userData.updatedDate).format("DD/MM/YYYY").toString(),
     },
     {
       label: "Email",
@@ -66,34 +52,11 @@ function ViewUserDetail({ userData }: { userData: User }) {
         px={"3rem"}
         mt={"1rem"}
       >
-        <Box className={classes.box_item}>
-          <Text className={classes.box_label}>Name</Text>
-          <Text className={classes.box_text}>{userData.name}</Text>
-        </Box>
-
-        <Box className={classes.box_item}>
-          <Text className={classes.box_label}>Username</Text>
-          <Text className={classes.box_text}>{userData.username}</Text>
-        </Box>
-
-        <Box className={classes.box_item}>
-          <Text className={classes.box_label}>Email</Text>
-          <Text className={classes.box_text}>{userData.email}</Text>
-        </Box>
-
-        <Box className={classes.box_item}>
-          <Text className={classes.box_label}>Account created date</Text>
-          <Text className={classes.box_text}>
-            {dayjs(userData.createDated).format("DD/MM/YYYY")}
-          </Text>
-        </Box>
-
-        <Box className={classes.box_item}>
-          <Text className={classes.box_label}>Last updated</Text>
-          <Text className={classes.box_text}>
-            {dayjs(userData.createDated).format("DD/MM/YYYY")}
-          </Text>
-        </Box>
+        {displayData.map((item, index) => {
+          return (
+            <TextFieldDisplay label={item.label} text={item.text} key={index} />
+          );
+        })}
       </Flex>
     </>
   );

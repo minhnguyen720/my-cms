@@ -4,16 +4,20 @@ import {
   Avatar,
   Center,
   Stack,
-  Text,
-  Title,
   TextInput,
   Box,
   PasswordInput,
   Button,
   Group,
+  Overlay,
+  FileButton,
+  AspectRatio,
 } from "@mantine/core";
+import { useEffect, useState } from "react";
 import useUserFormValidate from "../../hooks/useUserFormValidate";
 import { User } from "@/interfaces/User";
+import { useHover } from "@mantine/hooks";
+import { IconEdit } from "@tabler/icons-react";
 
 interface props {
   userData: User;
@@ -21,20 +25,39 @@ interface props {
 
 function EditUserDetail({ userData }: props) {
   const { form } = useUserFormValidate(userData);
+  const { hovered, ref } = useHover();
+  const [avatar, setAvatar] = useState<File | null>(null);
+
+  useEffect(() => {
+    if (avatar !== null) console.log("avatar changed");
+  }, [avatar]);
 
   return (
     <Box>
-      <Center>
-        <Stack spacing={"xs"}>
-          <Center>
-            <Avatar src={userData.avatar} alt="user avatar" radius={"xl"} />
-          </Center>
-          <Title order={5} align="center">
-            {userData.name}
-          </Title>
-          {userData.bio && <Text align="center">{userData.bio}</Text>}
-        </Stack>
-      </Center>
+      <AspectRatio
+        ratio={1 / 1}
+        maw={90}
+        sx={{ width: "content-fit" }}
+        mx="auto"
+        ref={ref}
+      >
+        <Avatar src={userData.avatar} alt="user avatar" size={"lg"} />
+        {hovered && (
+          <FileButton onChange={setAvatar} accept="image/png,image/jpeg">
+            {(props) => (
+              <Overlay
+                {...props}
+                center
+                color="#000"
+                opacity={0.85}
+                className="w-full rounded"
+              >
+                <IconEdit />
+              </Overlay>
+            )}
+          </FileButton>
+        )}
+      </AspectRatio>
 
       <Box
         sx={{
@@ -58,6 +81,7 @@ function EditUserDetail({ userData }: props) {
               withAsterisk
               {...form.getInputProps("userName")}
             />
+            <TextInput label="Bio" {...form.getInputProps("bio")} />
             <PasswordInput
               disabled
               label="Password"

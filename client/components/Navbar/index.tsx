@@ -5,6 +5,7 @@ import { IconHome2, IconBook } from "@tabler/icons-react";
 import UserFooter from "../UserFooter";
 import { iNavlink } from "@/interfaces/NavLink";
 import { userData } from "@/static/dummyUser";
+import { useLocalStorage } from "@mantine/hooks";
 
 interface props {
   hidden: boolean;
@@ -28,7 +29,10 @@ const navbarData: iNavlink[] = [
 
 function Navbar({ hidden, hiddenBreakpoint, handleCurrentMenu }: props) {
   const [active, setActive] = useState<number | undefined>(0);
-  const [isMenuFocus, setIsMenuFocus] = useState<boolean>(true);
+  const [isMenuFocus, setIsMenuFocus] = useLocalStorage({
+    key: "isMenuFocus",
+    defaultValue: true,
+  });
 
   useEffect(() => {
     if (!isMenuFocus) setActive(undefined);
