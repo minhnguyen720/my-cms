@@ -1,38 +1,34 @@
 "use client";
 
-import { Box, TextInput } from "@mantine/core";
-import { ReactNode, RefObject, createContext, useContext, useRef } from "react";
+import { Stack, TextInput } from "@mantine/core";
+import { ReactNode } from "react";
+import { UseFormReturnType } from "@mantine/form";
+import FieldControlSwitch from "@/components/FieldControlSwitch";
 
 interface props {
   label: string;
   placeholder?: string;
   required?: boolean;
   icon?: ReactNode;
+  fieldId: string;
+  form: UseFormReturnType<any>;
 }
 
-const TextContext = createContext(null);
-
-const Input = ({ label, placeholder, required, icon}: props) => {
-  const ref = useContext(TextContext);
-
+const Text = ({ label, placeholder, required, icon, fieldId, form }: props) => {
   return (
-    <Box>
-      <TextInput
-        ref={ref}
-        label={label}
-        placeholder={placeholder && placeholder}
-        withAsterisk={required}
-        icon={icon && icon}
-      />
-    </Box>
+    <div className="form_item">
+      <Stack spacing={"xs"}>
+        <FieldControlSwitch />
+        <TextInput
+          label={label}
+          placeholder={placeholder && placeholder}
+          withAsterisk={required}
+          icon={icon && icon}
+          {...form.getInputProps(fieldId)}
+        />
+      </Stack>
+    </div>
   );
 };
-
-const Text = ({ children }: { children: any }) => {
-  const ref = useRef<HTMLInputElement>(null);
-  return <TextContext.Provider value={ref}>{children}</TextContext.Provider>;
-};
-
-Text.Input = Input;
 
 export default Text;
