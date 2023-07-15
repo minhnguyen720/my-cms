@@ -6,17 +6,12 @@ import Text from "../Text";
 
 interface props {
   src: string;
-
   alt: string;
-
   fieldId: string;
-
   form: any;
-
   label?: string;
-
-  required?: boolean;
-
+  required: boolean;
+  disabled: boolean;
   isUseEditor?: boolean;
 }
 
@@ -28,19 +23,27 @@ function ImageText({
   form,
   label,
   required,
+  disabled,
 }: props) {
   return (
     <div className="form_item">
       <Group>
         <UpdatableImage src={src} alt={alt} />
         {isUseEditor ? (
-          <LongText fieldId={fieldId} form={form} label={label} />
+          <LongText
+            fieldId={fieldId}
+            form={form}
+            label={label}
+            required={required}
+            disabled={disabled}
+          />
         ) : (
           <Text
             fieldId={fieldId}
             form={form}
             label={label}
             required={required}
+            disabled={disabled}
           />
         )}
       </Group>

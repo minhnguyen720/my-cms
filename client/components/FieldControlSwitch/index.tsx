@@ -1,15 +1,20 @@
 import { Group, Switch } from "@mantine/core";
 import { ChangeEvent, useState } from "react";
 
-function FieldControlSwitch({ isVisible }: { isVisible?: boolean }) {
-  const [controlFlags, setControlFlags] = useState({
-    required: false,
-    disabled: false,
-  });
+interface props {
+  isVisible?: boolean;
+  controlFlags: {
+    disabled: boolean;
+    required: boolean;
+  };
+}
+
+function FieldControlSwitch({ isVisible, controlFlags }: props) {
+  const [flags, setFlags] = useState(controlFlags);
 
   const handleSwitchControlChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { checked, name } = e.currentTarget;
-    setControlFlags((prev) => {
+    setFlags((prev) => {
       return {
         ...prev,
         [name]: checked,
@@ -20,7 +25,7 @@ function FieldControlSwitch({ isVisible }: { isVisible?: boolean }) {
   return (
     <>
       {isVisible && (
-        <Group>
+        <Group py={4} className="switch_control">
           <Switch
             label="Required"
             name="required"
@@ -28,7 +33,7 @@ function FieldControlSwitch({ isVisible }: { isVisible?: boolean }) {
               handleSwitchControlChange(e);
             }}
             color="green"
-            checked={controlFlags.required}
+            checked={flags.required}
           />
           <Switch
             label="Disabled"
@@ -37,7 +42,7 @@ function FieldControlSwitch({ isVisible }: { isVisible?: boolean }) {
               handleSwitchControlChange(e);
             }}
             color="green"
-            checked={controlFlags.disabled}
+            checked={flags.disabled}
           />
         </Group>
       )}

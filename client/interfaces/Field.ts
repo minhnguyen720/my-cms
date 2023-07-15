@@ -9,12 +9,14 @@ export interface Field {
 
   value?: string;
 
+  disabled: boolean;
+
   // for input component
   placeholder?: string;
 
   icon?: ReactNode;
 
-  required?: boolean;
+  required: boolean;
 
   isUseEditor?: boolean;
 }
