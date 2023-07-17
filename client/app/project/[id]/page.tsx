@@ -1,5 +1,5 @@
 "use client";
-import { Document } from "@/interfaces/Field";
+import { Document } from "@/interfaces/Project";
 import {
   ActionIcon,
   Affix,

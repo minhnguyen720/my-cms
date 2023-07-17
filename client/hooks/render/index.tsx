@@ -3,7 +3,7 @@ import LongText from "@/components/FieldTypes/LongText";
 import Image from "@/components/FieldTypes/Image";
 import ImageText from "@/components/FieldTypes/ImageText";
 import { UseFormReturnType } from "@mantine/form";
-import { Field } from "@/interfaces/Field";
+import { Field } from "@/interfaces/Project";
 
 export default function useFieldsRender() {
   const render = (data2process: Field[], form: UseFormReturnType<any>) => {

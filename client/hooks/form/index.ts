@@ -1,4 +1,4 @@
-import { Field } from "@/interfaces/Field";
+import { Field } from "@/interfaces/Project";
 import { useForm } from "@mantine/form";
 
 export default function useFieldsControl(rawData: Field[]) {

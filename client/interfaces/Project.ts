@@ -44,4 +44,25 @@ export interface Document {
 
   // data used for rendering purpose
   data: Field[];
+
+  // List of user ids
+  assignedUsers?: string[];
+}
+
+export interface Project {
+  id: string;
+
+  name: string;
+
+  createdDate: Date;
+
+  updatedDate: Date;
+
+  // user id
+  createdUser: string;
+
+  // user id
+  updatedUser: string;
+
+  superAdminId:string;
 }
