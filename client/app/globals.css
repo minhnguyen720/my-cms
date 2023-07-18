@@ -10,3 +10,10 @@
 .form_item {
   margin-bottom: 2rem;
 }
+
+td {
+  cursor: pointer;
+}
+
+@layer components {
+}

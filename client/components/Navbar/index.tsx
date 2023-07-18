@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Divider, Navbar as MantineNavbar } from "@mantine/core";
 import NavLink from "@/components/NavLink";
 import { IconHome2, IconBook } from "@tabler/icons-react";

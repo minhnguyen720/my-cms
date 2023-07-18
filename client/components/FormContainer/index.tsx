@@ -1,9 +1,9 @@
 import { Group, ActionIcon } from "@mantine/core";
 import { IconDeviceFloppy, IconX } from "@tabler/icons-react";
-import React from "react";
+import React, { ReactNode } from "react";
 
 interface Props {
-  children: React.FC<any>
+  children: ReactNode
 }
 
 const FormContainer:React.FC<Props> = ({ children }) => {

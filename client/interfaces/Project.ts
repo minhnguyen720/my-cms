@@ -64,5 +64,25 @@ export interface Project {
   // user id
   updatedUser: string;
 
-  superAdminId:string;
+  superAdminId: string;
+
+  // list of page within the project
+  pages: Page[];
+}
+
+export interface Page {
+  // use id as an param to fetch data
+  id: string;
+ 
+  // this name describe the purpose of this page
+  name: string;
+
+  createdDate: Date;
+
+  updatedDate: Date;
+
+  // user id
+  createdUser: string;
+
+  updatedUser: string;
 }
