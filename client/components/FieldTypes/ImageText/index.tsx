@@ -4,7 +4,7 @@ import React from "react";
 import LongText from "../LongText";
 import Text from "../Text";
 
-interface props {
+interface Props {
   src: string;
   alt: string;
   fieldId: string;
@@ -15,7 +15,7 @@ interface props {
   isUseEditor?: boolean;
 }
 
-function ImageText({
+const ImageText: React.FC<Props> = ({
   src,
   alt,
   isUseEditor,
@@ -24,7 +24,7 @@ function ImageText({
   label,
   required,
   disabled,
-}: props) {
+}) => {
   return (
     <div className="form_item">
       <Group>
@@ -49,6 +49,6 @@ function ImageText({
       </Group>
     </div>
   );
-}
+};
 
 export default ImageText;

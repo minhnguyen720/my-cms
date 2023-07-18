@@ -1,7 +1,7 @@
-import { Group, Switch,Box } from "@mantine/core";
+import { Group, Switch, Box } from "@mantine/core";
 import { ChangeEvent, useState } from "react";
 
-interface props {
+interface Props {
   isVisible?: boolean;
   controlFlags: {
     disabled: boolean;
@@ -9,7 +9,7 @@ interface props {
   };
 }
 
-function FieldControlSwitch({ isVisible, controlFlags }: props) {
+const FieldControlSwitch: React.FC<Props> = ({ isVisible, controlFlags }) => {
   const [flags, setFlags] = useState(controlFlags);
 
   const handleSwitchControlChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -48,6 +48,6 @@ function FieldControlSwitch({ isVisible, controlFlags }: props) {
       )}
     </Box>
   );
-}
+};
 
 export default FieldControlSwitch;

@@ -7,7 +7,7 @@ import { iNavlink } from "@/interfaces/NavLink";
 import { userData } from "@/static/dummyUser";
 import { useLocalStorage } from "@mantine/hooks";
 
-interface props {
+interface Props {
   hidden: boolean;
   hiddenBreakpoint: string;
   handleCurrentMenu: (menu: string) => void;
@@ -27,7 +27,7 @@ const navbarData: iNavlink[] = [
   { icon: IconBook, label: "Projects", children: projects },
 ];
 
-function Navbar({ hidden, hiddenBreakpoint, handleCurrentMenu }: props) {
+const Navbar: React.FC<Props> = ({ hidden, hiddenBreakpoint, handleCurrentMenu }) => {
   const [active, setActive] = useState<number | undefined>(0);
   const [isMenuFocus, setIsMenuFocus] = useLocalStorage({
     key: "isMenuFocus",

@@ -1,13 +1,13 @@
 import UserDetail from "@/components/UserDetail";
 import { userData } from "@/static/dummyUser";
 
-interface props {
+interface Props {
   params: {
     id: string;
   };
 }
 
-function UserDetailPage({ params }: props) {
+const UserDetailPage: React.FC<Props> = ({ params }) => {
   return <UserDetail userData={userData} />;
 }
 

@@ -18,7 +18,7 @@ import useFieldsControl from "@/hooks/form";
 import { useMediaQuery, useWindowScroll } from "@mantine/hooks";
 import FormContainer from "@/components/FormContainer";
 
-interface props {
+interface Props {
   params: {
     id: string;
   };
@@ -70,7 +70,7 @@ const projectStructure: Document = {
   ],
 };
 
-function ProjectOverall({ params: { id } }: props) {
+const ProjectOverall: React.FC<Props> = ({ params: { id } }) => {
   const { form, handleSubmit } = useFieldsControl(projectStructure.data);
   const { render } = useFieldsRender();
   const [checked, setChecked] = useState(true);
@@ -113,6 +113,6 @@ function ProjectOverall({ params: { id } }: props) {
       </Affix>
     </Box>
   );
-}
+};
 
 export default ProjectOverall;

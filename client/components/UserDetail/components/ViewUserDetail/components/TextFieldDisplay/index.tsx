@@ -13,12 +13,12 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-interface props {
+interface Props {
   label: string;
   text: string;
 }
 
-function TextFieldDisplay({ label, text }: props) {
+const TextFieldDisplay:React.FC<Props> = ({ label, text }) => {
   const { classes } = useStyles();
 
   return (

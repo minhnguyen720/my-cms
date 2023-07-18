@@ -1,6 +1,11 @@
 import UpdatableImage from "@/components/UpdatableImage";
 
-function Image({ alt, src }: { alt: string; src: string }) {
+interface Props {
+  alt: string;
+  src: string;
+}
+
+const Image:React.FC<Props> = ({ alt, src }) => {
   return (
     <div className="form_item">
       <UpdatableImage alt={alt} src={src} />

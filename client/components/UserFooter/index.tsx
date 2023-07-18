@@ -3,7 +3,7 @@ import { Avatar, Box, NavLink, Menu } from "@mantine/core";
 import { IconChevronRight, IconUser, IconLogout } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 
-interface props {
+interface Props {
   userData: User;
   setIsMenuFocus: React.Dispatch<React.SetStateAction<boolean>>;
   handleCurrentMenu: (menu: string) => void;
@@ -11,7 +11,11 @@ interface props {
 
 const { Target, Dropdown, Label, Item } = Menu;
 
-function UserFooter({ userData, setIsMenuFocus, handleCurrentMenu }: props) {
+const UserFooter: React.FC<Props> = ({
+  userData,
+  setIsMenuFocus,
+  handleCurrentMenu,
+}) => {
   const router = useRouter();
   const ACCOUNT_URL = `/user/${userData.id}`;
   const SIGNOUT_URL = `/signout`;
@@ -58,6 +62,6 @@ function UserFooter({ userData, setIsMenuFocus, handleCurrentMenu }: props) {
       </Menu>
     </Box>
   );
-}
+};
 
 export default UserFooter;

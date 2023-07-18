@@ -3,7 +3,12 @@ import { useHover } from "@mantine/hooks";
 import { IconEdit } from "@tabler/icons-react";
 import { useState } from "react";
 
-function UpdatableImage({ src, alt }) {
+interface Props {
+  src: string;
+  alt: string;
+}
+
+const UpdatableImage:React.FC<Props> = ({ src, alt }) => {
   const { ref, hovered } = useHover();
   const [image, setImage] = useState<File | null>(null);
 

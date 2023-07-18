@@ -11,7 +11,11 @@ import {
 import dayjs from "dayjs";
 import TextFieldDisplay from "./components/TextFieldDisplay";
 
-function ViewUserDetail({ userData }: { userData: User }) {
+interface Props {
+  userData: User
+}
+
+const ViewUserDetail:React.FC<Props> = ({ userData }) => {
   const displayData = [
     {
       label: "Name",

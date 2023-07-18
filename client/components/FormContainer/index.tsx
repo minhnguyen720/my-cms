@@ -2,7 +2,11 @@ import { Group, ActionIcon } from "@mantine/core";
 import { IconDeviceFloppy, IconX } from "@tabler/icons-react";
 import React from "react";
 
-function FormContainer({ children }: { children: any }) {
+interface Props {
+  children: React.FC<any>
+}
+
+const FormContainer:React.FC<Props> = ({ children }) => {
   return (
     <>
       <Group mb={16}>

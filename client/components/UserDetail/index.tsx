@@ -9,7 +9,11 @@ import EditUserDetail from "./components/EditUserDetail";
 
 const { List, Tab, Panel } = Tabs;
 
-function UserDetail({ userData }: { userData: User }) {
+interface Props {
+  userData: User
+}
+
+const UserDetail:React.FC<Props> = ({ userData }) => {
   return (
     <Tabs defaultValue="view" radius="md">
       <List>

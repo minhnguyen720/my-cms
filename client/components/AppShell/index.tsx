@@ -16,11 +16,11 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import useCurrentMenu from "./hooks/useCurrentMenu";
 
-interface props {
+interface Props {
   children: any;
 }
 
-function AppShell({ children }: props) {
+const AppShell:React.FC<Props> = ({ children }) => {
   const [opened, setOpened] = useState(false);
   const theme = useMantineTheme();
   const { currentMenu, handleCurrentMenu } = useCurrentMenu();

@@ -19,11 +19,11 @@ import { User } from "@/interfaces/User";
 import { useHover } from "@mantine/hooks";
 import { IconEdit } from "@tabler/icons-react";
 
-interface props {
+interface Props {
   userData: User;
 }
 
-function EditUserDetail({ userData }: props) {
+const EditUserDetail:React.FC<Props> = ({ userData }) => {
   const { form } = useUserFormValidate(userData);
   const { hovered, ref } = useHover();
   const [avatar, setAvatar] = useState<File | null>(null);

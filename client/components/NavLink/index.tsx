@@ -3,7 +3,7 @@ import { NavLink as MantineNavLink } from "@mantine/core";
 import { IconChevronRight } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 
-interface props {
+interface Props {
   icon?: JSX.Element;
   href: string;
   label: string;
@@ -12,7 +12,7 @@ interface props {
   handleActive?: () => void;
 }
 
-function NavLink({ active, icon, href, label, children, handleActive }: props) {
+const NavLink: React.FC<Props> = ({ active, icon, href, label, children, handleActive }) => {
   const router = useRouter();
 
   return (

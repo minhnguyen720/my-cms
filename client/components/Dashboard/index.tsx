@@ -22,7 +22,7 @@ interface StatsGridIconsProps {
   data: { title: string; value: string }[];
 }
 
-export function Dashboard({ data }: StatsGridIconsProps) {
+export const Dashboard: React.FC<StatsGridIconsProps> = ({ data }) => {
   const { classes } = useStyles();
   const stats = data.map((stat) => {
     return (
@@ -72,4 +72,4 @@ export function Dashboard({ data }: StatsGridIconsProps) {
       </SimpleGrid>
     </div>
   );
-}
+};

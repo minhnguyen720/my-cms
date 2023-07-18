@@ -12,7 +12,7 @@ import { UseFormReturnType } from "@mantine/form";
 import { Input } from "@mantine/core";
 import FieldControlSwitch from "@/components/FieldControlSwitch";
 
-interface props {
+interface Props {
   label?: string;
   form: UseFormReturnType<any>;
   fieldId: string;
@@ -20,7 +20,7 @@ interface props {
   disabled: boolean;
 }
 
-function LongText({ form, label, fieldId, required, disabled }: props) {
+const LongText:React.FC<Props> = ({ form, label, fieldId, required, disabled }) => {
   const editor = useEditor({
     extensions: [
       StarterKit,
