@@ -8,13 +8,5 @@
 }
 
 .form_item {
-  margin-bottom: 1.5rem;
-}
-
-.form_item:last-child {
-  margin-bottom: 0;
-}
-
-.switch_container {
-  margin-bottom
+  margin-bottom: 2rem;
 }

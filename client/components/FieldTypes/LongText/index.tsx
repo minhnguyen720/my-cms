@@ -10,14 +10,17 @@ import Superscript from "@tiptap/extension-superscript";
 import SubScript from "@tiptap/extension-subscript";
 import { UseFormReturnType } from "@mantine/form";
 import { Input } from "@mantine/core";
+import FieldControlSwitch from "@/components/FieldControlSwitch";
 
 interface props {
   label?: string;
   form: UseFormReturnType<any>;
   fieldId: string;
+  required: boolean;
+  disabled: boolean;
 }
 
-function LongText({ form, label, fieldId }: props) {
+function LongText({ form, label, fieldId, required, disabled }: props) {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -36,6 +39,13 @@ function LongText({ form, label, fieldId }: props) {
 
   return (
     <div className="form_item">
+      <FieldControlSwitch
+        controlFlags={{
+          required,
+          disabled,
+        }}
+        // isVisible
+      />
       <Input.Wrapper label={label} {...form.getInputProps(fieldId)}>
         <RichTextEditor editor={editor}>
           <RichTextEditor.Toolbar sticky stickyOffset={60}>
