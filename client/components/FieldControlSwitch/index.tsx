@@ -1,4 +1,4 @@
-import { Group, Switch } from "@mantine/core";
+import { Group, Switch,Box } from "@mantine/core";
 import { ChangeEvent, useState } from "react";
 
 function FieldControlSwitch({ isVisible }: { isVisible?: boolean }) {
@@ -18,7 +18,7 @@ function FieldControlSwitch({ isVisible }: { isVisible?: boolean }) {
   };
 
   return (
-    <>
+    <Box className="switch_container">
       {isVisible && (
         <Group>
           <Switch
@@ -41,7 +41,7 @@ function FieldControlSwitch({ isVisible }: { isVisible?: boolean }) {
           />
         </Group>
       )}
-    </>
+    </Box>
   );
 }
 

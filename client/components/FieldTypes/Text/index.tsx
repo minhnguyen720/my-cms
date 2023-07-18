@@ -18,7 +18,7 @@ const Text = ({ label, placeholder, required, icon, fieldId, form }: props) => {
   return (
     <div className="form_item">
       <Stack spacing={"xs"}>
-        <FieldControlSwitch />
+        <FieldControlSwitch isVisible/>
         <TextInput
           label={label}
           placeholder={placeholder && placeholder}
