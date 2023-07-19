@@ -9,10 +9,9 @@ import {
   useMantineTheme,
   Text,
   Group,
-  Box,
 } from "@mantine/core";
 import Navbar from "@/components/Navbar";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import useCurrentMenu from "./hooks/useCurrentMenu";
 
@@ -20,10 +19,11 @@ interface Props {
   children: any;
 }
 
-const AppShell:React.FC<Props> = ({ children }) => {
+const AppShell: React.FC<Props> = ({ children }) => {
   const [opened, setOpened] = useState(false);
   const theme = useMantineTheme();
-  const { currentMenu, handleCurrentMenu } = useCurrentMenu();
+  const { currentMenu, handleCurrentMenu, focus, toggleFocusMenu } =
+    useCurrentMenu();
 
   return (
     <MantineProvider
@@ -36,7 +36,10 @@ const AppShell:React.FC<Props> = ({ children }) => {
           <Navbar
             hidden={!opened}
             hiddenBreakpoint="sm"
+            currentMenu={currentMenu}
             handleCurrentMenu={handleCurrentMenu}
+            toggleFocusMenu={toggleFocusMenu}
+            focus={focus}
           />
         }
         header={
@@ -65,7 +68,7 @@ const AppShell:React.FC<Props> = ({ children }) => {
                   width={40}
                   height={40}
                 />
-                <Text>{currentMenu}</Text>
+                <Text>MyCMS</Text>
               </Group>
             </div>
           </Header>
@@ -83,6 +86,6 @@ const AppShell:React.FC<Props> = ({ children }) => {
       </MantineAppShell>
     </MantineProvider>
   );
-}
+};
 
 export default AppShell;

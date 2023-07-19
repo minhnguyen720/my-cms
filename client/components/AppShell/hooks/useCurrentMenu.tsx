@@ -1,16 +1,23 @@
 import { useLocalStorage } from "@mantine/hooks";
 
 function useCurrentMenu() {
-  const CURRENT_MENU_KEY = "currentMenu";
   const [currentMenu, setCurrentMenu] = useLocalStorage({
-    key: CURRENT_MENU_KEY,
-    defaultValue: "Home",
+    key: "currentMenu",
+    defaultValue: 0,
   });
-  const handleCurrentMenu = (menu: string) => {
-    setCurrentMenu(menu);
+  const handleCurrentMenu = (menuIndex: number) => {
+    setCurrentMenu(menuIndex);
   };
 
-  return { currentMenu, handleCurrentMenu };
+  const [focus, setFocus] = useLocalStorage({
+    key: "focusChildrenMenu",
+    defaultValue: false,
+  });
+  const toggleFocusMenu = () => {
+    setFocus(!focus);
+  };
+
+  return { currentMenu, handleCurrentMenu, focus, toggleFocusMenu };
 }
 
 export default useCurrentMenu;

@@ -10,7 +10,10 @@ import { useLocalStorage } from "@mantine/hooks";
 interface Props {
   hidden: boolean;
   hiddenBreakpoint: string;
-  handleCurrentMenu: (menu: string) => void;
+  handleCurrentMenu: (menu: number) => void;
+  currentMenu: number;
+  focus: boolean;
+  toggleFocusMenu: () => void;
 }
 
 const projects: iNavlink[] = [
@@ -27,12 +30,23 @@ const navbarData: iNavlink[] = [
   { icon: IconBook, label: "Projects", children: projects },
 ];
 
-const Navbar: React.FC<Props> = ({ hidden, hiddenBreakpoint, handleCurrentMenu }) => {
+const Navbar: React.FC<Props> = ({
+  hidden,
+  hiddenBreakpoint,
+  handleCurrentMenu,
+  currentMenu,
+  toggleFocusMenu,
+  focus,
+}) => {
   const [active, setActive] = useState<number | undefined>(0);
   const [isMenuFocus, setIsMenuFocus] = useLocalStorage({
     key: "isMenuFocus",
     defaultValue: true,
   });
+
+  useEffect(() => {
+    setActive(currentMenu);
+  }, [currentMenu]);
 
   useEffect(() => {
     if (!isMenuFocus) setActive(undefined);
@@ -49,13 +63,14 @@ const Navbar: React.FC<Props> = ({ hidden, hiddenBreakpoint, handleCurrentMenu }
         {navbarData.map((item, index) => {
           return (
             <NavLink
-              active={index === active}
+              active={focus && index === active}
               icon={<item.icon />}
               href={item.href ? item.href : ""}
               label={item.label}
               key={index}
               handleActive={() => {
-                handleCurrentMenu(item.label);
+                if (!item.children) handleCurrentMenu(Number(index));
+                if (item.children) toggleFocusMenu();
                 setActive(index);
                 setIsMenuFocus(true);
               }}
@@ -65,6 +80,9 @@ const Navbar: React.FC<Props> = ({ hidden, hiddenBreakpoint, handleCurrentMenu }
                 item.children.map((el) => {
                   return (
                     <NavLink
+                      handleActive={() => {
+                        handleCurrentMenu(Number(index));
+                      }}
                       key={el.href}
                       label={el.label}
                       href={el.href ? el.href : ""}
@@ -77,14 +95,10 @@ const Navbar: React.FC<Props> = ({ hidden, hiddenBreakpoint, handleCurrentMenu }
       </MantineNavbar.Section>
       <Divider />
       <MantineNavbar.Section>
-        <UserFooter
-          userData={userData}
-          setIsMenuFocus={setIsMenuFocus}
-          handleCurrentMenu={handleCurrentMenu}
-        />
+        <UserFooter userData={userData} setIsMenuFocus={setIsMenuFocus} />
       </MantineNavbar.Section>
     </MantineNavbar>
   );
-}
+};
 
 export default Navbar;

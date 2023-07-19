@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 interface Props {
   userData: User;
   setIsMenuFocus: React.Dispatch<React.SetStateAction<boolean>>;
-  handleCurrentMenu: (menu: string) => void;
 }
 
 const { Target, Dropdown, Label, Item } = Menu;
@@ -14,7 +13,6 @@ const { Target, Dropdown, Label, Item } = Menu;
 const UserFooter: React.FC<Props> = ({
   userData,
   setIsMenuFocus,
-  handleCurrentMenu,
 }) => {
   const router = useRouter();
   const ACCOUNT_URL = `/user/${userData.id}`;
@@ -42,7 +40,6 @@ const UserFooter: React.FC<Props> = ({
           <Item
             icon={<IconUser />}
             onClick={() => {
-              handleCurrentMenu("Account information");
               setIsMenuFocus(false);
               router.push(ACCOUNT_URL);
             }}
