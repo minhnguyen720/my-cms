@@ -1,8 +1,8 @@
 import { ActionIcon, Box, Flex, Group, TextInput } from "@mantine/core";
-import { getHotkeyHandler } from "@mantine/hooks";
+import { getHotkeyHandler, useHotkeys } from "@mantine/hooks";
 import { IconSearch, IconRefresh } from "@tabler/icons-react";
 import useStyles from "./style";
-import { ChangeEvent, useRef } from "react";
+import { ChangeEvent, useEffect, useRef } from "react";
 
 interface Props {
   handleSearch: (value: string) => void;
@@ -20,6 +20,28 @@ const SearchBar: React.FC<Props> = ({
   const { classes } = useStyles();
   const inputRef = useRef(null);
 
+  useEffect(() => {
+    window.addEventListener(
+      "keydown",
+      getHotkeyHandler([
+        [
+          "shift + S",
+          (e) => {
+            e.preventDefault();
+            if (inputRef.current !== null) inputRef.current.focus();
+          },
+        ],
+        [
+          "shift + B",
+          (e) => {
+            e.preventDefault();
+            if (inputRef.current !== null) inputRef.current.blur();
+          },
+        ],
+      ])
+    );
+  }, [inputRef]);
+
   return (
     <Flex className="">
       <Box className="basis-[75%]">
@@ -33,14 +55,14 @@ const SearchBar: React.FC<Props> = ({
               },
             ],
             [
-              "ctrl+R",
+              "shift+R",
               () => {
                 handleReset();
                 inputRef.current.blur();
               },
             ],
           ])}
-          placeholder="Search by any field"
+          placeholder="Search by document's name, created user's name and updated user's name"
           onChange={setSearchValue}
           value={searchValue}
         />
