@@ -1,9 +1,8 @@
 "use client";
 
 import { useMemo } from "react";
-import { Button, List, Tooltip, Accordion } from "@mantine/core";
+import { Button, List, Tooltip, Accordion, Stack ,Text, Title} from "@mantine/core";
 import dayjs from "dayjs";
-import { useMediaQuery } from "@mantine/hooks";
 import { useRouter } from "next/navigation";
 import { Page } from "@/interfaces/Project";
 
@@ -35,13 +34,19 @@ const useProjectTable = (datasource: Page[], projectId: string) => {
         </tr>
       </Tooltip>
     ));
-  }, [datasource]);
+  }, [datasource, projectId, router]);
 
   const items = useMemo(() => {
     return datasource.map((el) => {
       return (
         <Item value={el.id} key={el.id}>
-          <Control>{el.name}</Control>
+          <Control>
+            <Stack spacing={"xs"}>
+              <Title order={3}>{el.name}</Title>
+              <Text size={"sm"}>Created by: {el.createdUser}</Text>
+              <Text size={"sm"}>Updated by: {el.updatedUser}</Text>
+            </Stack>
+          </Control>
           <Panel>
             <List>
               <List.Item>
@@ -77,10 +82,9 @@ const useProjectTable = (datasource: Page[], projectId: string) => {
         </Item>
       );
     });
-  }, [datasource]);
-  const mobileTableMatches = useMediaQuery("(max-width: 512px)");
+  }, [datasource, projectId, router]);
 
-  return { mobileTableMatches, rows, items };
+  return { rows, items };
 };
 
 export default useProjectTable;

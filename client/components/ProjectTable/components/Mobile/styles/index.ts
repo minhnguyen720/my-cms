@@ -1,5 +1,4 @@
-"use client";
-import { Accordion, createStyles, rem } from "@mantine/core";
+import { createStyles, rem } from "@mantine/core";
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -20,6 +19,10 @@ const useStyles = createStyles((theme) => ({
     position: "relative",
     zIndex: 0,
     transition: "transform 150ms ease",
+
+    "&:hover": {
+      backgroundColor: theme.colors.cyan[9],
+    },
 
     "&[data-active]": {
       transform: "scale(1.03)",
@@ -43,23 +46,4 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-interface Props {
-  items: any[];
-}
-
-const ProjectTableMobile: React.FC<Props> = ({ items }) => {
-  const { classes } = useStyles();
-
-  return (
-    <Accordion
-      variant="filled"
-      defaultValue="customization"
-      classNames={classes}
-      className={classes.root}
-    >
-      {items}
-    </Accordion>
-  );
-};
-
-export default ProjectTableMobile;
+export default useStyles;

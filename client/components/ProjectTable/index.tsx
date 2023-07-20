@@ -1,7 +1,8 @@
-import { Table } from "@mantine/core";
 import { Page } from "@/interfaces/Project";
-import ProjectTableMobile from "./Mobile";
+import ProjectTableMobile from "./components/Mobile";
 import useProjectTable from "./hooks";
+import ProjectTableDesktop from "./components/Desktop";
+import { useMediaQuery } from "@mantine/hooks";
 
 interface Props {
   datasource: Page[];
@@ -9,10 +10,11 @@ interface Props {
 }
 
 const ProjectTable: React.FC<Props> = ({ datasource, projectId }) => {
-  const { mobileTableMatches, rows, items } = useProjectTable(
+  const {rows, items } = useProjectTable(
     datasource,
     projectId
   );
+  const mobileTableMatches = useMediaQuery("(max-width: 512px)");
 
   return (
     <>
@@ -20,18 +22,7 @@ const ProjectTable: React.FC<Props> = ({ datasource, projectId }) => {
       {mobileTableMatches ? (
         <ProjectTableMobile items={items} />
       ) : (
-        <Table highlightOnHover verticalSpacing="md">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Created date</th>
-              <th>Updated date</th>
-              <th>Created user</th>
-              <th>Updated user</th>
-            </tr>
-          </thead>
-          <tbody>{rows}</tbody>
-        </Table>
+        <ProjectTableDesktop rows={rows} />
       )}
     </>
   );
