@@ -1,34 +1,37 @@
 import { ActionIcon, Box, Flex, Group, TextInput } from "@mantine/core";
-import { useInputState } from "@mantine/hooks";
+import { getHotkeyHandler } from "@mantine/hooks";
 import { IconSearch, IconRefresh } from "@tabler/icons-react";
 import useStyles from "./style";
-import { KeyboardEvent } from "react";
+import { ChangeEvent } from "react";
 
 interface Props {
   handleSearch: (value: string) => void;
   handleReset: () => void;
+  searchValue: string;
+  setSearchValue: (value: string | ChangeEvent<any>) => void;
 }
 
-const SearchBar: React.FC<Props> = ({ handleSearch, handleReset }) => {
-  const [searchValue, setSearchValue] = useInputState("");
+const SearchBar: React.FC<Props> = ({
+  handleSearch,
+  handleReset,
+  searchValue,
+  setSearchValue,
+}) => {
   const { classes } = useStyles();
-
-  const handleHotKey = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      handleSearch(searchValue);
-    } else if (e.ctrlKey && e.key === "r") {
-      e.preventDefault();
-      handleReset();
-    }
-  };
 
   return (
     <Flex className="">
       <Box className="basis-[75%]">
         <TextInput
-          onKeyDown={(e) => {
-            handleHotKey(e);
-          }}
+          onKeyDown={getHotkeyHandler([
+            [
+              "Enter",
+              () => {
+                handleSearch(searchValue);
+              },
+            ],
+            ["ctrl+R", handleReset],
+          ])}
           placeholder="Search by any field"
           onChange={setSearchValue}
           value={searchValue}

@@ -1,7 +1,5 @@
 "use client";
 
-import SearchBar from "@/components/SearchBar";
-import { useDesktopSearch } from "@/components/SearchBar/hooks";
 import { Table } from "@mantine/core";
 
 interface Props {
@@ -9,11 +7,8 @@ interface Props {
 }
 
 const ProjectTableDesktop: React.FC<Props> = ({ rows }) => {
-  const { handleReset, handleSearch } = useDesktopSearch();
-
   return (
     <>
-      <SearchBar handleReset={handleReset} handleSearch={handleSearch} />
       <Table highlightOnHover verticalSpacing="md">
         <thead>
           <tr>

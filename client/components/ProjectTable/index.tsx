@@ -1,24 +1,32 @@
-import { Page } from "@/interfaces/Project";
 import ProjectTableMobile from "./components/Mobile";
 import useProjectTable from "./hooks";
 import ProjectTableDesktop from "./components/Desktop";
 import { useMediaQuery } from "@mantine/hooks";
+import SearchBar from "../SearchBar";
+import { useSearchBar } from "../SearchBar/hooks";
+import useProjectOverall from "../ProjectOverall/hooks/useProjectOverall";
 
-interface Props {
-  datasource: Page[];
-  projectId: string;
-}
+interface Props {}
 
-const ProjectTable: React.FC<Props> = ({ datasource, projectId }) => {
-  const {rows, items } = useProjectTable(
-    datasource,
-    projectId
-  );
+const ProjectTable: React.FC<Props> = () => {
+  const { datasource, id } = useProjectOverall();
+  const { rows, items } = useProjectTable(datasource.pages, id);
   const mobileTableMatches = useMediaQuery("(max-width: 512px)");
+  const {
+    handleSearch,
+    handleReset,
+    searchBarContext: { searchValue, setSearchValue },
+  } = useSearchBar(datasource);
 
   return (
     <>
       <h4 className="mt-5 mb-3">Current active pages</h4>
+      <SearchBar
+        handleReset={handleReset}
+        handleSearch={handleSearch}
+        searchValue={searchValue}
+        setSearchValue={setSearchValue}
+      />
       {mobileTableMatches ? (
         <ProjectTableMobile items={items} />
       ) : (

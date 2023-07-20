@@ -1,4 +1,5 @@
 import ProjectOverall from "@/components/ProjectOverall";
+import ProjectTableDataProvider from "@/components/ProjectOverall/context";
 
 interface Props {
   params: {
@@ -7,7 +8,11 @@ interface Props {
 }
 
 const ProjectOverallPage: React.FC<Props> = ({ params: { id } }) => {
-  return <ProjectOverall id={id} />;
+  return (
+    <ProjectTableDataProvider id={id}>
+      <ProjectOverall />
+    </ProjectTableDataProvider>
+  );
 };
 
 export default ProjectOverallPage;

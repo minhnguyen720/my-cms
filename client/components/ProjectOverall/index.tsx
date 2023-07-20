@@ -3,14 +3,13 @@
 import { GeneralerNotFound } from "@/components/GeneralNotFound";
 import ProjectTable from "@/components/ProjectTable";
 import { Center, Loader } from "@mantine/core";
-import useProjectOverall from "./hooks";
+import SearchBarProvider from "../SearchBar/context";
+import useProjectOverall from "./hooks/useProjectOverall";
 
-interface Props {
-  id: string;
-}
+interface Props {}
 
-const ProjectOverall: React.FC<Props> = ({ id }) => {
-  const { notfound, datasource } = useProjectOverall(id);
+const ProjectOverall: React.FC<Props> = () => {
+  const { notfound, datasource, id } = useProjectOverall();
 
   return (
     <>
@@ -26,7 +25,9 @@ const ProjectOverall: React.FC<Props> = ({ id }) => {
               <Loader py={"10%"} variant="bars" />
             </Center>
           ) : (
-            <ProjectTable datasource={datasource.pages} projectId={id}/>
+            <SearchBarProvider>
+              <ProjectTable />
+            </SearchBarProvider>
           )}
         </>
       )}

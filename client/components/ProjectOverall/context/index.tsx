@@ -1,8 +1,12 @@
+"use client";
+
 import { Project } from "@/interfaces/Project";
 import { dummyProject } from "@/static/dummyDocs";
-import { useState, useEffect } from "react";
+import { createContext, useEffect, useState } from "react";
 
-const useProjectOverall = (id: string) => {
+export const ProjectTableDataContext = createContext(null);
+
+const ProjectTableDataProvider = ({ id, children }) => {
   const [datasource, setDataSource] = useState<Project>(undefined);
   const [notfound, setNotfound] = useState(false);
 
@@ -22,7 +26,11 @@ const useProjectOverall = (id: string) => {
     }
   }, [id, datasource]);
 
-  return { notfound, datasource };
+  return (
+    <ProjectTableDataContext.Provider value={{ notfound, datasource, id }}>
+      {children}
+    </ProjectTableDataContext.Provider>
+  );
 };
 
-export default useProjectOverall;
+export default ProjectTableDataProvider;
