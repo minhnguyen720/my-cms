@@ -12,11 +12,8 @@ const ProjectTable: React.FC<Props> = () => {
   const { datasource, id } = useProjectOverall();
   const { rows, items } = useProjectTable(datasource.pages, id);
   const mobileTableMatches = useMediaQuery("(max-width: 512px)");
-  const {
-    handleSearch,
-    handleReset,
-    searchBarContext: { searchValue, setSearchValue },
-  } = useSearchBar(datasource);
+  const { handleSearch, handleReset, searchValue, setSearchValue } =
+    useSearchBar();
 
   return (
     <>
