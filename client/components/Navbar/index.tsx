@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { Divider, Navbar as MantineNavbar } from "@mantine/core";
 import NavLink from "@/components/NavLink";
 import { IconHome2, IconBook } from "@tabler/icons-react";
@@ -12,6 +12,7 @@ interface Props {
   hiddenBreakpoint: string;
   handleCurrentMenu: (menu: number) => void;
   currentMenu: number;
+  setOpened: React.Dispatch<SetStateAction<boolean>>;
 }
 
 const projects: iNavlink[] = [
@@ -33,6 +34,7 @@ const Navbar: React.FC<Props> = ({
   hiddenBreakpoint,
   handleCurrentMenu,
   currentMenu,
+  setOpened,
 }) => {
   const [active, setActive] = useState<number | undefined>(0);
   const [isMenuFocus, setIsMenuFocus] = useLocalStorage({
@@ -66,6 +68,9 @@ const Navbar: React.FC<Props> = ({
               key={index}
               handleActive={() => {
                 if (!item.children) handleCurrentMenu(Number(index));
+                
+                if (item.children === undefined) setOpened(false);
+
                 setActive(index);
                 setIsMenuFocus(true);
               }}
@@ -77,6 +82,7 @@ const Navbar: React.FC<Props> = ({
                     <NavLink
                       handleActive={() => {
                         handleCurrentMenu(Number(index));
+                        setOpened(false);
                       }}
                       key={el.href}
                       label={el.label}

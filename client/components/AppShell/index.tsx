@@ -38,6 +38,7 @@ const AppShell: React.FC<Props> = ({ children }) => {
             hiddenBreakpoint="sm"
             currentMenu={currentMenu}
             handleCurrentMenu={handleCurrentMenu}
+            setOpened={setOpened}
           />
         }
         header={
