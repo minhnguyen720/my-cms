@@ -22,7 +22,7 @@ interface Props {
 const AppShell: React.FC<Props> = ({ children }) => {
   const [opened, setOpened] = useState(false);
   const theme = useMantineTheme();
-  const { currentMenu, handleCurrentMenu, focus, toggleFocusMenu } =
+  const { currentMenu, handleCurrentMenu} =
     useCurrentMenu();
 
   return (
@@ -38,8 +38,6 @@ const AppShell: React.FC<Props> = ({ children }) => {
             hiddenBreakpoint="sm"
             currentMenu={currentMenu}
             handleCurrentMenu={handleCurrentMenu}
-            toggleFocusMenu={toggleFocusMenu}
-            focus={focus}
           />
         }
         header={

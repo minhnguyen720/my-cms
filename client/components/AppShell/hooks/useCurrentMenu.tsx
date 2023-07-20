@@ -9,15 +9,7 @@ function useCurrentMenu() {
     setCurrentMenu(menuIndex);
   };
 
-  const [focus, setFocus] = useLocalStorage({
-    key: "focusChildrenMenu",
-    defaultValue: false,
-  });
-  const toggleFocusMenu = () => {
-    setFocus(!focus);
-  };
-
-  return { currentMenu, handleCurrentMenu, focus, toggleFocusMenu };
+  return { currentMenu, handleCurrentMenu };
 }
 
 export default useCurrentMenu;

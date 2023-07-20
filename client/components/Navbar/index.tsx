@@ -12,8 +12,6 @@ interface Props {
   hiddenBreakpoint: string;
   handleCurrentMenu: (menu: number) => void;
   currentMenu: number;
-  focus: boolean;
-  toggleFocusMenu: () => void;
 }
 
 const projects: iNavlink[] = [
@@ -35,8 +33,6 @@ const Navbar: React.FC<Props> = ({
   hiddenBreakpoint,
   handleCurrentMenu,
   currentMenu,
-  toggleFocusMenu,
-  focus,
 }) => {
   const [active, setActive] = useState<number | undefined>(0);
   const [isMenuFocus, setIsMenuFocus] = useLocalStorage({
@@ -63,14 +59,13 @@ const Navbar: React.FC<Props> = ({
         {navbarData.map((item, index) => {
           return (
             <NavLink
-              active={focus && index === active}
+              active={index === active}
               icon={<item.icon />}
               href={item.href ? item.href : ""}
               label={item.label}
               key={index}
               handleActive={() => {
                 if (!item.children) handleCurrentMenu(Number(index));
-                if (item.children) toggleFocusMenu();
                 setActive(index);
                 setIsMenuFocus(true);
               }}
