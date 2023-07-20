@@ -4,7 +4,7 @@ import useProjectOverall from "@/components/ProjectOverall/hooks/useProjectOvera
 
 export const useSearchBar = () => {
   const { searchValue, setSearchValue } = useContext(SearchBarContext);
-  const { datasource } = useProjectOverall();
+  const { datasource, setDataSource, datasourceDefault } = useProjectOverall();
 
   const handleSearch = () => {
     const result = datasource.pages.filter((item) => {
@@ -14,11 +14,18 @@ export const useSearchBar = () => {
         item.updatedUser.includes(searchValue)
       );
     });
-    console.log(result);
+
+    setDataSource((prev) => {
+      return {
+        ...prev,
+        pages: result,
+      };
+    });
   };
 
   const handleReset = () => {
-    console.log("reset");
+    setSearchValue("");
+    setDataSource(datasourceDefault);
   };
 
   return { handleSearch, handleReset, searchValue, setSearchValue };

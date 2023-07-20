@@ -1,18 +1,29 @@
 "use client";
 
-import { useMemo } from "react";
-import { Button, List, Tooltip, Accordion, Stack ,Text, Title} from "@mantine/core";
+import { useMemo, useState } from "react";
+import {
+  Button,
+  List,
+  Tooltip,
+  Accordion,
+  Stack,
+  Text,
+  Title,
+} from "@mantine/core";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import { Page } from "@/interfaces/Project";
+import useProjectOverall from "@/components/ProjectOverall/hooks/useProjectOverall";
 
 const { Item, Panel, Control } = Accordion;
 
-const useProjectTable = (datasource: Page[], projectId: string) => {
+const useProjectTable = () => {
   const DATE_FORMAT = "DD/MM/YYYY";
   const router = useRouter();
+  const { datasource, id: projectId } = useProjectOverall();
+
   const rows = useMemo(() => {
-    return datasource.map((element) => (
+    return datasource.pages.map((element) => (
       <Tooltip
         label="Double click to access to page detail"
         withArrow
@@ -34,10 +45,10 @@ const useProjectTable = (datasource: Page[], projectId: string) => {
         </tr>
       </Tooltip>
     ));
-  }, [datasource, projectId, router]);
+  }, [datasource.pages, projectId, router]);
 
   const items = useMemo(() => {
-    return datasource.map((el) => {
+    return datasource.pages.map((el) => {
       return (
         <Item value={el.id} key={el.id}>
           <Control>
@@ -82,7 +93,7 @@ const useProjectTable = (datasource: Page[], projectId: string) => {
         </Item>
       );
     });
-  }, [datasource, projectId, router]);
+  }, [datasource.pages, projectId, router]);
 
   return { rows, items };
 };

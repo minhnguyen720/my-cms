@@ -2,7 +2,7 @@ import { ActionIcon, Box, Flex, Group, TextInput } from "@mantine/core";
 import { getHotkeyHandler } from "@mantine/hooks";
 import { IconSearch, IconRefresh } from "@tabler/icons-react";
 import useStyles from "./style";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useRef } from "react";
 
 interface Props {
   handleSearch: (value: string) => void;
@@ -18,11 +18,13 @@ const SearchBar: React.FC<Props> = ({
   setSearchValue,
 }) => {
   const { classes } = useStyles();
+  const inputRef = useRef(null);
 
   return (
     <Flex className="">
       <Box className="basis-[75%]">
         <TextInput
+          ref={inputRef}
           onKeyDown={getHotkeyHandler([
             [
               "Enter",
@@ -30,7 +32,13 @@ const SearchBar: React.FC<Props> = ({
                 handleSearch(searchValue);
               },
             ],
-            ["ctrl+R", handleReset],
+            [
+              "ctrl+R",
+              () => {
+                handleReset();
+                inputRef.current.blur();
+              },
+            ],
           ])}
           placeholder="Search by any field"
           onChange={setSearchValue}

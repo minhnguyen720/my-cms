@@ -7,6 +7,8 @@ import { createContext, useEffect, useState } from "react";
 export const ProjectTableDataContext = createContext(null);
 
 const ProjectTableDataProvider = ({ id, children }) => {
+  const [datasourceDefault, setDatasourceDefault] =
+    useState<Project>(undefined);
   const [datasource, setDataSource] = useState<Project>(undefined);
   const [notfound, setNotfound] = useState(false);
 
@@ -19,15 +21,18 @@ const ProjectTableDataProvider = ({ id, children }) => {
         setNotfound(true);
       } else {
         setDataSource(filteredDatasource);
+        setDatasourceDefault(filteredDatasource);
         setNotfound(false);
       }
     } catch (error) {
       console.error(error);
     }
-  }, [id, datasource]);
+  }, [id]);
 
   return (
-    <ProjectTableDataContext.Provider value={{ notfound, datasource, id }}>
+    <ProjectTableDataContext.Provider
+      value={{ notfound, datasource, id, datasourceDefault, setDataSource }}
+    >
       {children}
     </ProjectTableDataContext.Provider>
   );

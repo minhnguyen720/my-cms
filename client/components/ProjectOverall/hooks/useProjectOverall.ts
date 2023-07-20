@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { SetStateAction, useContext } from "react";
 import { ProjectTableDataContext } from "../context";
 import { Project } from "@/interfaces/Project";
 
@@ -7,11 +7,17 @@ const useProjectOverall = () => {
     notfound,
     datasource,
     id,
-  }: { notfound: boolean; datasource: Project; id: string } = useContext(
-    ProjectTableDataContext
-  );
+    datasourceDefault,
+    setDataSource,
+  }: {
+    notfound: boolean;
+    datasource: Project;
+    id: string;
+    datasourceDefault: Project;
+    setDataSource: React.Dispatch<SetStateAction<Project>>;
+  } = useContext(ProjectTableDataContext);
 
-  return { notfound, datasource, id };
+  return { notfound, datasource, id, datasourceDefault, setDataSource };
 };
 
 export default useProjectOverall;
