@@ -22,8 +22,7 @@ interface Props {
 const AppShell: React.FC<Props> = ({ children }) => {
   const [opened, setOpened] = useState(false);
   const theme = useMantineTheme();
-  const { currentMenu, handleCurrentMenu} =
-    useCurrentMenu();
+  const { currentMenu, handleCurrentMenu } = useCurrentMenu();
 
   return (
     <MantineProvider

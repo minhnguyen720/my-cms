@@ -6,7 +6,7 @@ const useStyles = createStyles((theme) => ({
     borderColor: theme.colors.dark[4],
     height: "100%",
     transition: "150ms all ease-in",
-    maxWidth:"90px",
+    maxWidth:"50px",
 
     "&:hover": {
       borderColor: theme.colors.blue[7],

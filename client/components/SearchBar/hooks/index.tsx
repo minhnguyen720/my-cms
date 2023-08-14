@@ -1,9 +1,9 @@
-import { useContext } from "react";
-import { SearchBarContext } from "../context";
 import useProjectOverall from "@/components/ProjectOverall/hooks/useProjectOverall";
+import { useAtom } from "jotai";
+import { searchAtom } from "@/atoms";
 
 export const useSearchBar = () => {
-  const { searchValue, setSearchValue } = useContext(SearchBarContext);
+  const [searchValue, jotaiSetSearchValue] = useAtom(searchAtom);
   const { datasource, setDataSource, datasourceDefault } = useProjectOverall();
 
   const handleSearch = () => {
@@ -26,6 +26,10 @@ export const useSearchBar = () => {
   const handleReset = () => {
     setSearchValue("");
     setDataSource(datasourceDefault);
+  };
+
+  const setSearchValue = (value: string) => {
+    jotaiSetSearchValue(value);
   };
 
   return { handleSearch, handleReset, searchValue, setSearchValue };

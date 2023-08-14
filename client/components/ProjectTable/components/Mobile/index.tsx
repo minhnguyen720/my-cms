@@ -4,14 +4,13 @@ import { Accordion } from "@mantine/core";
 import useStyles from "./styles";
 
 interface Props {
-  items: JSX.Element[];
+  items:  JSX.Element | JSX.Element[];
 }
 
 const ProjectTableMobile: React.FC<Props> = ({ items }) => {
   const { classes } = useStyles();
 
   return (
-    <>
       <Accordion
         variant="filled"
         defaultValue="customization"
@@ -20,7 +19,6 @@ const ProjectTableMobile: React.FC<Props> = ({ items }) => {
       >
         {items}
       </Accordion>
-    </>
   );
 };
 

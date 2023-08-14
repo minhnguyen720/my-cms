@@ -106,16 +106,11 @@ const SearchBar: React.FC<Props> = ({
               ],
             ])}
             placeholder="Search by document's name, created user's name and updated user's name"
-            onChange={setSearchValue}
+            onChange={(event) => setSearchValue(event.currentTarget.value)}
             value={searchValue}
           />
         </Box>
-        <Group
-          spacing={"xs"}
-          position="right"
-          className="ml-2 basis-[25%]"
-          grow
-        >
+        <Group spacing={"xs"} position="left" className="ml-2 basis-[25%]" grow>
           <ActionIcon
             className={classes.searchbarIcon}
             onClick={() => {

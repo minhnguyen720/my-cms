@@ -3,13 +3,22 @@
 import { GeneralerNotFound } from "@/components/GeneralNotFound";
 import ProjectTable from "@/components/ProjectTable";
 import { Center, Loader } from "@mantine/core";
-import SearchBarProvider from "../SearchBar/context";
 import useProjectOverall from "./hooks/useProjectOverall";
+import { projectIdAtom } from "@/atoms";
+import { useSetAtom } from "jotai";
+import { useEffect } from "react";
 
-interface Props {}
+interface Props {
+  id: string;
+}
 
-const ProjectOverall: React.FC<Props> = () => {
-  const { notfound, datasource, id } = useProjectOverall();
+const ProjectOverall: React.FC<Props> = ({ id }) => {
+  const { notfound, datasource } = useProjectOverall();
+
+  const setProjectId = useSetAtom(projectIdAtom);
+  useEffect(() => {
+    setProjectId(id);
+  }, [id, setProjectId]);
 
   return (
     <>
@@ -20,14 +29,12 @@ const ProjectOverall: React.FC<Props> = () => {
       ) : (
         <>
           <h2 className="py-4">Project ID: {id}</h2>
-          {datasource === undefined ? (
+          {!datasource ? (
             <Center>
               <Loader py={"10%"} variant="bars" />
             </Center>
           ) : (
-            <SearchBarProvider>
-              <ProjectTable />
-            </SearchBarProvider>
+            <ProjectTable />
           )}
         </>
       )}
