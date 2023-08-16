@@ -20,6 +20,11 @@ export class ProjectController {
     return this.projectService.create(createProjectDto);
   }
 
+  @Get('dashboard-stat')
+  async getDashboardStat() {
+    return await this.projectService.getDashboardStat();
+  }
+
   @Get()
   findAll() {
     return this.projectService.findAll();

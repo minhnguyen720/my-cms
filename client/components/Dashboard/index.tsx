@@ -1,3 +1,5 @@
+'use client'
+
 import {
   createStyles,
   Group,
@@ -20,10 +22,12 @@ const useStyles = createStyles((theme) => ({
 
 interface StatsGridIconsProps {
   data: { title: string; value: string }[];
+  res: any;
 }
 
-export const Dashboard: React.FC<StatsGridIconsProps> = ({ data }) => {
+export const Dashboard: React.FC<StatsGridIconsProps> = ({ data,res }) => {
   const { classes } = useStyles();
+console.log(res)
   const stats = data.map((stat) => {
     return (
       <Paper

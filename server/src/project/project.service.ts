@@ -15,6 +15,18 @@ export class ProjectService {
     return 'This action adds a new project';
   }
 
+  async getDashboardStat() {
+    const activeLength = await this.projectModel
+      .find({ active: true })
+      .count()
+      .exec();
+    const deactiveLength = await this.projectModel
+      .find({ active: false })
+      .count()
+      .exec();
+    return { activeLength, deactiveLength };
+  }
+
   findAll() {
     return this.projectModel.find();
   }

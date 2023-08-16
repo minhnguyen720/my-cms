@@ -1,12 +1,21 @@
-"use client";
+// "use client";
 
 import { Dashboard } from "@/components/Dashboard";
 
-export default function Home() {
+const getActiveProjectLength = async () => {
+  const res = await fetch("http://localhost:4000/project/dashboard-stat");
+  if (!res.ok) {
+    throw new Error('Failed to fetch data')
+  }
+  return res.json();
+}
+
+export default async function Home() {
+  const res = await getActiveProjectLength();
   const data = [
-    { title: "Active project", value: "3" },
-    { title: "Deactive project", value: "0" },
+    { title: "Active project", value: res.activeLength.toString() },
+    { title: "Deactive project", value: res.deactiveLength.toString() },
   ];
 
-  return <Dashboard data={data} />;
+  return <Dashboard data={data} res={res}/>;
 }
