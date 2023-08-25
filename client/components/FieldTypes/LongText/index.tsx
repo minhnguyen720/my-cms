@@ -17,10 +17,10 @@ interface Props {
   form: UseFormReturnType<any>;
   fieldId: string;
   required: boolean;
-  disabled: boolean;
+  active: boolean;
 }
 
-const LongText:React.FC<Props> = ({ form, label, fieldId, required, disabled }) => {
+const LongText:React.FC<Props> = ({ form, label, fieldId, required, active }) => {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -42,7 +42,7 @@ const LongText:React.FC<Props> = ({ form, label, fieldId, required, disabled }) 
       <FieldControlSwitch
         controlFlags={{
           required,
-          disabled,
+          active,
         }}
         // isVisible
       />

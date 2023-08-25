@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { PageService } from './page.service';
 import { CreatePageDto } from './dto/create-page.dto';
 import { UpdatePageDto } from './dto/update-page.dto';
@@ -8,8 +16,8 @@ export class PageController {
   constructor(private readonly pageService: PageService) {}
 
   @Post()
-  create(@Body() createPageDto: CreatePageDto) {
-    return this.pageService.create(createPageDto);
+  async create(@Body() createPageDto: CreatePageDto) {
+    return await this.pageService.create(createPageDto);
   }
 
   @Get()

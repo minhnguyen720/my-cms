@@ -16,15 +16,13 @@ export class ProjectService {
   }
 
   async getDashboardStat() {
-    const activeLength = await this.projectModel
-      .find({ active: true })
-      .count()
-      .exec();
-    const deactiveLength = await this.projectModel
-      .find({ active: false })
-      .count()
-      .exec();
-    return { activeLength, deactiveLength };
+    return Promise.all([
+      this.projectModel.find({ active: true }).count().exec(),
+      this.projectModel.find({ active: false }).count().exec(),
+    ]).then((values) => {
+      const [activeLength, deactiveLength] = values;
+      return { activeLength, deactiveLength };
+    });
   }
 
   findAll() {

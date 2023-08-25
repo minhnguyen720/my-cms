@@ -4,7 +4,7 @@ import { ChangeEvent, useState } from "react";
 interface Props {
   isVisible?: boolean;
   controlFlags: {
-    disabled: boolean;
+    active: boolean;
     required: boolean;
   };
 }
@@ -42,7 +42,7 @@ const FieldControlSwitch: React.FC<Props> = ({ isVisible, controlFlags }) => {
               handleSwitchControlChange(e);
             }}
             color="green"
-            checked={flags.disabled}
+            checked={!flags.active}
           />
         </Group>
       )}

@@ -3,13 +3,14 @@ import { ReactNode } from "react";
 export interface Field {
   type: string;
 
+  // for form query
   field_id: string;
 
   label?: string;
 
   value?: string;
 
-  disabled: boolean;
+  active: boolean;
 
   // for input component
   placeholder?: string;

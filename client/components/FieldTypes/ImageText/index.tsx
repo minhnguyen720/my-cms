@@ -11,7 +11,7 @@ interface Props {
   form: any;
   label?: string;
   required: boolean;
-  disabled: boolean;
+  active: boolean;
   isUseEditor?: boolean;
 }
 
@@ -23,7 +23,7 @@ const ImageText: React.FC<Props> = ({
   form,
   label,
   required,
-  disabled,
+  active,
 }) => {
   return (
     <div className="form_item">
@@ -35,7 +35,7 @@ const ImageText: React.FC<Props> = ({
             form={form}
             label={label}
             required={required}
-            disabled={disabled}
+            active={!active}
           />
         ) : (
           <Text
@@ -43,7 +43,7 @@ const ImageText: React.FC<Props> = ({
             form={form}
             label={label}
             required={required}
-            disabled={disabled}
+            active={!active}
           />
         )}
       </Group>

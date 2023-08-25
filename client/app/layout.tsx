@@ -15,7 +15,7 @@ export default async function RootLayout({
       <head>
         <title>MyCMS</title>
       </head>
-      <body className={inter.className}>
+      <body className={inter.className} suppressHydrationWarning={true}>
         <JotaiProviders>
           <AppShell>{children}</AppShell>
         </JotaiProviders>

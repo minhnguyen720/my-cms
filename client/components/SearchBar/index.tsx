@@ -1,21 +1,16 @@
-import {
-  ActionIcon,
-  Box,
-  Flex,
-  Group,
-  Kbd,
-  Modal,
-  Stack,
-  TextInput,
-} from "@mantine/core";
+import { ActionIcon, Box, Flex, Group, TextInput } from "@mantine/core";
 import { getHotkeyHandler, useDisclosure } from "@mantine/hooks";
 import {
   IconSearch,
   IconRefresh,
   IconInfoCircleFilled,
+  IconPlus,
 } from "@tabler/icons-react";
 import useStyles from "./style";
 import { ChangeEvent, useEffect, useRef } from "react";
+import { Tips } from "./components/Tips";
+import { useRouter, usePathname } from "next/navigation";
+import { useMediaQuery } from "@mantine/hooks";
 
 interface Props {
   handleSearch: (value: string) => void;
@@ -32,6 +27,9 @@ const SearchBar: React.FC<Props> = ({
 }) => {
   const { classes } = useStyles();
   const inputRef = useRef(null);
+  const navigator = useRouter();
+  const currentPathname = usePathname();
+  const matches = useMediaQuery("(max-width: 474px)");
 
   useEffect(() => {
     window.addEventListener(
@@ -55,39 +53,22 @@ const SearchBar: React.FC<Props> = ({
     );
   }, [inputRef]);
 
+  useEffect(() => {
+    console.log(matches);
+  }, [matches]);
+
   const [opened, { open, close }] = useDisclosure(false);
 
   return (
     <>
-      <Modal
-        size={"lg"}
-        centered
-        opened={opened}
-        onClose={close}
-        title="Search bar hotkeys manual"
-      >
-        <Stack p={16}>
-          <Box>
-            <Kbd>Shift</Kbd> + <Kbd>S</Kbd>: focus search bar
-          </Box>
-          <Box>
-            <Kbd>Shift</Kbd> + <Kbd>B</Kbd>: out focus search bar
-          </Box>
-          <Box>
-            <Kbd>Shift</Kbd> + <Kbd>R</Kbd>: reset search result
-          </Box>
-          <Box>
-            <Kbd>Enter</Kbd>: search
-          </Box>
-        </Stack>
-      </Modal>
-      <Flex className="">
+      <Tips opened={opened} close={close} />
+      <Flex>
         <Box className="mr-2 text-center my-auto">
           <ActionIcon onClick={open}>
             <IconInfoCircleFilled />
           </ActionIcon>
         </Box>
-        <Box className="basis-[70%]">
+        <Box className={matches ? "basis-[100%]" : "basis-[60%]"}>
           <TextInput
             ref={inputRef}
             onKeyDown={getHotkeyHandler([
@@ -110,7 +91,12 @@ const SearchBar: React.FC<Props> = ({
             value={searchValue}
           />
         </Box>
-        <Group spacing={"xs"} position="left" className="ml-2 basis-[25%]" grow>
+        <Group
+          spacing={"xs"}
+          position="left"
+          className={`ml-2 ${matches && "basis-full"}`}
+          grow
+        >
           <ActionIcon
             className={classes.searchbarIcon}
             onClick={() => {
@@ -126,6 +112,14 @@ const SearchBar: React.FC<Props> = ({
             }}
           >
             <IconRefresh />
+          </ActionIcon>
+          <ActionIcon
+            className={classes.searchbarIcon}
+            onClick={() => {
+              navigator.push(`${currentPathname}/new-page`);
+            }}
+          >
+            <IconPlus />
           </ActionIcon>
         </Group>
       </Flex>

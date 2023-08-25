@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { DocService } from './doc.service';
 import { CreateDocDto } from './dto/create-doc.dto';
 import { UpdateDocDto } from './dto/update-doc.dto';
@@ -17,9 +25,14 @@ export class DocController {
     return this.docService.findAll();
   }
 
+  @Get(':key')
+  async findByKey(@Param('key') key: string) {
+    return await this.docService.findByKey(key);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.docService.findOne(+id);
+    return this.docService.findOne(id);
   }
 
   @Patch(':id')

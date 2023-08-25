@@ -21,7 +21,7 @@ const Form: React.FC<Props> = ({ data, form }) => {
       label: item.label,
       fieldId: item.field_id,
       required: item.required,
-      disabled: item.disabled,
+      active: item.active,
     };
     switch (item.type) {
       case "text":
@@ -40,16 +40,12 @@ const Form: React.FC<Props> = ({ data, form }) => {
             form={form}
             isUseEditor={item.isUseEditor}
             label={item.label}
-            disabled={item.disabled}
+            active={item.active}
             required={item.required}
           />
         );
       default:
-        return (
-          <Center>
-            <p>Nothing here!</p>
-          </Center>
-        );
+        return <></>;
     }
   });
 };

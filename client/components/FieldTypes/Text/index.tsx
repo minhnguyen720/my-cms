@@ -9,7 +9,7 @@ interface Props {
   label: string;
   placeholder?: string;
   required?: boolean;
-  disabled?: boolean;
+  active?: boolean;
   icon?: ReactNode;
   fieldId: string;
   form: UseFormReturnType<any>;
@@ -22,7 +22,7 @@ const Text: React.FC<Props> = ({
   icon,
   fieldId,
   form,
-  disabled,
+  active,
 }) => {
   return (
     <div className="form_item">
@@ -30,7 +30,7 @@ const Text: React.FC<Props> = ({
         <FieldControlSwitch
           controlFlags={{
             required: required,
-            disabled: disabled,
+            active: !active,
           }}
           // isVisible
         />
@@ -40,7 +40,7 @@ const Text: React.FC<Props> = ({
           withAsterisk={required}
           icon={icon && icon}
           {...form.getInputProps(fieldId)}
-          disabled={disabled}
+          disabled={!active}
         />
       </Stack>
     </div>

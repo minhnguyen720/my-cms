@@ -5,6 +5,7 @@ import { ProjectModule } from './project/project.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PageModule } from './page/page.module';
 import { DocModule } from './doc/doc.module';
+import { ClientModule } from './client/client.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { DocModule } from './doc/doc.module';
     MongooseModule.forRoot('mongodb://localhost:27017/my_cms_prototype'),
     PageModule,
     DocModule,
+    ClientModule,
   ],
   controllers: [AppController],
   providers: [AppService],
