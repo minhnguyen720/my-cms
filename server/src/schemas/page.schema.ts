@@ -12,7 +12,7 @@ export class Page {
   id: string;
 
   // this name describe the purpose of this page
-  @Prop()
+  @Prop({ required: true })
   name: string;
 
   @Prop()
@@ -28,8 +28,7 @@ export class Page {
   @Prop()
   updatedUser: string;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Project' })
-  @Transform(({ value }) => value.toString())
+  @Prop()
   projectId: string;
 
   @Prop({ type: MongooseSchema.Types.Array, ref: 'Doc' })

@@ -39,7 +39,13 @@ const CreatingPage = ({ params: { id } }) => {
   const [opened, { open, close }] = useDisclosure(false);
 
   const handleSubmit = async (values: PageFormValues) => {
-    await axios.post(`${baseUrl}/page`, values);
+    const res: { sucess: boolean } = await axios.post(
+      `${baseUrl}/page`,
+      values
+    );
+    if (res.sucess) {
+      
+    }
   };
 
   const handleCancel = () => {
@@ -73,7 +79,7 @@ const CreatingPage = ({ params: { id } }) => {
             {...form.getInputProps("createdDate")}
             disabled
           />
-          <TextInput label="Page name" {...form.getInputProps("pageName")} />
+          <TextInput label="Page name" {...form.getInputProps("name")} />
         </Stack>
 
         <Group position="right" mt="md">

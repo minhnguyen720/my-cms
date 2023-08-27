@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreatePageDto } from './dto/create-page.dto';
 import { UpdatePageDto } from './dto/update-page.dto';
 import { Page } from 'src/schemas/page.schema';
@@ -10,8 +10,16 @@ export class PageService {
   constructor(@InjectModel(Page.name) private pageModel: Model<Page>) {}
 
   async create(createPageDto: CreatePageDto) {
-    await this.pageModel.create(createPageDto);
-    return 0;
+    try {
+      await this.pageModel.create(createPageDto);
+      return { success: true };
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(
+        'Fail to create new page',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   findAll() {
