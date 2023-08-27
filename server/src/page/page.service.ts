@@ -11,7 +11,7 @@ export class PageService {
 
   async create(createPageDto: CreatePageDto) {
     try {
-      await this.pageModel.create(createPageDto);
+      // await this.pageModel.create(createPageDto);
       return { success: true };
     } catch (error) {
       console.error(error);

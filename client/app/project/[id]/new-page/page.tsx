@@ -5,12 +5,13 @@ import { useForm } from "@mantine/form";
 import { v4 } from "uuid";
 import React, { useEffect } from "react";
 import { Button, Group, Modal, Stack, TextInput } from "@mantine/core";
-import { useAtomValue } from "jotai";
-import { baseUrlAtom } from "@/atoms";
+import { useAtomValue, useSetAtom } from "jotai";
+import { activeAlertAtom, baseUrlAtom } from "@/atoms";
 import axios from "axios";
 import dayjs from "dayjs";
 import { usePathname, useRouter } from "next/navigation";
 import { useDisclosure } from "@mantine/hooks";
+import useAlert from "@/components/Alert/hooks";
 
 interface PageFormValues extends StandardSchema {
   projectId: string;
@@ -37,14 +38,15 @@ const CreatingPage = ({ params: { id } }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [opened, { open, close }] = useDisclosure(false);
+  const { openAlert } = useAlert();
 
   const handleSubmit = async (values: PageFormValues) => {
-    const res: { sucess: boolean } = await axios.post(
+    const res: { data: { success: boolean } } = await axios.post(
       `${baseUrl}/page`,
       values
     );
-    if (res.sucess) {
-      
+    if (res.data.success) {
+      openAlert("Create new page successfully");
     }
   };
 
@@ -59,7 +61,8 @@ const CreatingPage = ({ params: { id } }) => {
         Creating new page
       </p>
       <form
-        onSubmit={form.onSubmit((values) => {
+        onSubmit={form.onSubmit((values, e) => {
+          e.preventDefault();
           handleSubmit(values);
         })}
       >

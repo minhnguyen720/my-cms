@@ -14,6 +14,7 @@ import Navbar from "@/components/Navbar";
 import { useState } from "react";
 import Image from "next/image";
 import useCurrentMenu from "./hooks/useCurrentMenu";
+import Alert from "../Alert";
 
 interface Props {
   children: any;
@@ -80,6 +81,7 @@ const AppShell: React.FC<Props> = ({ children }) => {
           },
         })}
       >
+        <Alert />
         {children}
       </MantineAppShell>
     </MantineProvider>

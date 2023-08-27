@@ -12,3 +12,11 @@ export const datasourceDefaultAtom = atom<Project | boolean>(false);
 export const baseUrlAtom = atom<string>("http://localhost:4000");
 
 export const projectIdAtom = atom<string>("");
+
+export const activeAlertAtom = atom<{
+  activeFlag: boolean;
+  message?: string;
+}>({
+  activeFlag: true,
+  message: "",
+});
