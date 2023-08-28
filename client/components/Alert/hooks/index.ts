@@ -8,13 +8,15 @@ const useAlert = () => {
     setAlert({
       activeFlag: false,
       message: "",
+      type: "",
     });
   };
 
-  const openAlert = (message?: string) => {
+  const openAlert = (message?: string, type?: string) => {
     setAlert({
       activeFlag: true,
       message: message ? message : "Something went wrong",
+      type: type ? type : "info",
     });
   };
 

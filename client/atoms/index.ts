@@ -1,3 +1,4 @@
+import { ALERT_CODES } from "@/constant";
 import { Project } from "@/interfaces/Project";
 import { atom } from "jotai";
 
@@ -16,7 +17,9 @@ export const projectIdAtom = atom<string>("");
 export const activeAlertAtom = atom<{
   activeFlag: boolean;
   message?: string;
+  type?: string;
 }>({
   activeFlag: true,
   message: "",
+  type: ALERT_CODES.INFO,
 });

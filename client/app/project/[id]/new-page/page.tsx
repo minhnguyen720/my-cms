@@ -3,15 +3,16 @@
 import { StandardSchema } from "@/interfaces/StandardSchema";
 import { useForm } from "@mantine/form";
 import { v4 } from "uuid";
-import React, { useEffect } from "react";
+import React from "react";
 import { Button, Group, Modal, Stack, TextInput } from "@mantine/core";
-import { useAtomValue, useSetAtom } from "jotai";
-import { activeAlertAtom, baseUrlAtom } from "@/atoms";
+import { useAtomValue } from "jotai";
+import { baseUrlAtom } from "@/atoms";
 import axios from "axios";
 import dayjs from "dayjs";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useDisclosure } from "@mantine/hooks";
 import useAlert from "@/components/Alert/hooks";
+import { ALERT_CODES, MESSAGES } from "@/constant";
 
 interface PageFormValues extends StandardSchema {
   projectId: string;
@@ -36,17 +37,23 @@ const CreatingPage = ({ params: { id } }) => {
   });
   const baseUrl = useAtomValue(baseUrlAtom);
   const router = useRouter();
-  const pathname = usePathname();
   const [opened, { open, close }] = useDisclosure(false);
   const { openAlert } = useAlert();
 
   const handleSubmit = async (values: PageFormValues) => {
-    const res: { data: { success: boolean } } = await axios.post(
-      `${baseUrl}/page`,
-      values
-    );
-    if (res.data.success) {
-      openAlert("Create new page successfully");
+    try {
+      const res: { data: { success: boolean } } = await axios.post(
+        `${baseUrl}/page`,
+        values
+      );
+      if (res.data.success) {
+        openAlert(MESSAGES.CREATE_NEW_PAGE.SUCCESS, ALERT_CODES.SUCCESS);
+      } else {
+        openAlert(MESSAGES.CREATE_NEW_PAGE.FAIL, ALERT_CODES.ERROR);
+      }
+    } catch (error) {
+      console.error(error);
+      openAlert(MESSAGES.CREATE_NEW_PAGE.FAIL, ALERT_CODES.ERROR);
     }
   };
 
