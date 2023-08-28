@@ -19,7 +19,7 @@ export const activeAlertAtom = atom<{
   message?: string;
   type?: string;
 }>({
-  activeFlag: true,
+  activeFlag: false,
   message: "",
   type: ALERT_CODES.INFO,
 });

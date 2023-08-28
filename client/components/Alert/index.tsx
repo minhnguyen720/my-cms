@@ -33,10 +33,10 @@ const Alert: React.FC<Props> = () => {
             setBg(ALERT_STYLING.INFO);
             break;
         }
-        // setTimeout(() => {
-        //   closeAlert();
-        //   setReady(false);
-        // }, 2000);
+        setTimeout(() => {
+          closeAlert();
+          setReady(false);
+        }, 2000);
       } catch (error) {
         console.error(error);
       } finally {
