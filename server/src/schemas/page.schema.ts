@@ -28,8 +28,9 @@ export class Page {
   @Prop()
   updatedUser: string;
 
+  // _id of Project
   @Prop()
-  projectId: string;
+  project: string;
 
   @Prop({ type: MongooseSchema.Types.Array, ref: 'Doc' })
   docs?: Doc[];

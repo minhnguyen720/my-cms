@@ -4,14 +4,39 @@ import { UpdatePageDto } from './dto/update-page.dto';
 import { Page } from 'src/schemas/page.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { Project } from 'src/schemas/project.schema';
 
 @Injectable()
 export class PageService {
-  constructor(@InjectModel(Page.name) private pageModel: Model<Page>) {}
+  constructor(
+    @InjectModel(Page.name) private pageModel: Model<Page>,
+    @InjectModel(Project.name) private projectModel: Model<Project>,
+  ) {}
+
+  async findPageBelongToProject(projectId: string) {
+    try {
+      return await this.pageModel.find({ project: projectId });
+    } catch (error) {
+      console.error(error);
+      return {
+        success: false,
+        message: error,
+      };
+    }
+  }
 
   async create(createPageDto: CreatePageDto) {
     try {
-      await this.pageModel.create(createPageDto);
+      const projectRes = await this.projectModel.findOne({
+        id: createPageDto.id,
+      });
+      const body = {
+        ...createPageDto,
+        project: projectRes._id,
+      };
+      const page = await this.pageModel.create(body);
+      projectRes.pages.push(page);
+      projectRes.save();
       return { success: true };
     } catch (error) {
       console.error(error);

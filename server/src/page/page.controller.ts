@@ -25,6 +25,11 @@ export class PageController {
     return this.pageService.findAll();
   }
 
+  @Get(':projectId')
+  findPageBelongToProject(@Param('projectId') projectId: string) {
+    return this.pageService.findPageBelongToProject(projectId);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.pageService.findOne(+id);

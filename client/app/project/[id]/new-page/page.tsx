@@ -48,6 +48,7 @@ const CreatingPage = ({ params: { id } }) => {
       );
       if (res.data.success) {
         openAlert(MESSAGES.CREATE_NEW_PAGE.SUCCESS, ALERT_CODES.SUCCESS);
+        router.back();
       } else {
         openAlert(MESSAGES.CREATE_NEW_PAGE.FAIL, ALERT_CODES.ERROR);
       }
