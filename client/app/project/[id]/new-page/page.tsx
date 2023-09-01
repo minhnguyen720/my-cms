@@ -5,17 +5,18 @@ import { useForm } from "@mantine/form";
 import { v4 } from "uuid";
 import React from "react";
 import { Button, Group, Modal, Stack, TextInput } from "@mantine/core";
-import { useAtomValue } from "jotai";
-import { baseUrlAtom } from "@/atoms";
+import { useAtomValue, useSetAtom } from "jotai";
+import { baseUrlAtom, datasourceAtom, projectIdAtom } from "@/atoms";
 import axios from "axios";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import { useDisclosure } from "@mantine/hooks";
 import useAlert from "@/components/Alert/hooks";
 import { ALERT_CODES, MESSAGES } from "@/constant";
+import { ProjectTableItem } from "../page";
 
 interface PageFormValues extends StandardSchema {
-  projectId: string;
+  project: string;
   docs: any[];
   docSchema?: any;
   name: string;
@@ -29,7 +30,7 @@ const CreatingPage = ({ params: { id } }) => {
     createdUser: "admin",
     updatedUser: "admin",
     docs: [],
-    projectId: id,
+    project: id,
     name: "",
   };
   const form = useForm({
@@ -39,18 +40,27 @@ const CreatingPage = ({ params: { id } }) => {
   const router = useRouter();
   const [opened, { open, close }] = useDisclosure(false);
   const { openAlert } = useAlert();
+  const currentProjectId = useAtomValue(projectIdAtom);
+  const setDatasource = useSetAtom(datasourceAtom);
+
+  const backToHome = () => {
+    router.push(`/project/${currentProjectId}`);
+  };
 
   const handleSubmit = async (values: PageFormValues) => {
     try {
-      const res: { data: { success: boolean } } = await axios.post(
-        `${baseUrl}/page`,
-        values
-      );
+      const res: {
+        data: { success: boolean; message: string; newProjectData: ProjectTableItem };
+      } = await axios.post(`${baseUrl}/page`, values);
       if (res.data.success) {
+        setDatasource(res.data.newProjectData);
         openAlert(MESSAGES.CREATE_NEW_PAGE.SUCCESS, ALERT_CODES.SUCCESS);
-        router.back();
+        backToHome();
       } else {
-        openAlert(MESSAGES.CREATE_NEW_PAGE.FAIL, ALERT_CODES.ERROR);
+        openAlert(
+          `${MESSAGES.CREATE_NEW_PAGE.FAIL}: ${res.data.message}`,
+          ALERT_CODES.ERROR
+        );
       }
     } catch (error) {
       console.error(error);
@@ -60,7 +70,7 @@ const CreatingPage = ({ params: { id } }) => {
 
   const handleCancel = () => {
     close();
-    router.back();
+    backToHome();
   };
 
   return (
@@ -77,7 +87,7 @@ const CreatingPage = ({ params: { id } }) => {
         <Stack>
           <TextInput
             label="Project ID"
-            {...form.getInputProps("projectId")}
+            {...form.getInputProps("project")}
             disabled
           />
           <TextInput

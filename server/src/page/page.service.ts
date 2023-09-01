@@ -15,7 +15,8 @@ export class PageService {
 
   async findPageBelongToProject(projectId: string) {
     try {
-      return await this.pageModel.find({ project: projectId });
+      const project = await this.projectModel.findOne({ id: projectId });
+      return project;
     } catch (error) {
       console.error(error);
       return {
@@ -28,22 +29,20 @@ export class PageService {
   async create(createPageDto: CreatePageDto) {
     try {
       const projectRes = await this.projectModel.findOne({
-        id: createPageDto.id,
+        id: createPageDto.project,
       });
-      const body = {
+      const newPageData = await this.pageModel.create({
         ...createPageDto,
-        project: projectRes._id,
-      };
-      const page = await this.pageModel.create(body);
-      projectRes.pages.push(page);
-      projectRes.save();
-      return { success: true };
+        project: projectRes._id.toString(),
+      });
+      projectRes.pages.push(newPageData);
+      await projectRes.save();
+      return { success: true, message: '', newProjectData: projectRes };
     } catch (error) {
-      console.error(error);
-      throw new HttpException(
-        'Fail to create new page',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      return {
+        success: false,
+        message: HttpStatus.INTERNAL_SERVER_ERROR,
+      };
     }
   }
 

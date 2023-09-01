@@ -53,10 +53,6 @@ const SearchBar: React.FC<Props> = ({
     );
   }, [inputRef]);
 
-  useEffect(() => {
-    console.log(matches);
-  }, [matches]);
-
   const [opened, { open, close }] = useDisclosure(false);
 
   return (

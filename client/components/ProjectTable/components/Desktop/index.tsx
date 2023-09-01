@@ -1,21 +1,30 @@
 "use client";
 
 import { Table } from "@mantine/core";
+import { useState } from "react";
 
 interface Props {
   rows: JSX.Element | JSX.Element[];
 }
 
 const ProjectTableDesktop: React.FC<Props> = ({ rows }) => {
+  const [columns, setColumns] = useState([
+    "Name",
+    "Created date",
+    "Updated date",
+    "Created user",
+    "Updated user",
+    // empty item is for setting button
+    "",
+  ]);
+
   return (
     <Table highlightOnHover verticalSpacing="md">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Created date</th>
-          <th>Updated date</th>
-          <th>Created user</th>
-          <th>Updated user</th>
+          {columns.map((item) => {
+            return <th key={item}>{item}</th>;
+          })}
         </tr>
       </thead>
       <tbody>{rows}</tbody>
