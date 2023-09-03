@@ -58,7 +58,36 @@ export class PageService {
     return `This action updates a #${id} page`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} page`;
+  async remove(deleteData: { projectId: string; pageId: string }) {
+    try {
+      const { projectId, pageId } = deleteData;
+      // const projectRes = await this.projectModel.findById(projectId);
+      // projectRes.pages.splice(
+      //   projectRes.pages.findIndex((e) => e.id === pageId),
+      //   1,
+      // );
+      // await projectRes.save();
+
+      // await this.pageModel.deleteOne({
+      //   id: pageId,
+      // });
+
+      Promise.all([
+        this.projectModel.findById(projectId),
+        this.pageModel.deleteOne({
+          id: pageId,
+        }),
+      ]).then(async (values) => {
+        const [projectRes] = values;
+        projectRes.pages.splice(
+          projectRes.pages.findIndex((e) => e.id === pageId),
+          1,
+        );
+        await projectRes.save();
+      });
+    } catch (error) {
+      console.error(error);
+      return error;
+    }
   }
 }

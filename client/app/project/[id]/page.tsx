@@ -4,7 +4,7 @@ export const revalidate = 10;
 
 async function getProjectData(id: string) {
   try {
-    console.log("triggered");
+    console.log(id);
     const res = await fetch(`http://localhost:4000/page/${id}`, {
       cache: "no-store",
     });

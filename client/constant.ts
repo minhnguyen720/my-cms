@@ -18,4 +18,8 @@ export const MESSAGES = {
     SUCCESS: "Create new page successfully",
     FAIL: "Fail to create new page",
   },
+  DELETE_PAGE: {
+    SUCCESS: "Delete process is complete",
+    FAIL: "Fail to detele this page, please check again",
+  },
 };

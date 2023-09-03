@@ -1,19 +1,12 @@
 "use client";
 
-import { useMemo } from "react";
-import {
-  Button,
-  List,
-  Accordion,
-  Stack,
-  Text,
-  Title,
-} from "@mantine/core";
+import React, { useMemo } from "react";
+import { Button, List, Accordion, Stack, Text, Title } from "@mantine/core";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import { useAtomValue } from "jotai";
 import { datasourceAtom, projectIdAtom } from "@/atoms";
-import MoreActions from "../components/Desktop/components/MoreAction";
+import MoreActions from "../components/MoreAction";
 
 const { Item, Panel, Control } = Accordion;
 
@@ -42,7 +35,13 @@ const useProjectTable = () => {
             <td>{element.createdUser}</td>
             <td>{element.updatedUser}</td>
             <td>
-              <MoreActions />
+              <MoreActions
+                isMobile={false}
+                rowId={`${datasource.id}/${element.name}`}
+                projectId={element.project}
+                pageId={element.id}
+                projectName={datasource.id}
+              />
             </td>
           </tr>
         ))
@@ -89,14 +88,13 @@ const useProjectTable = () => {
                     {el.updatedUser}
                   </List.Item>
                 </List>
-                <Button
-                  mt={16}
-                  onClick={() => {
-                    router.push(`/project/${projectId}/${el.id}`);
-                  }}
-                >
-                  View detail
-                </Button>
+                <MoreActions
+                  isMobile={true}
+                  rowId={`${datasource.id}/${el.name}`}
+                  projectId={el.project}
+                  pageId={el.id}
+                  projectName={datasource.id}
+                />
               </Panel>
             </Item>
           );
@@ -105,7 +103,7 @@ const useProjectTable = () => {
     } catch (error) {
       return <></>;
     }
-  }, [datasource, projectId, router]);
+  }, [datasource]);
 
   return { rows, items };
 };
