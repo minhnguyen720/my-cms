@@ -46,6 +46,9 @@ export class Doc {
   // List of user ids
   @Prop()
   assignedUsers?: string[];
+
+  @Prop()
+  desciption?: string;
 }
 
 export const DocSchema = SchemaFactory.createForClass(Doc);

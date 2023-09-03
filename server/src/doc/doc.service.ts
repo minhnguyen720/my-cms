@@ -4,9 +4,29 @@ import { UpdateDocDto } from './dto/update-doc.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Doc } from 'src/schemas/doc.schema';
+import { Page } from 'src/schemas/page.schema';
 @Injectable()
 export class DocService {
-  constructor(@InjectModel(Doc.name) private docModel: Model<Doc>) {}
+  constructor(
+    @InjectModel(Doc.name) private docModel: Model<Doc>,
+    @InjectModel(Page.name) private pageModel: Model<Page>,
+  ) {}
+
+  async getDocByPageId(pageId: string) {
+    const docPromise = this.docModel
+      .find({
+        page: pageId,
+      })
+      .exec();
+    const pagePromise = this.pageModel.findById(pageId).exec();
+    return Promise.all([docPromise, pagePromise]).then((values) => {
+      const [docData, pageData] = values;
+      return {
+        pageData,
+        docData,
+      };
+    });
+  }
 
   async findByKey(key: string) {
     if (key !== 'a321a0cc-eac3-4ec4-a1e9-4c8648229248') return [];

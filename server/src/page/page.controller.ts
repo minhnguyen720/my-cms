@@ -40,8 +40,11 @@ export class PageController {
     return this.pageService.update(+id, updatePageDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.pageService.remove(+id);
+  @Delete(':projectId/:pageId')
+  remove(
+    @Param('projectId') projectId: string,
+    @Param('pageId') pageId: string,
+  ) {
+    return this.pageService.remove({ projectId, pageId });
   }
 }

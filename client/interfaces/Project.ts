@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { StandardSchema } from "./StandardSchema";
 
 export interface Field {
   type: string;
@@ -71,19 +72,17 @@ export interface Project {
   pages: Page[];
 }
 
-export interface Page {
-  // use id as an param to fetch data
-  id: string;
- 
-  // this name describe the purpose of this page
-  name: string;
-
-  createdDate: Date;
-
-  updatedDate: Date;
-
-  // user id
-  createdUser: string;
-
-  updatedUser: string;
+export interface Page extends StandardSchema {
+  _id?: string;
+  superAdminId?: string;
+  name?: string;
+  pages?: {
+    id?: string;
+    name?: string;
+    createdDate?: string;
+    updatedDate?: string;
+    createdUser?: string;
+    updatedUser?: string;
+    project?: string;
+  }[];
 }

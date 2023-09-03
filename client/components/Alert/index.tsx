@@ -60,7 +60,7 @@ const Alert: React.FC<Props> = () => {
                 ...styles,
                 backgroundColor:bg
               }}
-              className={`fixed top-3 right-0 z-[100] w-fit max-w-[45vmin] ${bg} py-4 px-8`}
+              className={`fixed top-3 right-0 z-[100] sm:w-full md:w-fit md:max-w-[45vmin] py-4 px-8`}
             >
               <div className="flex row">
                 <IconAlertCircle />

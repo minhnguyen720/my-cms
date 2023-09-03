@@ -15,6 +15,11 @@ import { UpdateDocDto } from './dto/update-doc.dto';
 export class DocController {
   constructor(private readonly docService: DocService) {}
 
+  @Get(':pageId')
+  async getDocByPageId(@Param('pageId') pageId: string) {
+    return await this.docService.getDocByPageId(pageId);
+  }
+
   @Post()
   create(@Body() createDocDto: CreateDocDto) {
     return this.docService.create(createDocDto);

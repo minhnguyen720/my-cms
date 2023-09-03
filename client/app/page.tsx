@@ -1,11 +1,19 @@
 import { Dashboard } from "@/components/Dashboard";
 
 const getActiveProjectLength = async () => {
-  const res = await fetch("http://localhost:4000/project/dashboard-stat");
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
+  try {
+    const res = await fetch("http://localhost:4000/project/dashboard-stat");
+    if (!res.ok) {
+      throw new Error("Failed to fetch data");
+    }
+    return res.json();
+  } catch (error) {
+    console.error(error);
+    return {
+      activeLength: 0,
+      deactiveLength: 0,
+    };
   }
-  return res.json();
 };
 
 export default async function Home() {

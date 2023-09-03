@@ -4,10 +4,13 @@ import ProjectTableDesktop from "./components/Desktop";
 import { useMediaQuery } from "@mantine/hooks";
 import SearchBar from "../SearchBar";
 import { useSearchBar } from "../SearchBar/hooks";
+import { ProjectTableItem } from "@/app/project/[id]/page";
 
-interface Props {}
+interface Props {
+  data: ProjectTableItem | boolean;
+}
 
-const ProjectTable: React.FC<Props> = () => {
+const ProjectTable: React.FC<Props> = ({ data }) => {
   const { rows, items } = useProjectTable();
   const mobileTableMatches = useMediaQuery("(max-width: 512px)");
   const { handleSearch, handleReset, searchValue, setSearchValue } =

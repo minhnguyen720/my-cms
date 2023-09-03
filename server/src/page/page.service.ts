@@ -15,10 +15,8 @@ export class PageService {
 
   async findPageBelongToProject(projectId: string) {
     try {
-      const projectQueryRes = await this.projectModel
-        .findOne({ id: projectId })
-        .select('_id');
-      return await this.pageModel.find({ project: projectQueryRes._id });
+      const project = await this.projectModel.findOne({ id: projectId });
+      return project;
     } catch (error) {
       console.error(error);
       return {
@@ -31,22 +29,20 @@ export class PageService {
   async create(createPageDto: CreatePageDto) {
     try {
       const projectRes = await this.projectModel.findOne({
-        id: createPageDto.id,
+        id: createPageDto.project,
       });
-      const body = {
+      const newPageData = await this.pageModel.create({
         ...createPageDto,
-        project: projectRes._id,
-      };
-      const page = await this.pageModel.create(body);
-      projectRes.pages.push(page);
-      projectRes.save();
-      return { success: true };
+        project: projectRes._id.toString(),
+      });
+      projectRes.pages.push(newPageData);
+      await projectRes.save();
+      return { success: true, message: '', newProjectData: projectRes };
     } catch (error) {
-      console.error(error);
-      throw new HttpException(
-        'Fail to create new page',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      return {
+        success: false,
+        message: HttpStatus.INTERNAL_SERVER_ERROR,
+      };
     }
   }
 
@@ -62,7 +58,36 @@ export class PageService {
     return `This action updates a #${id} page`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} page`;
+  async remove(deleteData: { projectId: string; pageId: string }) {
+    try {
+      const { projectId, pageId } = deleteData;
+      // const projectRes = await this.projectModel.findById(projectId);
+      // projectRes.pages.splice(
+      //   projectRes.pages.findIndex((e) => e.id === pageId),
+      //   1,
+      // );
+      // await projectRes.save();
+
+      // await this.pageModel.deleteOne({
+      //   id: pageId,
+      // });
+
+      Promise.all([
+        this.projectModel.findById(projectId),
+        this.pageModel.deleteOne({
+          id: pageId,
+        }),
+      ]).then(async (values) => {
+        const [projectRes] = values;
+        projectRes.pages.splice(
+          projectRes.pages.findIndex((e) => e.id === pageId),
+          1,
+        );
+        await projectRes.save();
+      });
+    } catch (error) {
+      console.error(error);
+      return error;
+    }
   }
 }

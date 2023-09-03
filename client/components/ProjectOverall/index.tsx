@@ -7,10 +7,11 @@ import useProjectOverall from "./hooks/useProjectOverall";
 import { projectIdAtom } from "@/atoms";
 import { useSetAtom } from "jotai";
 import { useEffect } from "react";
+import { ProjectTableItem } from "@/app/project/[id]/page";
 
 interface Props {
-  id: string;
-  data: any;
+  id?: string;
+  data?: ProjectTableItem;
 }
 
 const ProjectOverall: React.FC<Props> = ({ id, data }) => {
@@ -30,12 +31,12 @@ const ProjectOverall: React.FC<Props> = ({ id, data }) => {
       ) : (
         <>
           <h2 className="py-4">Project ID: {id}</h2>
-          {!datasource ? (
+          {!datasource && typeof datasource !== "boolean" ? (
             <Center>
               <Loader py={"10%"} variant="bars" />
             </Center>
           ) : (
-            <ProjectTable />
+            <ProjectTable data={datasource} />
           )}
         </>
       )}
