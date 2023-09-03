@@ -10,10 +10,11 @@ import { useEffect } from "react";
 
 interface Props {
   id: string;
+  data: any;
 }
 
-const ProjectOverall: React.FC<Props> = ({ id }) => {
-  const { notfound, datasource } = useProjectOverall();
+const ProjectOverall: React.FC<Props> = ({ id, data }) => {
+  const { notfound, datasource } = useProjectOverall(data);
 
   const setProjectId = useSetAtom(projectIdAtom);
   useEffect(() => {

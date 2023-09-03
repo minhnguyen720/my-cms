@@ -1,7 +1,7 @@
 import ProjectOverall from "@/components/ProjectOverall";
 
-async function getProjectData(id) {
-  const res = await fetch(`https://localhost:4000/page/${id}`);
+async function getProjectData(id: string) {
+  const res = await fetch(`http://localhost:4000/page/${id}`);
 
   if (!res.ok) {
     throw new Error("Failed to fetch data");
@@ -18,8 +18,7 @@ interface Props {
 
 const ProjectOverallPage: React.FC<Props> = async ({ params: { id } }) => {
   const data = await getProjectData(id);
-  console.log(data)
-  return <ProjectOverall id={id} />;
+  return <ProjectOverall id={id} data={data}/>;
 };
 
 export default ProjectOverallPage;

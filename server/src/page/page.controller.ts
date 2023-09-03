@@ -26,8 +26,8 @@ export class PageController {
   }
 
   @Get(':projectId')
-  findPageBelongToProject(@Param('projectId') projectId: string) {
-    return this.pageService.findPageBelongToProject(projectId);
+  async findPageBelongToProject(@Param('projectId') projectId: string) {
+    return await this.pageService.findPageBelongToProject(projectId);
   }
 
   @Get(':id')

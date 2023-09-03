@@ -15,7 +15,10 @@ export class PageService {
 
   async findPageBelongToProject(projectId: string) {
     try {
-      return await this.pageModel.find({ project: projectId });
+      const projectQueryRes = await this.projectModel
+        .findOne({ id: projectId })
+        .select('_id');
+      return await this.pageModel.find({ project: projectQueryRes._id });
     } catch (error) {
       console.error(error);
       return {

@@ -10,7 +10,7 @@ import {
 } from "@/atoms";
 import axios from "axios";
 
-const useProjectOverall = () => {
+const useProjectOverall = (data: any) => {
   const [datasource, setDataSource] = useAtom(datasourceAtom);
   const [notfound, setNotfound] = useAtom(notFoundAtom);
   const [datasourceDefault, setDatasourceDefault] = useAtom(
