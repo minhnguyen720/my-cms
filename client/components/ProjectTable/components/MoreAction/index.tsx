@@ -32,7 +32,7 @@ const MoreActions: React.FC<Props> = ({
   projectName,
   isMobile,
 }) => {
-  const [opened, { toggle }] = useDisclosure(false);
+  const [opened, { toggle, close: closeBurger }] = useDisclosure(false);
   const {
     handleDelete,
     allowToDelete,
@@ -96,7 +96,7 @@ const MoreActions: React.FC<Props> = ({
           </Grid.Col>
         </Grid>
       ) : (
-        <Menu shadow="md" width={200}>
+        <Menu shadow="md" width={200} onClose={closeBurger}>
           <Menu.Target>
             <Burger opened={opened} onClick={toggle} />
           </Menu.Target>
