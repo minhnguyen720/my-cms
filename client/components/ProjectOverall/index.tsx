@@ -1,6 +1,6 @@
 "use client";
 
-import { GeneralerNotFound } from "@/components/GeneralNotFound";
+import { GeneralNotFound } from "@/components/GeneralNotFound";
 import ProjectTable from "@/components/ProjectTable";
 import { Center, Loader } from "@mantine/core";
 import useProjectOverall from "./hooks/useProjectOverall";
@@ -26,7 +26,7 @@ const ProjectOverall: React.FC<Props> = ({ id, data }) => {
     <>
       {notfound ? (
         <Center className="h-full">
-          <GeneralerNotFound />
+          <GeneralNotFound />
         </Center>
       ) : (
         <>

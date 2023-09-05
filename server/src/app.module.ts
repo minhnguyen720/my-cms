@@ -10,7 +10,9 @@ import { ClientModule } from './client/client.module';
 @Module({
   imports: [
     ProjectModule,
-    MongooseModule.forRoot('mongodb://localhost:27017/my_cms_prototype'),
+    MongooseModule.forRoot(
+      'mongodb+srv://willie:williedaspidie@cluster0.guq9sem.mongodb.net/my_cms_prototype?retryWrites=true&w=majority',
+    ),
     PageModule,
     DocModule,
     ClientModule,

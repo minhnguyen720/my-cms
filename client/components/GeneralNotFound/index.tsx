@@ -1,3 +1,5 @@
+"use client";
+
 import {
   createStyles,
   Image,
@@ -48,7 +50,7 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export function GeneralerNotFound() {
+export function GeneralNotFound() {
   const { classes } = useStyles();
   const router = useRouter();
 

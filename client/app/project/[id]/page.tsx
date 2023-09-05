@@ -1,10 +1,10 @@
+import { GeneralNotFound } from "@/components/GeneralNotFound";
 import ProjectOverall from "@/components/ProjectOverall";
 
 export const revalidate = 10;
 
 async function getProjectData(id: string) {
   try {
-    console.log(id);
     const res = await fetch(`http://localhost:4000/page/${id}`, {
       cache: "no-store",
     });
@@ -47,8 +47,13 @@ export interface ProjectTableItem {
 }
 
 const ProjectOverallPage: React.FC<Props> = async ({ params: { id } }) => {
-  const data: ProjectTableItem = await getProjectData(id);
-  return <ProjectOverall id={id} data={data} />;
+  try {
+    const data: ProjectTableItem = await getProjectData(id);
+    return <ProjectOverall id={id} data={data} />;
+  } catch (error) {
+    console.error(error);
+    return <GeneralNotFound />;
+  }
 };
 
 export default ProjectOverallPage;
