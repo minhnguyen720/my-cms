@@ -35,6 +35,8 @@ export class PageService {
         ...createPageDto,
         project: projectRes._id.toString(),
       });
+      newPageData.id = newPageData._id;
+      await newPageData.save();
       projectRes.pages.push(newPageData);
       await projectRes.save();
       return { success: true, message: '', newProjectData: projectRes };

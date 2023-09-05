@@ -1,12 +1,5 @@
-import DocCards from "@/components/PageCard";
-import PageDetail from "@/components/PageDetail";
-import { Page } from "@/interfaces/Project";
-
-interface Props {
-  params: {
-    id: string;
-  };
-}
+import DocCards from "@/components/DocCard";
+import PageDetail from "@/components/DocDetail";
 
 async function getDocData(id: string) {
   try {
@@ -19,12 +12,12 @@ async function getDocData(id: string) {
   }
 }
 
-const ProjectDetail: React.FC<Props> = async ({ params: { id } }) => {
-  const res = await getDocData(id);
+const ProjectDetail: React.FC<any> = async ({ params }) => {
+  const res = await getDocData(params.docId);
   return (
     <>
       <PageDetail data={res} />
-      {/* <DocCards docs={res.docData} /> */}
+      <DocCards docs={res.docData} />
     </>
   );
 };

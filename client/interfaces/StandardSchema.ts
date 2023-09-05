@@ -1,5 +1,5 @@
 export interface StandardSchema {
-    id: string;
+    id?: string;
     createdDate: string;
     updatedDate: string;
     createdUser: string;

@@ -16,7 +16,7 @@ import { ALERT_CODES, MESSAGES } from "@/constant";
 import { ProjectTableItem } from "../page";
 
 interface PageFormValues extends StandardSchema {
-  project: string;
+  project?: string;
   docs: any[];
   docSchema?: any;
   name: string;
@@ -24,7 +24,7 @@ interface PageFormValues extends StandardSchema {
 
 const CreatingPage = ({ params: { id } }) => {
   const initialValues: PageFormValues = {
-    id: v4(),
+    id:"",
     createdDate: dayjs().format("DD/MM/YYYY"),
     updatedDate: dayjs().format("DD/MM/YYYY"),
     createdUser: "admin",

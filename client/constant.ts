@@ -12,6 +12,8 @@ export const ALERT_STYLING = {
   SUCCESS: "#15803d",
 };
 
+export const DATE_FORMAT_WITH_HOUR = "DD/MM/YYYY,hh:mm";
+
 export const MESSAGES = {
   GENERAL_MESSAGE: "Some thing went wrong",
   CREATE_NEW_PAGE: {

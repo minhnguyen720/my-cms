@@ -2,14 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { CreateDocDto } from './dto/create-doc.dto';
 import { UpdateDocDto } from './dto/update-doc.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { Doc } from 'src/schemas/doc.schema';
 import { Page } from 'src/schemas/page.schema';
+import { Project } from 'src/schemas/project.schema';
 @Injectable()
 export class DocService {
   constructor(
     @InjectModel(Doc.name) private docModel: Model<Doc>,
     @InjectModel(Page.name) private pageModel: Model<Page>,
+    @InjectModel(Project.name) private projectModel: Model<Project>,
   ) {}
 
   async getDocByPageId(pageId: string) {
@@ -19,8 +21,11 @@ export class DocService {
       })
       .exec();
     const pagePromise = this.pageModel.findById(pageId).exec();
-    return Promise.all([docPromise, pagePromise]).then((values) => {
+    return Promise.all([docPromise, pagePromise]).then(async (values) => {
       const [docData, pageData] = values;
+      // const projectData = await this.projectModel.find({
+
+      // })
       return {
         pageData,
         docData,
