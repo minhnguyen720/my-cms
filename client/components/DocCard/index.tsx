@@ -1,9 +1,10 @@
 "use client";
 
 import { Card, Group, Button, Text, Grid } from "@mantine/core";
-import React from "react";
+import React, { useState } from "react";
 import { DetailItem } from "../DocDetail";
 import { getFormattedTime } from "@/hooks/utilities/dayjs";
+import CreateNewDocCard from "../CreateNewDocCard";
 
 interface Props {
   docs: {
@@ -21,14 +22,19 @@ interface Props {
 }
 
 const DocCards: React.FC<Props> = ({ docs }) => {
+  const [docList, setDocList] = useState(docs);
+
   return (
     <>
       <h2 className="my-3">Document cards</h2>
       <Grid>
-        {docs.map((doc) => {
+        <Grid.Col xs={6} md={4}>
+          <CreateNewDocCard setDocList={setDocList} />
+        </Grid.Col>
+        {docList.map((doc) => {
           return (
             <Grid.Col xs={6} md={4} key={doc.id}>
-              <Card shadow="sm" padding="lg" radius="md" withBorder mb={16}>
+              <Card shadow="sm" padding="lg" radius="md" withBorder>
                 <Group position="apart" mt="md" mb="xs">
                   <Text weight={500} className="text-xl">
                     {doc.name}
