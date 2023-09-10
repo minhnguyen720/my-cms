@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PageModule } from './page/page.module';
 import { DocModule } from './doc/doc.module';
 import { ClientModule } from './client/client.module';
+import { FolderModule } from './folder/folder.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ClientModule } from './client/client.module';
     PageModule,
     DocModule,
     ClientModule,
+    FolderModule,
   ],
   controllers: [AppController],
   providers: [AppService],

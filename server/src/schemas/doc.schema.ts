@@ -11,6 +11,10 @@ export class Doc {
   @Transform(({ value }) => value.toString())
   _id: string;
 
+  // Each doc can within or not within a folder
+  @Prop({ type: MongooseSchema.Types.Mixed, ref: 'Folder' })
+  folder: any;
+
   // _id of page has this doc
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Page' })
   page: Page;
