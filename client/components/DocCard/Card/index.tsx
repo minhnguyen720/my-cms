@@ -18,10 +18,14 @@ import {
   IconCursorText,
 } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
+import axios from "axios";
+import { useAtomValue } from "jotai";
+import { baseUrlAtom } from "@/atoms";
 
 interface Props {
   doc: {
     id?: string;
+    _id?: string;
     name?: string;
     createdDate?: string;
     updatedDate?: string;
@@ -32,23 +36,26 @@ interface Props {
     page?: string;
     description?: string;
   };
+  handler: {
+    add: (doc: any) => void;
+    remove: (docId: string) => void;
+    rename: (docId: string, value: string) => void;
+  };
+  updateOpenerId?: any;
 }
 
-const Card: React.FC<Props> = ({ doc }) => {
-  const [opened, handler] = useDisclosure(false);
+const Card: React.FC<Props> = ({ doc, handler, updateOpenerId }) => {
+  const [opened, { open, close }] = useDisclosure(false);
+  const baseUrl = useAtomValue(baseUrlAtom);
 
-  const handleDeleteDocument = () => {
-    handler.close();
+  const handleDeleteDocument = async () => {
+    await axios.delete(`${baseUrl}/doc/${doc._id}`);
+    handler.remove(doc._id);
   };
 
   return (
     <>
-      <Modal
-        centered
-        opened={opened}
-        onClose={handler.close}
-        title="System notice"
-      >
+      <Modal centered opened={opened} onClose={close} title="System notice">
         <Text>
           Every data relate to this document will be detele, do you want to
           continue
@@ -56,12 +63,12 @@ const Card: React.FC<Props> = ({ doc }) => {
         <Group className="mt-4" position="right">
           <Button>Cancel</Button>
           <Button color="red" onClick={handleDeleteDocument}>
-            Process
+            Proceed
           </Button>
         </Group>
       </Modal>
       <div className="relative">
-        <Box className="absolute right-0 top-0 m-2 z-50">
+        <Box className="absolute right-0 top-0 z-50 m-2">
           <Menu shadow="md" width={200}>
             <Menu.Target>
               <ActionIcon>
@@ -74,7 +81,14 @@ const Card: React.FC<Props> = ({ doc }) => {
               <Menu.Item icon={<IconFolderSymlink size={14} />}>
                 Move to folder
               </Menu.Item>
-              <Menu.Item icon={<IconCursorText size={14} />}>Rename</Menu.Item>
+              <Menu.Item
+                icon={<IconCursorText size={14} />}
+                onClick={() => {
+                  updateOpenerId(doc);
+                }}
+              >
+                Rename
+              </Menu.Item>
 
               <Menu.Divider />
 
@@ -82,7 +96,7 @@ const Card: React.FC<Props> = ({ doc }) => {
               <Menu.Item
                 color="red"
                 icon={<IconTrash size={14} />}
-                onClick={handler.open}
+                onClick={open}
               >
                 Delete this doc
               </Menu.Item>
@@ -107,7 +121,7 @@ const Card: React.FC<Props> = ({ doc }) => {
               content={getFormattedTime(doc.updatedDate)}
             />
             <DetailItem label="Update by" content={doc.updatedUser} />
-            <DetailItem label="Number of fields" content={doc.fields.length} />
+            <DetailItem label="Number of fields" content={doc.fields?.length} />
           </Text>
 
           <Button variant="light" color="blue" fullWidth mt="md" radius="md">

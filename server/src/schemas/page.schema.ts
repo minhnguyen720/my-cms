@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
 import { Doc } from './doc.schema';
-import { Transform } from 'class-transformer';
 
 export type PageDocument = HydratedDocument<Page>;
 

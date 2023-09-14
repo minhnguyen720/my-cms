@@ -1,3 +1,4 @@
+import { baseUrlAtom } from "@/atoms";
 import {
   ActionIcon,
   Button,
@@ -5,14 +6,18 @@ import {
   Modal,
   Stack,
   TextInput,
+  Tooltip,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
-import { IconPlus } from "@tabler/icons-react";
-import { SetStateAction } from "jotai";
+import { IconFilePlus } from "@tabler/icons-react";
+import axios from "axios";
+import dayjs from "dayjs";
+import { useAtomValue } from "jotai";
+import { useParams } from "next/navigation";
 
 interface Props {
-  setDocList: React.Dispatch<SetStateAction<any>>;
+  addDocItem: (doc: any) => void;
 }
 
 interface createNewDocDto {
@@ -20,11 +25,47 @@ interface createNewDocDto {
   description: string;
 }
 
-const CreateNewDocCard: React.FC<Props> = ({ setDocList }) => {
+const CreateNewDocCard: React.FC<Props> = ({ addDocItem }) => {
   const [opened, { open, close }] = useDisclosure();
+  const baseUrl = useAtomValue(baseUrlAtom);
+  const { id, docId } = useParams();
 
   const handleCreateNewDoc = async (values: createNewDocDto) => {
-    console.log(values);
+    try {
+      const res = await axios.post(`${baseUrl}/doc`, {
+        ...values,
+        id,
+        docId,
+      });
+      const {
+        _id,
+        name,
+        updatedDate,
+        createdDate,
+        updatedUser,
+        createdUser,
+        fields,
+        active,
+        page,
+        description,
+      } = await res.data;
+      addDocItem({
+        id: _id,
+        name,
+        updatedDate,
+        createdDate,
+        updatedUser,
+        createdUser,
+        fields,
+        active,
+        page,
+        description,
+      });
+      close();
+    } catch (error) {
+      console.error(error);
+      close();
+    }
   };
 
   const initialValues = {
@@ -65,15 +106,11 @@ const CreateNewDocCard: React.FC<Props> = ({ setDocList }) => {
           </Stack>
         </form>
       </Modal>
-      <div
-        className={
-          "w-full h-full rounded-sm border-4 border-dashed border-gray-600"
-        }
-      >
-        <ActionIcon className="w-full h-full" onClick={open}>
-          <IconPlus size={"2.25rem"} className="text-gray-600" />
+      <Tooltip label="Create new document">
+        <ActionIcon onClick={open}>
+          <IconFilePlus />
         </ActionIcon>
-      </div>
+      </Tooltip>
     </>
   );
 };

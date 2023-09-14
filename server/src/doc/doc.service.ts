@@ -23,9 +23,6 @@ export class DocService {
     const pagePromise = this.pageModel.findById(pageId).exec();
     return Promise.all([docPromise, pagePromise]).then(async (values) => {
       const [docData, pageData] = values;
-      // const projectData = await this.projectModel.find({
-
-      // })
       return {
         pageData,
         docData,
@@ -41,8 +38,23 @@ export class DocService {
       .exec();
   }
 
-  create(createDocDto: CreateDocDto) {
-    return 'This action adds a new doc';
+  async create(createDocDto: CreateDocDto) {
+    const { name, description, docId } = createDocDto;
+    const newDoc = await this.docModel.create({
+      createdDate: new Date(),
+      updatedDate: new Date(),
+      createdUser: 'admin',
+      updatedUser: 'admin',
+      active: true,
+      page: docId,
+      name,
+      description,
+    });
+    const targetPage = await this.pageModel.findById(docId);
+    targetPage.docs.push(newDoc);
+    await targetPage.save();
+
+    return newDoc;
   }
 
   findAll() {
@@ -57,7 +69,22 @@ export class DocService {
     return `This action updates a #${id} doc`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} doc`;
+  async remove(id: string) {
+    const doc = await this.docModel.findById(id);
+    const page = await this.pageModel.findById(doc.page);
+    const updatedDocList = page.docs.filter((doc) => {
+      return doc._id !== id;
+    });
+    page.docs = updatedDocList;
+    Promise.all([page.save(), this.docModel.deleteOne({ _id: id })]);
+  }
+
+  async rename(data) {
+    const targetDoc = await this.docModel.findById(data.targetData._id);
+    targetDoc.name = data.value;
+    await targetDoc.save();
+    return await this.docModel.find({
+      page: data.targetData.page,
+    });
   }
 }

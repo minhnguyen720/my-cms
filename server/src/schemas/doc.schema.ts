@@ -13,14 +13,14 @@ export class Doc {
 
   // Each doc can within or not within a folder
   @Prop({ type: MongooseSchema.Types.Mixed, ref: 'Folder' })
-  folder: any;
+  folder?: any;
 
   // _id of page has this doc
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Page' })
   page: Page;
 
-  @Prop({ required: true })
-  id: string;
+  @Prop()
+  id?: string;
 
   @Prop()
   name: string;
@@ -52,7 +52,7 @@ export class Doc {
   assignedUsers?: string[];
 
   @Prop()
-  desciption?: string;
+  description?: string;
 }
 
 export const DocSchema = SchemaFactory.createForClass(Doc);

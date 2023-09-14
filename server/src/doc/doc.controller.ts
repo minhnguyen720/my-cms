@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { DocService } from './doc.service';
 import { CreateDocDto } from './dto/create-doc.dto';
@@ -21,8 +22,8 @@ export class DocController {
   }
 
   @Post()
-  create(@Body() createDocDto: CreateDocDto) {
-    return this.docService.create(createDocDto);
+  async create(@Body() createDocDto: CreateDocDto) {
+    return await this.docService.create(createDocDto);
   }
 
   @Get()
@@ -45,8 +46,13 @@ export class DocController {
     return this.docService.update(+id, updateDocDto);
   }
 
+  @Put('rename')
+  async rename(@Body() data) {
+    return await this.docService.rename(data);
+  }
+
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.docService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.docService.remove(id);
   }
 }
