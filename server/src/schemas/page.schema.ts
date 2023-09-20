@@ -31,8 +31,8 @@ export class Page {
   @Prop()
   project: string;
 
-  @Prop({ type: MongooseSchema.Types.Array, ref: 'Doc' })
-  docs?: Doc[];
+  // @Prop({ type: MongooseSchema.Types.Array, ref: 'Doc' })
+  // docs?: Doc[];
 }
 
 export const PageSchema = SchemaFactory.createForClass(Page);

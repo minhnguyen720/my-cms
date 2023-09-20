@@ -28,8 +28,8 @@ export class Project {
   @Prop()
   superAdminId: string;
 
-  @Prop({ type: MongooseSchema.Types.Array, ref: 'Page' })
-  pages?: Page[];
+  // @Prop({ type: MongooseSchema.Types.Array, ref: 'Page' })
+  // pages?: Page[];
 }
 
 export const ProjectSchema = SchemaFactory.createForClass(Project);

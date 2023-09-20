@@ -24,13 +24,15 @@ export interface Field {
 }
 
 export interface Document {
-  id: string;
+  _id?: string;
+
+  id?: string;
 
   name: string;
 
-  createdDate: Date;
+  createdDate: string;
 
-  updatedDate: Date;
+  updatedDate: string;
 
   // user id
   createdUser: string;
@@ -39,7 +41,7 @@ export interface Document {
   updatedUser: string;
 
   // number of field within the document
-  fields: number;
+  fields: any[];
 
   // is this document is visible for client
   active: boolean;
@@ -49,6 +51,11 @@ export interface Document {
 
   // List of user ids
   assignedUsers?: string[];
+
+  page?: string;
+
+  description?: string;
+
 }
 
 export interface Project {

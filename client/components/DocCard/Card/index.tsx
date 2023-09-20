@@ -21,30 +21,21 @@ import { useDisclosure } from "@mantine/hooks";
 import axios from "axios";
 import { useAtomValue } from "jotai";
 import { baseUrlAtom } from "@/atoms";
+import { Document } from "@/interfaces/Project";
+import MoveToFolderModal from "@/components/MoveToFolderModal";
+import useMoveToFolderModal from "@/components/MoveToFolderModal/hooks/useMoveToFolderModal";
 
 interface Props {
-  doc: {
-    id?: string;
-    _id?: string;
-    name?: string;
-    createdDate?: string;
-    updatedDate?: string;
-    createdUser?: string;
-    updatedUser?: string;
-    fields?: string[];
-    active?: boolean;
-    page?: string;
-    description?: string;
-  };
+  doc: Document;
   handler: {
     add: (doc: any) => void;
     remove: (docId: string) => void;
     rename: (docId: string, value: string) => void;
   };
-  updateOpenerId?: any;
+  updateOpenerData?: any;
 }
 
-const Card: React.FC<Props> = ({ doc, handler, updateOpenerId }) => {
+const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
   const [opened, { open, close }] = useDisclosure(false);
   const baseUrl = useAtomValue(baseUrlAtom);
 
@@ -52,9 +43,19 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerId }) => {
     await axios.delete(`${baseUrl}/doc/${doc._id}`);
     handler.remove(doc._id);
   };
+  const {
+    opened: move2FolderOpened,
+    handleCloseModal,
+    handleOpenModal,
+  } = useMoveToFolderModal(doc.page);
 
   return (
     <>
+      <MoveToFolderModal
+        opened={move2FolderOpened}
+        handleCloseModal={handleCloseModal}
+        handleOpenModal={handleOpenModal}
+      />
       <Modal centered opened={opened} onClose={close} title="System notice">
         <Text>
           Every data relate to this document will be detele, do you want to
@@ -78,13 +79,13 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerId }) => {
 
             <Menu.Dropdown>
               <Menu.Label>Application</Menu.Label>
-              <Menu.Item icon={<IconFolderSymlink size={14} />}>
+              <Menu.Item onClick={handleOpenModal} icon={<IconFolderSymlink size={14} />}>
                 Move to folder
               </Menu.Item>
               <Menu.Item
                 icon={<IconCursorText size={14} />}
                 onClick={() => {
-                  updateOpenerId(doc);
+                  updateOpenerData(doc);
                 }}
               >
                 Rename

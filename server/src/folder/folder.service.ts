@@ -13,6 +13,10 @@ export class FolderService {
     return 'This action adds a new folder';
   }
 
+  findFolderByPageId(pageId: any) {
+    return pageId;
+  }
+
   async findAll() {
     return await this.folderModel.find();
   }

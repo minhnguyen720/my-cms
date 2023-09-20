@@ -20,7 +20,7 @@ const useProjectTable = () => {
     try {
       return (
         typeof datasource !== "boolean" &&
-        datasource.pages.map((element) => (
+        datasource.map((element) => (
           <tr
             key={element.id}
             onDoubleClick={() => {
@@ -37,10 +37,10 @@ const useProjectTable = () => {
             <td>
               <MoreActions
                 isMobile={false}
-                rowId={`${datasource.id}/${element.name}`}
+                rowId={`${element.id}/${element.name}`}
                 projectId={element.project}
                 pageId={element.id}
-                projectName={datasource.id}
+                projectName={element.id}
               />
             </td>
           </tr>
@@ -55,45 +55,45 @@ const useProjectTable = () => {
     try {
       return (
         typeof datasource !== "boolean" &&
-        datasource.pages.map((el) => {
+        datasource.map((element) => {
           return (
-            <Item value={el.id} key={el.id}>
+            <Item value={element.id} key={element.id}>
               <Control>
                 <Stack spacing={"xs"}>
-                  <Title order={3}>{el.name}</Title>
-                  <Text size={"sm"}>Created by: {el.createdUser}</Text>
-                  <Text size={"sm"}>Updated by: {el.updatedUser}</Text>
+                  <Title order={3}>{element.name}</Title>
+                  <Text size={"sm"}>Created by: {element.createdUser}</Text>
+                  <Text size={"sm"}>Updated by: {element.updatedUser}</Text>
                 </Stack>
               </Control>
               <Panel>
                 <List>
                   <List.Item>
                     <strong>Name: </strong>
-                    {el.name}
+                    {element.name}
                   </List.Item>
                   <List.Item>
                     <strong>Created date: </strong>
-                    {dayjs(el.createdDate).format(DATE_FORMAT).toString()}
+                    {dayjs(element.createdDate).format(DATE_FORMAT).toString()}
                   </List.Item>
                   <List.Item>
                     <strong>Updated date: </strong>
-                    {dayjs(el.updatedDate).format(DATE_FORMAT).toString()}
+                    {dayjs(element.updatedDate).format(DATE_FORMAT).toString()}
                   </List.Item>
                   <List.Item>
                     <strong>Created user: </strong>
-                    {el.createdUser}
+                    {element.createdUser}
                   </List.Item>
                   <List.Item>
                     <strong>Updated user: </strong>
-                    {el.updatedUser}
+                    {element.updatedUser}
                   </List.Item>
                 </List>
                 <MoreActions
                   isMobile={true}
-                  rowId={`${datasource.id}/${el.name}`}
-                  projectId={el.project}
-                  pageId={el.id}
-                  projectName={datasource.id}
+                  rowId={`${element.id}/${element.name}`}
+                  projectId={element.project}
+                  pageId={element.id}
+                  projectName={element.id}
                 />
               </Panel>
             </Item>

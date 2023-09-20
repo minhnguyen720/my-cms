@@ -10,20 +10,10 @@ import useFolderCardAction from "../CreateNewFolder/hook";
 import useCreateNewCardAction from "../CreateNewDocCard/hook";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
+import { Document } from "@/interfaces/Project";
 
 interface Props {
-  docs: {
-    id: string;
-    name?: string;
-    createdDate?: string;
-    updatedDate?: string;
-    createdUser?: string;
-    updatedUser?: string;
-    fields?: string[];
-    active?: boolean;
-    page?: string;
-    description?: string;
-  }[];
+  docs: Document[]
 }
 
 const DocCards: React.FC<Props> = ({ docs }) => {
@@ -36,7 +26,7 @@ const DocCards: React.FC<Props> = ({ docs }) => {
     },
   });
   const [openerData, setOpenerData] = useState("");
-  const updateOpenerId = (value) => {
+  const updateOpenerData = (value) => {
     setOpenerData(value);
     open();
   };
@@ -71,7 +61,7 @@ const DocCards: React.FC<Props> = ({ docs }) => {
             <CreateNewFolder />
           </Group>
         </Grid.Col>
-        <Grid.Col xs={6} md={4}>
+        <Grid.Col span={3}>
           <FolderCard folderName={"test"} />
         </Grid.Col>
       </Grid>
@@ -88,7 +78,7 @@ const DocCards: React.FC<Props> = ({ docs }) => {
               <Card
                 doc={doc}
                 handler={handler}
-                updateOpenerId={updateOpenerId}
+                updateOpenerData={updateOpenerData}
               />
             </Grid.Col>
           );

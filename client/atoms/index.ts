@@ -7,7 +7,7 @@ export const searchAtom = atom<string>("");
 
 export const notFoundAtom = atom<boolean>(false);
 
-export const datasourceAtom = atom<ProjectTableItem | boolean>(false);
+export const datasourceAtom = atom<ProjectTableItem[] | boolean>(false);
 
 export const datasourceDefaultAtom = atom<Project | boolean>(false);
 

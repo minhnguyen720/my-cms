@@ -43,7 +43,7 @@ const FolderCard = ({ folderName }) => {
           </Button>
         </Group>
       </Modal>
-      <div className="trasnition-all relative flex h-full w-full cursor-pointer flex-col items-center justify-around rounded-md border-2 border-solid border-white p-4 duration-150 hover:text-white">
+      <div className="trasnition-all relative flex h-full w-full cursor-pointer flex-col items-center justify-around rounded-md border-2 border-solid border-white p-5 duration-150 hover:text-white">
         <Box className="absolute right-0 top-0 z-50 m-2">
           <Menu shadow="md" width={200}>
             <Menu.Target>
@@ -73,8 +73,8 @@ const FolderCard = ({ folderName }) => {
           </Menu>
         </Box>
 
-        <IconFolder size={"20vmin"} />
-        <p className="text-lg">{folderName}</p>
+        <IconFolder size={"13vmin"} />
+        <p className="text-md">{folderName}</p>
       </div>
     </>
   );

@@ -50,9 +50,9 @@ export class DocService {
       name,
       description,
     });
-    const targetPage = await this.pageModel.findById(docId);
-    targetPage.docs.push(newDoc);
-    await targetPage.save();
+    // const targetPage = await this.pageModel.findById(docId);
+    // targetPage.docs.push(newDoc);
+    // await targetPage.save();
 
     return newDoc;
   }
@@ -70,13 +70,7 @@ export class DocService {
   }
 
   async remove(id: string) {
-    const doc = await this.docModel.findById(id);
-    const page = await this.pageModel.findById(doc.page);
-    const updatedDocList = page.docs.filter((doc) => {
-      return doc._id !== id;
-    });
-    page.docs = updatedDocList;
-    Promise.all([page.save(), this.docModel.deleteOne({ _id: id })]);
+    await this.docModel.deleteOne({ _id: id });
   }
 
   async rename(data) {

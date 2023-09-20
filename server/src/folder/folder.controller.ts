@@ -25,6 +25,11 @@ export class FolderController {
     return await this.folderService.findAll();
   }
 
+  @Get('page/:pageId')
+  async findFolderByPageId(@Param('pageId') pageId) {
+    return await this.folderService.findFolderByPageId(pageId);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.folderService.findOne(+id);

@@ -11,7 +11,7 @@ import { ProjectTableItem } from "@/app/project/[id]/page";
 
 interface Props {
   id?: string;
-  data?: ProjectTableItem;
+  data?: ProjectTableItem[];
 }
 
 const ProjectOverall: React.FC<Props> = ({ id, data }) => {

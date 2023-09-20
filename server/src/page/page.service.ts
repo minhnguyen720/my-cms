@@ -15,8 +15,13 @@ export class PageService {
 
   async findPageBelongToProject(projectId: string) {
     try {
-      const project = await this.projectModel.findOne({ id: projectId });
-      return project;
+      const project = await this.projectModel
+        .findOne({ id: projectId })
+        .select('_id');
+      const pages = await this.pageModel.find({
+        project: project._id,
+      });
+      return pages;
     } catch (error) {
       console.error(error);
       return {
@@ -37,8 +42,8 @@ export class PageService {
       });
       newPageData.id = newPageData._id;
       await newPageData.save();
-      projectRes.pages.push(newPageData);
-      await projectRes.save();
+      // projectRes.pages.push(newPageData);
+      // await projectRes.save();
       return { success: true, message: '', newProjectData: projectRes };
     } catch (error) {
       return {
@@ -80,12 +85,12 @@ export class PageService {
           id: pageId,
         }),
       ]).then(async (values) => {
-        const [projectRes] = values;
-        projectRes.pages.splice(
-          projectRes.pages.findIndex((e) => e.id === pageId),
-          1,
-        );
-        await projectRes.save();
+        // const [projectRes] = values;
+        // projectRes.pages.splice(
+        //   projectRes.pages.findIndex((e) => e.id === pageId),
+        //   1,
+        // );
+        // await projectRes.save();
       });
     } catch (error) {
       console.error(error);

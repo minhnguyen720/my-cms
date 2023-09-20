@@ -7,7 +7,7 @@ import { useSearchBar } from "../SearchBar/hooks";
 import { ProjectTableItem } from "@/app/project/[id]/page";
 
 interface Props {
-  data: ProjectTableItem | boolean;
+  data: ProjectTableItem[] | boolean;
 }
 
 const ProjectTable: React.FC<Props> = ({ data }) => {

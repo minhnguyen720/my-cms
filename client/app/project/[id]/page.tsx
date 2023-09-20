@@ -27,28 +27,18 @@ interface Props {
 }
 
 export interface ProjectTableItem {
-  _id?: string;
   id?: string;
+  name?: string;
   createdDate?: string;
   updatedDate?: string;
   createdUser?: string;
   updatedUser?: string;
-  superAdminId?: string;
-  name?: string;
-  pages?: {
-    id?: string;
-    name?: string;
-    createdDate?: string;
-    updatedDate?: string;
-    createdUser?: string;
-    updatedUser?: string;
-    project?: string;
-  }[];
+  project?: string;
 }
 
 const ProjectOverallPage: React.FC<Props> = async ({ params: { id } }) => {
   try {
-    const data: ProjectTableItem = await getProjectData(id);
+    const data: ProjectTableItem[] = await getProjectData(id);
     return <ProjectOverall id={id} data={data} />;
   } catch (error) {
     console.error(error);

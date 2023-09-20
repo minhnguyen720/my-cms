@@ -9,7 +9,7 @@ import {
 } from "@/atoms";
 import { ProjectTableItem } from "@/app/project/[id]/page";
 
-const useProjectOverall = (data: ProjectTableItem) => {
+const useProjectOverall = (data: ProjectTableItem[]) => {
   const [datasource, setDataSource] = useAtom(datasourceAtom);
   const [notfound, setNotfound] = useAtom(notFoundAtom);
 
