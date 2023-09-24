@@ -6,28 +6,33 @@ import { Model } from 'mongoose';
 import { Doc } from 'src/schemas/doc.schema';
 import { Page } from 'src/schemas/page.schema';
 import { Project } from 'src/schemas/project.schema';
+import { Folder } from 'src/schemas/folder.schema';
 @Injectable()
 export class DocService {
   constructor(
     @InjectModel(Doc.name) private docModel: Model<Doc>,
     @InjectModel(Page.name) private pageModel: Model<Page>,
     @InjectModel(Project.name) private projectModel: Model<Project>,
+    @InjectModel(Folder.name) private folderModel: Model<Folder>,
   ) {}
 
   async getDocByPageId(pageId: string) {
-    const docPromise = this.docModel
-      .find({
-        page: pageId,
-      })
-      .exec();
-    const pagePromise = this.pageModel.findById(pageId).exec();
-    return Promise.all([docPromise, pagePromise]).then(async (values) => {
-      const [docData, pageData] = values;
-      return {
-        pageData,
-        docData,
-      };
+    const docPromise = this.docModel.find({
+      page: pageId,
     });
+    const pagePromise = this.pageModel.findById(pageId);
+    const folderPromise = this.folderModel.find({ page: pageId });
+    return Promise.all([docPromise, pagePromise, folderPromise]).then(
+      async (values) => {
+        const [docData, pageData, folderData] = values;
+
+        return {
+          pageData,
+          docData,
+          folderData,
+        };
+      },
+    );
   }
 
   async findByKey(key: string) {

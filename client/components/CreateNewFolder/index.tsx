@@ -1,4 +1,4 @@
-import { baseUrlAtom } from "@/atoms";
+import { baseUrlAtom, currentUserAtom } from "@/atoms";
 import { ALERT_CODES } from "@/constant";
 import {
   Modal,
@@ -15,11 +15,16 @@ import axios from "axios";
 import { useAtomValue } from "jotai";
 import React from "react";
 import useAlert from "../Alert/hooks";
+import dayjs from "dayjs";
+import { useParams } from "next/navigation";
+import { Folder } from "@/interfaces/Project";
 
-const CreateNewFolder = () => {
+const CreateNewFolder = ({ updateFolderList }) => {
   const [opened, { open, close }] = useDisclosure(false);
   const baseUrl = useAtomValue(baseUrlAtom);
   const { openAlert } = useAlert();
+  const currentUser = useAtomValue(currentUserAtom);
+  const { docId, id } = useParams();
 
   const initialValues: {
     folderName: string;
@@ -32,13 +37,28 @@ const CreateNewFolder = () => {
 
   const handleCreateNewFolder = async (values: { folderName: string }) => {
     try {
-      const res = await axios.post(`${baseUrl}/folder`, values);
+      const newFolderBody = {
+        createdDate: dayjs().toString(),
+        updatedDate: dayjs().toString(),
+        createdUser: currentUser.id,
+        updatedUser: currentUser.id,
+        name: values.folderName,
+        page: docId,
+        project: id,
+      };
+      const res: { data: { isSuccess: boolean; latestFolderList: Folder[] } } =
+        await axios.post(`${baseUrl}/folder`, newFolderBody);
+
       if (res.data.isSuccess) {
+        updateFolderList(res.data.latestFolderList);
         openAlert("Create new folder successfully", ALERT_CODES.SUCCESS);
+        close();
       } else {
+        close();
         openAlert("Fail to create new folder", ALERT_CODES.ERROR);
       }
     } catch (error) {
+      close();
       openAlert(error, ALERT_CODES.ERROR);
     }
   };
@@ -56,7 +76,10 @@ const CreateNewFolder = () => {
             handleCreateNewFolder(values);
           })}
         >
-          <TextInput label="Folder name" />
+          <TextInput
+            label="Folder name"
+            {...form.getInputProps("folderName")}
+          />
           <Group position="right" className="mt-4">
             <Button type="submit">Create</Button>
             <Button color="red" onClick={handleCancel}>

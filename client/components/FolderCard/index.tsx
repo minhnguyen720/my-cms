@@ -16,12 +16,37 @@ import {
   Text,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import axios from "axios";
+import useGetBaseUrl from "@/hooks/utilities/getUrl";
+import { useParams } from "next/navigation";
+import useAlert from "../Alert/hooks";
+import { ALERT_CODES } from "@/constant";
+import { Folder } from "@/interfaces/Project";
 
-const FolderCard = ({ folderName }) => {
+const FolderCard = ({ folderName, updateFolderList, folderId }) => {
   const [opened, handler] = useDisclosure(false);
+  const [baseUrl] = useGetBaseUrl();
+  const { docId } = useParams();
+  const { openAlert } = useAlert();
 
-  const handleDeleteFolder = () => {
-    handler.close();
+  const handleDeleteFolder = async () => {
+    try {
+      const res: {
+        data: { isSuccess: boolean; latestFolderList: Folder[] | undefined };
+      } = await axios.delete(`${baseUrl}/folder/${folderId}/${docId}`);
+      if (res.data.isSuccess) {
+        openAlert("Delete folder success", ALERT_CODES.SUCCESS);
+        updateFolderList(res.data.latestFolderList);
+        handler.close();
+      } else {
+        openAlert("Delete folder fail", ALERT_CODES.ERROR);
+        handler.close();
+      }
+    } catch (error) {
+      console.error(error);
+      openAlert("Delete folder fail", ALERT_CODES.ERROR);
+      handler.close();
+    }
   };
 
   return (

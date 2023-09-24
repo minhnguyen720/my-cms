@@ -6,6 +6,7 @@ import { Doc, DocSchema } from 'src/schemas/doc.schema';
 import { Field, FieldSchema } from 'src/schemas/field.schema';
 import { Page, PageSchema } from 'src/schemas/page.schema';
 import { Project, ProjectSchema } from 'src/schemas/project.schema';
+import { Folder, FolderSchema } from 'src/schemas/folder.schema';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { Project, ProjectSchema } from 'src/schemas/project.schema';
       },
       { name: Page.name, schema: PageSchema },
       { name: Project.name, schema: ProjectSchema },
+      { name: Folder.name, schema: FolderSchema },
     ]),
   ],
   controllers: [DocController],
