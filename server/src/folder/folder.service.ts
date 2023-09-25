@@ -43,6 +43,31 @@ export class FolderService {
     return `This action updates a #${id} folder`;
   }
 
+  async rename(body) {
+    try {
+      const res = await this.folderModel.findByIdAndUpdate(body.folderId, {
+        name: body.name,
+      });
+
+      if (Object.keys(res).length === 0)
+        return {
+          isSuccess: false,
+          latestFolderList: undefined,
+        };
+
+      return {
+        isSuccess: true,
+        latestFolderList: await this.findFolderByPageId(body.pageId),
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        isSuccess: false,
+        latestFolderList: undefined,
+      };
+    }
+  }
+
   async remove(folderId: string, pageId: string) {
     try {
       const queryRes = await this.folderModel.findByIdAndDelete(folderId);

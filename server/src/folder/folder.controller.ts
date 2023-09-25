@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { FolderService } from './folder.service';
 import { CreateFolderDto } from './dto/create-folder.dto';
@@ -38,6 +39,11 @@ export class FolderController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateFolderDto: UpdateFolderDto) {
     return this.folderService.update(+id, updateFolderDto);
+  }
+
+  @Put('rename')
+  async rename(@Body() body) {
+    return await this.folderService.rename(body);
   }
 
   @Delete(':folderId/:pageId')
