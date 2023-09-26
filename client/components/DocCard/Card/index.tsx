@@ -47,7 +47,10 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
     opened: move2FolderOpened,
     handleCloseModal,
     handleOpenModal,
-    fetchedFolders
+    fetchedFolders,
+    toggleAll,
+    selection,
+    rows
   } = useMoveToFolderModal(doc.page);
 
   return (
@@ -57,6 +60,9 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
         handleCloseModal={handleCloseModal}
         handleOpenModal={handleOpenModal}
         fetchedFolders={fetchedFolders}
+        toggleAll={toggleAll}
+        selection={selection}
+        rows={rows}
       />
       <Modal centered opened={opened} onClose={close} title="System notice">
         <Text>
@@ -64,7 +70,7 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
           continue
         </Text>
         <Group className="mt-4" position="right">
-          <Button>Cancel</Button>
+          <Button onClick={close}>Cancel</Button>
           <Button color="red" onClick={handleDeleteDocument}>
             Proceed
           </Button>

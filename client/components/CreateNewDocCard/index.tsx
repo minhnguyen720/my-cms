@@ -101,7 +101,9 @@ const CreateNewDocCard: React.FC<Props> = ({ addDocItem }) => {
               <Button color="blue" type="submit">
                 Create
               </Button>
-              <Button color="red">Cancel</Button>
+              <Button color="red" onClick={close}>
+                Cancel
+              </Button>
             </Group>
           </Stack>
         </form>

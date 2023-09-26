@@ -1,39 +1,54 @@
-import { Modal, Table } from "@mantine/core";
-import React from "react";
+import { Checkbox, Modal, Table } from "@mantine/core";
+import React, { useState } from "react";
 
 interface Props {
   opened: boolean;
   handleCloseModal: () => void;
   handleOpenModal?: () => void;
-  fetchedFolders: any
+  fetchedFolders: any;
+  selection: string[];
+  toggleAll: any;
+  rows: any;
 }
 
 const MoveToFolderModal: React.FC<Props> = ({
   opened,
   handleCloseModal,
-  handleOpenModal,
   fetchedFolders,
+  toggleAll,
+  selection,
+  rows,
 }) => {
   return (
-    <div>
-      <Modal
-        title="Move to folder"
-        centered
-        opened={opened}
-        onClose={handleCloseModal}
-      >
-        <Table>
-          <thead>
-            <tr>
-              <th>Folder name</th>
-              <th>Page</th>
-              <th>Last updated</th>
-            </tr>
-          </thead>
-          <tbody>{fetchedFolders}</tbody>
-        </Table>
-      </Modal>
-    </div>
+    <Modal
+      title="Folder list"
+      // centered
+      opened={opened}
+      onClose={handleCloseModal}
+      size="90%"
+    >
+      <Table horizontalSpacing="lg" verticalSpacing="lg" highlightOnHover>
+        <thead>
+          <tr>
+            <th>
+              <Checkbox
+                onChange={toggleAll}
+                checked={selection.length === fetchedFolders.length}
+                indeterminate={
+                  selection.length > 0 &&
+                  selection.length !== fetchedFolders.length
+                }
+              />
+            </th>
+            <th>Folder name</th>
+            <th>Page</th>
+            <th>Project</th>
+            <th>Last updated</th>
+          </tr>
+        </thead>
+        <tbody>{rows}</tbody>
+      </Table>
+    </Modal>
   );
 };
 

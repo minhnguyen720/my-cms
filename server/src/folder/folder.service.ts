@@ -36,17 +36,21 @@ export class FolderService {
   }
 
   async moveToFolderData(pageId: string) {
-    const page = await this.pageModel.findById(pageId).select('name');
-    const folders = await this.findFolderByPageId(pageId);
-    const mappedData = folders.map((folder) => {
-      return {
-        id: folder._id,
-        name: folder.name,
-        page: page.name,
-        updatedDate: folder.updatedDate,
-      };
-    });
-    return mappedData;
+    const pagePromise = await this.pageModel.findById(pageId).select('name');
+    const foldersPromise = await this.findFolderByPageId(pageId);
+    return Promise.all([pagePromise, foldersPromise]).then(values => {
+      const [page, folders] = values;
+      const mappedData = folders.map((folder) => {
+        return {
+          id: folder._id,
+          name: folder.name,
+          page: page.name,
+          project: folder.project,
+          updatedDate: folder.updatedDate,
+        };
+      });
+      return mappedData;
+    })
   }
 
   async findAll() {
