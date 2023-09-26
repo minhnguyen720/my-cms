@@ -1,22 +1,34 @@
-import { baseUrlAtom } from "@/atoms";
+import useGetBaseUrl from "@/hooks/utilities/getUrl";
 import { useDisclosure } from "@mantine/hooks";
 import axios from "axios";
-import { useAtomValue } from "jotai";
 import { useState } from "react";
 
 const useMoveToFolderModal = (pageId: string) => {
   const [opened, { open, close }] = useDisclosure(false);
   const [fetchedFolders, setFetchedFolder] = useState<any[]>([]);
-  const baseUrl = useAtomValue(baseUrlAtom);
+  const [baseUrl] = useGetBaseUrl();
 
   const handleCloseModal = () => {
+    setFetchedFolder([]);
     close();
   };
 
   const handleOpenModal = async () => {
     try {
-      const res = await axios.get(`${baseUrl}/folder/page/${pageId}`);
-      setFetchedFolder(res.data);
+      const res = await axios.get(`${baseUrl}/folder/move2folder/${pageId}`);
+      if (res === undefined) return;
+
+      const rows = res.data.map((item) => {
+        return (
+          <tr key={item.id}>
+            <td>{item.name}</td>
+            <td>{item.page}</td>
+            <td>{item.updatedDate}</td>
+          </tr>
+        );
+      });
+
+      setFetchedFolder(rows);
       open();
     } catch (error) {}
   };
@@ -25,6 +37,7 @@ const useMoveToFolderModal = (pageId: string) => {
     opened,
     handleCloseModal,
     handleOpenModal,
+    fetchedFolders,
   };
 };
 

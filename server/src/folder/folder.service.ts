@@ -4,10 +4,14 @@ import { UpdateFolderDto } from './dto/update-folder.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Folder } from 'src/schemas/folder.schema';
 import { Model } from 'mongoose';
+import { Page } from 'src/schemas/page.schema';
 
 @Injectable()
 export class FolderService {
-  constructor(@InjectModel(Folder.name) private folderModel: Model<Folder>) {}
+  constructor(
+    @InjectModel(Folder.name) private folderModel: Model<Folder>,
+    @InjectModel(Page.name) private pageModel: Model<Page>,
+  ) {}
 
   async create(createFolderDto: CreateFolderDto) {
     try {
@@ -29,6 +33,20 @@ export class FolderService {
     return this.folderModel.find({
       page: pageId,
     });
+  }
+
+  async moveToFolderData(pageId: string) {
+    const page = await this.pageModel.findById(pageId).select('name');
+    const folders = await this.findFolderByPageId(pageId);
+    const mappedData = folders.map((folder) => {
+      return {
+        id: folder._id,
+        name: folder.name,
+        page: page.name,
+        updatedDate: folder.updatedDate,
+      };
+    });
+    return mappedData;
   }
 
   async findAll() {

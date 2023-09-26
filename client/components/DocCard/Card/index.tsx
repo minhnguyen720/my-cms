@@ -47,6 +47,7 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
     opened: move2FolderOpened,
     handleCloseModal,
     handleOpenModal,
+    fetchedFolders
   } = useMoveToFolderModal(doc.page);
 
   return (
@@ -55,6 +56,7 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
         opened={move2FolderOpened}
         handleCloseModal={handleCloseModal}
         handleOpenModal={handleOpenModal}
+        fetchedFolders={fetchedFolders}
       />
       <Modal centered opened={opened} onClose={close} title="System notice">
         <Text>

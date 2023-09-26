@@ -36,6 +36,11 @@ export class FolderController {
     return this.folderService.findOne(+id);
   }
 
+  @Get('move2folder/:pageId')
+  async getMoveToFolderData(@Param('pageId') pageId: string) {
+    return await this.folderService.moveToFolderData(pageId);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateFolderDto: UpdateFolderDto) {
     return this.folderService.update(+id, updateFolderDto);
