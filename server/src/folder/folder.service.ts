@@ -9,12 +9,26 @@ import { Model } from 'mongoose';
 export class FolderService {
   constructor(@InjectModel(Folder.name) private folderModel: Model<Folder>) {}
 
-  create(createFolderDto: CreateFolderDto) {
-    return 'This action adds a new folder';
+  async create(createFolderDto: CreateFolderDto) {
+    try {
+      await this.folderModel.create(createFolderDto);
+      return {
+        isSuccess: true,
+        latestFolderList: await this.findFolderByPageId(createFolderDto.page),
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        isSuccess: false,
+        latestFolderList: [],
+      };
+    }
   }
 
-  async findFolderByPageId(pageId: string) {
-    return await this.folderModel.find({ page: pageId });
+  findFolderByPageId(pageId: any) {
+    return this.folderModel.find({
+      page: pageId,
+    });
   }
 
   async findAll() {
@@ -29,7 +43,50 @@ export class FolderService {
     return `This action updates a #${id} folder`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} folder`;
+  async rename(body) {
+    try {
+      const res = await this.folderModel.findByIdAndUpdate(body.folderId, {
+        name: body.name,
+      });
+
+      if (Object.keys(res).length === 0)
+        return {
+          isSuccess: false,
+          latestFolderList: undefined,
+        };
+
+      return {
+        isSuccess: true,
+        latestFolderList: await this.findFolderByPageId(body.pageId),
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        isSuccess: false,
+        latestFolderList: undefined,
+      };
+    }
+  }
+
+  async remove(folderId: string, pageId: string) {
+    try {
+      const queryRes = await this.folderModel.findByIdAndDelete(folderId);
+      if (Object.keys(queryRes).length === 0)
+        return {
+          isSuccess: false,
+          latestFolderList: undefined,
+        };
+
+      return {
+        isSuccess: true,
+        latestFolderList: await this.findFolderByPageId(pageId),
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        isSuccess: false,
+        latestFolderList: undefined,
+      };
+    }
   }
 }

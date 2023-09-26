@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { FolderService } from './folder.service';
 import { CreateFolderDto } from './dto/create-folder.dto';
@@ -16,7 +17,7 @@ export class FolderController {
   constructor(private readonly folderService: FolderService) {}
 
   @Post()
-  create(@Body() createFolderDto: CreateFolderDto) {
+  async create(@Body() createFolderDto: CreateFolderDto) {
     return this.folderService.create(createFolderDto);
   }
 
@@ -26,7 +27,7 @@ export class FolderController {
   }
 
   @Get('page/:pageId')
-  async findFolderByPageId(@Param('pageId') pageId) {
+  async findFolderByPageId(@Param('pageId') pageId: string) {
     return await this.folderService.findFolderByPageId(pageId);
   }
 
@@ -40,8 +41,16 @@ export class FolderController {
     return this.folderService.update(+id, updateFolderDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.folderService.remove(+id);
+  @Put('rename')
+  async rename(@Body() body) {
+    return await this.folderService.rename(body);
+  }
+
+  @Delete(':folderId/:pageId')
+  async remove(
+    @Param('folderId') folderId: string,
+    @Param('pageId') pageId: string,
+  ) {
+    return await this.folderService.remove(folderId, pageId);
   }
 }

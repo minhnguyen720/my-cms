@@ -24,3 +24,7 @@ export const activeAlertAtom = atom<{
   message: "",
   type: ALERT_CODES.INFO,
 });
+
+export const currentUserAtom = atom({
+  id: "admin",
+});

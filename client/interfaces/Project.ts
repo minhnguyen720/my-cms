@@ -55,7 +55,6 @@ export interface Document {
   page?: string;
 
   description?: string;
-
 }
 
 export interface Project {
@@ -92,4 +91,12 @@ export interface Page extends StandardSchema {
     updatedUser?: string;
     project?: string;
   }[];
+}
+
+export interface Folder extends StandardSchema {
+  _id: string;
+
+  name: string;
+
+  page: string;
 }

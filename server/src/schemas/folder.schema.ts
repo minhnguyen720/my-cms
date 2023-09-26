@@ -8,7 +8,7 @@ export type FolderDocument = HydratedDocument<Folder>;
 @Schema({ collection: 'folder' })
 export class Folder {
   @Transform(({ value }) => value.toString())
-  _id: string;
+  _id?: string;
 
   @Prop()
   createdDate: Date;
@@ -27,7 +27,6 @@ export class Folder {
   @Prop()
   name: string;
 
-  // _id of page has this doc
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Page' })
   page: Page;
 }

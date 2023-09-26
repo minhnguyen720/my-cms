@@ -79,7 +79,10 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
 
             <Menu.Dropdown>
               <Menu.Label>Application</Menu.Label>
-              <Menu.Item onClick={handleOpenModal} icon={<IconFolderSymlink size={14} />}>
+              <Menu.Item
+                onClick={handleOpenModal}
+                icon={<IconFolderSymlink size={14} />}
+              >
                 Move to folder
               </Menu.Item>
               <Menu.Item

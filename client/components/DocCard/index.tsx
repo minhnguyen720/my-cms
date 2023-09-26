@@ -1,6 +1,15 @@
 "use client";
 
-import { Group, Grid, Title, Modal, TextInput, Button } from "@mantine/core";
+import {
+  Group,
+  Grid,
+  Title,
+  Modal,
+  TextInput,
+  Button,
+  Center,
+  Loader,
+} from "@mantine/core";
 import React, { useState } from "react";
 import CreateNewDocCard from "../CreateNewDocCard";
 import Card from "./Card";
@@ -10,14 +19,16 @@ import useFolderCardAction from "../CreateNewFolder/hook";
 import useCreateNewCardAction from "../CreateNewDocCard/hook";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
-import { Document } from "@/interfaces/Project";
+import { Document, Folder } from "@/interfaces/Project";
 
 interface Props {
-  docs: Document[]
+  docs: Document[];
+  folders: Folder[];
 }
 
-const DocCards: React.FC<Props> = ({ docs }) => {
-  const { folderList, addFolderItem } = useFolderCardAction();
+const DocCards: React.FC<Props> = ({ docs, folders }) => {
+  const { folderList, addFolderItem, updateFolderList } =
+    useFolderCardAction(folders);
   const { docList, handler } = useCreateNewCardAction(docs);
   const [opened, { open, close }] = useDisclosure(false);
   const form = useForm({
@@ -34,11 +45,16 @@ const DocCards: React.FC<Props> = ({ docs }) => {
   const handleCloseRenameModal = () => {
     close();
     form.reset();
-  }
+  };
 
   return (
     <>
-      <Modal opened={opened} onClose={handleCloseRenameModal} centered title="Rename document">
+      <Modal
+        opened={opened}
+        onClose={handleCloseRenameModal}
+        centered
+        title="Rename document"
+      >
         <form
           onSubmit={form.onSubmit(async (values) => {
             await handler.rename(openerData, values.renameValue);
@@ -58,12 +74,28 @@ const DocCards: React.FC<Props> = ({ docs }) => {
         <Grid.Col span={12}>
           <Group>
             <Title order={3}>Folders</Title>
-            <CreateNewFolder />
+            <CreateNewFolder updateFolderList={updateFolderList} />
           </Group>
         </Grid.Col>
-        <Grid.Col span={3}>
-          <FolderCard folderName={"test"} />
-        </Grid.Col>
+        {folderList.length > 0 ? (
+          <>
+            {folderList.map((folder) => {
+              return (
+                <Grid.Col span={3} key={folder._id}>
+                  <FolderCard
+                    folderName={folder.name}
+                    updateFolderList={updateFolderList}
+                    folderId={folder._id}
+                  />
+                </Grid.Col>
+              );
+            })}
+          </>
+        ) : (
+          <Center w={"100%"} mih={200}>
+            <Loader variant="bars" />
+          </Center>
+        )}
       </Grid>
       <Grid className="my-2">
         <Grid.Col span={12}>
