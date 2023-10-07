@@ -1,11 +1,12 @@
 import DocCards from "@/components/DocCard";
-import PageDetail from "@/components/DocDetail";
+import { Anchor } from "@mantine/core";
+import React from "react";
 
 export const revalidate = 10;
 
-async function getDocData(id: string) {
+async function getFolderDetailData(id: string) {
   try {
-    const res = await fetch(`http://localhost:4000/doc/${id}`, {
+    const res = await fetch(`http://localhost:4000/folder/detail/${id}`, {
       cache: "no-store",
     });
     if (!res.ok) throw new Error("Failed to fetch data");
@@ -16,14 +17,13 @@ async function getDocData(id: string) {
   }
 }
 
-const ProjectDetail: React.FC<any> = async ({ params }) => {
-  const res = await getDocData(params.docId);
+const FolderDetailView = async ({ params }) => {
+  const res = await getFolderDetailData(params.folderId);
   return (
     <div className="px-5">
-      <PageDetail data={res} />
       <DocCards docs={res.docData} folders={res.folderData} />
     </div>
   );
 };
 
-export default ProjectDetail;
+export default FolderDetailView;

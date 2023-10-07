@@ -16,6 +16,21 @@ export class FolderService {
     @InjectModel(Doc.name) private docModel: Model<Doc>,
   ) {}
 
+  async getFolderDetail(id: string) {
+    const docPromise = this.docModel.find({
+      parent: id,
+    });
+    const folderPromise = this.folderModel.find({ parent: id });
+    return Promise.all([docPromise, folderPromise]).then(async (values) => {
+      const [docData, folderData] = values;
+
+      return {
+        docData,
+        folderData,
+      };
+    });
+  }
+
   async move(body: MoveFolderDto) {
     try {
       switch (body.type) {

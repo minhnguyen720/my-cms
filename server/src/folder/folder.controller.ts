@@ -17,6 +17,11 @@ import { MoveFolderDto } from './dto/move-folder.dto';
 export class FolderController {
   constructor(private readonly folderService: FolderService) {}
 
+  @Get('detail/:id')
+  async getFolderDetail(@Param('id') id: string) {
+    return this.folderService.getFolderDetail(id);
+  }
+  
   @Post()
   async create(@Body() createFolderDto: CreateFolderDto) {
     return this.folderService.create(createFolderDto);
@@ -27,19 +32,9 @@ export class FolderController {
     return await this.folderService.move(body);
   }
 
-  @Get()
-  async findAll() {
-    return await this.folderService.findAll();
-  }
-
   @Get('page/:pageId')
   async findFolderByPageId(@Param('pageId') pageId: string) {
     return await this.folderService.findFolderByPageId(pageId);
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.folderService.findOne(+id);
   }
 
   @Get('getMoveToFolderData/:param')

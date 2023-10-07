@@ -7,8 +7,6 @@ import {
   Modal,
   TextInput,
   Button,
-  Center,
-  Loader,
 } from "@mantine/core";
 import React, { useState } from "react";
 import CreateNewDocCard from "../CreateNewDocCard";
@@ -20,6 +18,7 @@ import useCardAction from "../CreateNewDocCard/hook";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import { Document, Folder } from "@/interfaces/Project";
+import { useParams, useRouter } from "next/navigation";
 
 interface Props {
   docs: Document[];
@@ -27,12 +26,8 @@ interface Props {
 }
 
 const DocCards: React.FC<Props> = ({ docs, folders }) => {
-  const {
-    folderList,
-    folderHandler,
-    confirmModal,
-    renameModal
-  } = useFolderCardAction(folders);
+  const { folderList, folderHandler, confirmModal, renameModal } =
+    useFolderCardAction(folders);
   const { docList, handler } = useCardAction(docs);
   const [opened, { open, close }] = useDisclosure(false);
   const form = useForm({
@@ -40,6 +35,7 @@ const DocCards: React.FC<Props> = ({ docs, folders }) => {
       renameValue: "",
     },
   });
+  const navigator = useRouter();
 
   const [openerData, setOpenerData] = useState("");
   const updateOpenerData = (value) => {
@@ -51,6 +47,7 @@ const DocCards: React.FC<Props> = ({ docs, folders }) => {
     close();
     form.reset();
   };
+  const params = useParams();
 
   return (
     <>
@@ -82,11 +79,18 @@ const DocCards: React.FC<Props> = ({ docs, folders }) => {
             <CreateNewFolder updateFolderList={folderHandler.update} />
           </Group>
         </Grid.Col>
-        {folderList.length > 0 ? (
+        {folderList.length > 0 && (
           <>
             {folderList.map((folder) => {
               return (
-                <Grid.Col span={3} key={folder._id}>
+                <Grid.Col
+                  span={3}
+                  key={folder._id}
+                  onDoubleClick={() => {
+                    const path = `/project/${params.id}/${params.docId}/folder/${folder._id}`;
+                    navigator.push(path);
+                  }}
+                >
                   <FolderCard
                     folderName={folder.name}
                     actionHandler={folderHandler}
@@ -98,10 +102,6 @@ const DocCards: React.FC<Props> = ({ docs, folders }) => {
               );
             })}
           </>
-        ) : (
-          <Center w={"100%"} mih={200}>
-            <Loader variant="bars" />
-          </Center>
         )}
       </Grid>
       <Grid className="my-2">

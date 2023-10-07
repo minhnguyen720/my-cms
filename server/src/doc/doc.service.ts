@@ -21,8 +21,8 @@ export class DocService {
       page: new Types.ObjectId(pageId),
       parent: pageId,
     });
-    const pagePromise = this.pageModel.findById(pageId);
     const folderPromise = this.folderModel.find({ parent: pageId });
+    const pagePromise = this.pageModel.findById(pageId);
 
     return Promise.all([docPromise, pagePromise, folderPromise]).then(
       async (values) => {
