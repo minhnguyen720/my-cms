@@ -22,7 +22,7 @@ export class FolderService {
         case 'doc':
           const doc = await this.docModel.findById(body.targetId);
           if (doc === undefined) return { success: false };
-          
+
           const newDocFolders = doc.folders.concat(body.ids);
           doc.folders = newDocFolders;
           doc.save();
@@ -30,11 +30,12 @@ export class FolderService {
             success: true,
           };
         case 'folder':
-          for (const id of body.ids) {
-            await this.folderModel.findByIdAndUpdate(body.targetId, {
-              folder: id,
-            });
-          }
+          const folder = await this.folderModel.findById(body.targetId);
+          if (folder === undefined) return { success: false };
+
+          const newFolders = folder.folders.concat(body.ids);
+          folder.folders = newFolders;
+          folder.save();
           return {
             success: true,
           };
@@ -69,22 +70,41 @@ export class FolderService {
     });
   }
 
-  async moveToFolderData(pageId: string) {
+  async getMoveToFolderData(param: string) {
+    const tokens = param.split('&&');
+    const targetId = tokens[0];
+    const pageId = tokens[1];
+    const type = tokens[2];
+
+    if (type === undefined) return;
+
     const pagePromise = this.pageModel.findById(pageId).select('name');
+
+    let targetPromise = undefined;
+    if (type === 'folder') {
+      targetPromise = this.folderModel.findById(targetId);
+    } else if (type === 'doc') {
+      targetPromise = this.docModel.findById(targetId);
+    } else {
+      return;
+    }
+
     const foldersPromise = this.findFolderByPageId(pageId);
-    return Promise.all([pagePromise, foldersPromise]).then((values) => {
-      const [page, folders] = values;
-      const mappedData = folders.map((folder) => {
-        return {
-          id: folder._id,
-          name: folder.name,
-          page: page.name,
-          project: folder.project,
-          updatedDate: folder.updatedDate,
-        };
-      });
-      return mappedData;
-    });
+    return Promise.all([pagePromise, foldersPromise, targetPromise]).then(
+      (values) => {
+        const [page, folders, target] = values;
+        const mappedData = folders.map((folder) => {
+          return {
+            id: folder._id,
+            name: folder.name,
+            page: page.name,
+            project: folder.project,
+            updatedDate: folder.updatedDate,
+          };
+        });
+        return { folders: mappedData, selection: target.folders };
+      },
+    );
   }
 
   async findAll() {

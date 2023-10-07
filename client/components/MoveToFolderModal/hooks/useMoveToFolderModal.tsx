@@ -4,6 +4,7 @@ import axios from "axios";
 import { useState } from "react";
 import useAlert from "@/components/Alert/hooks";
 import { ALERT_CODES } from "@/constant";
+import { useLocalStorage } from "@mantine/hooks";
 
 const useMoveToFolderModal = (pageId: string) => {
   const [searchValue, setSearchValue] = useState<string>("");
@@ -12,7 +13,14 @@ const useMoveToFolderModal = (pageId: string) => {
 
   const [opened, { open, close }] = useDisclosure(false);
   const [baseUrl] = useGetBaseUrl();
-  const {openAlert} = useAlert();
+  const { openAlert } = useAlert();
+  const [localFetchedFolders, setLocalFetchedFolders] = useLocalStorage<any[]>({
+    key: "localFetchedFolders",
+  });
+  const [localSelection, setLocalSelection] = useLocalStorage<string[]>({
+    key: "localSelection",
+  });
+  const [loadingOverlayVisible, loadingOverlayHanlder] = useDisclosure(false);
 
   const toggleRow = (id: string) => {
     setSelection((current) => {
@@ -32,21 +40,43 @@ const useMoveToFolderModal = (pageId: string) => {
   const handleCloseModal = () => {
     setFetchedFolder([]);
     setSelection([]);
+    setLocalFetchedFolders([]);
+    setLocalSelection([]);
     close();
   };
 
-  const handleOpenModal = async () => {
+  const handleOpenModal = async (targetId: string, type: string) => {
     try {
+      open();
+      loadingOverlayHanlder.open();
+
+      const param = `${targetId}&&${pageId}&&${type}`;
       const res = await axios.get(
-        `${baseUrl}/folder/getMoveToFolderData/${pageId}`,
+        `${baseUrl}/folder/getMoveToFolderData/${param}`,
       );
       if (res === undefined) return;
 
-      setFetchedFolder(res.data);
-      open();
+      if (type === "folder") {
+        if (targetId === undefined) return;
+        const filteredResult = res.data.folders.filter((item) => {
+          return item.id !== targetId;
+        });
+        setFetchedFolder(filteredResult);
+        setLocalFetchedFolders(filteredResult);
+        setLocalSelection(res.data.selection);
+        setSelection(res.data.selection);
+      } else {
+        setFetchedFolder(res.data.folders);
+        setSelection(res.data.selection);
+        setLocalFetchedFolders(res.data.folders);
+        setLocalSelection(res.data.selection);
+      }
     } catch (error) {
       console.error(error);
+      loadingOverlayHanlder.close();
       handleCloseModal();
+    } finally {
+      loadingOverlayHanlder.close();
     }
   };
 
@@ -56,7 +86,7 @@ const useMoveToFolderModal = (pageId: string) => {
       type,
       targetId,
     });
-    if(res.data.success) {
+    if (res.data.success) {
       openAlert("Move files successfully", ALERT_CODES.SUCCESS);
     } else {
       openAlert("Move files failed", ALERT_CODES.ERROR);
@@ -75,13 +105,9 @@ const useMoveToFolderModal = (pageId: string) => {
     setFetchedFolder(filteredResult);
   };
 
-  const move2FolderResetSearch = async () => {
-    const res = await axios.get(
-      `${baseUrl}/folder/getMoveToFolderData/${pageId}`,
-    );
-    if (res === undefined) return;
-
-    setFetchedFolder(res.data);
+  const move2FolderResetSearch = () => {
+    setFetchedFolder(localFetchedFolders);
+    setSelection(localSelection);
     setSearchValue("");
   };
 
@@ -98,6 +124,8 @@ const useMoveToFolderModal = (pageId: string) => {
     fetchedFolders,
     toggleRow,
     toggleAll,
+    loadingOverlayVisible,
+    loadingOverlayHanlder,
   };
 };
 

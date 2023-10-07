@@ -1,4 +1,12 @@
-import { Button, Checkbox, Group, Modal, Table } from "@mantine/core";
+import {
+  Box,
+  Button,
+  Checkbox,
+  Group,
+  LoadingOverlay,
+  Modal,
+  Table,
+} from "@mantine/core";
 import SearchBar from "../SearchBar";
 
 interface Props {
@@ -14,8 +22,9 @@ interface Props {
   selection: any;
   toggleRow: (rowId: string) => void;
   toggleAll: () => void;
-  docId: string;
+  targetId: string;
   moveType: string;
+  loadingOverlayVisible: boolean;
 }
 
 const MoveToFolderModal: React.FC<Props> = ({
@@ -30,8 +39,9 @@ const MoveToFolderModal: React.FC<Props> = ({
   selection,
   toggleRow,
   toggleAll,
-  docId,
-  moveType
+  targetId,
+  moveType,
+  loadingOverlayVisible,
 }) => {
   return (
     <Modal.Root centered opened={opened} onClose={handleCloseModal} size="90%">
@@ -43,64 +53,76 @@ const MoveToFolderModal: React.FC<Props> = ({
           </Modal.Title>
           <Modal.CloseButton />
         </Modal.Header>
-        <Modal.Body>
-          <SearchBar
-            placeholder="Search by folder, page, project name"
-            handleSearch={handleSearch}
-            searchValue={searchValue}
-            setSearchValue={setSearchValue}
-            handleReset={handleReset}
+        <Box className="w-full" pos="relative">
+          <LoadingOverlay
+            visible={loadingOverlayVisible}
+            overlayBlur={3}
+            loaderProps={{ variant: "bars" }}
           />
-          <Table horizontalSpacing="lg" verticalSpacing="lg" highlightOnHover>
-            <thead>
-              <tr>
-                <th>
-                  <Checkbox
-                    onChange={toggleAll}
-                    checked={selection.length === fetchedFolders.length}
-                    indeterminate={
-                      selection.length > 0 &&
-                      selection.length !== fetchedFolders.length
-                    }
-                  />
-                </th>
-                <th>Folder name</th>
-                <th>Page</th>
-                <th>Project</th>
-                <th>Last updated</th>
-              </tr>
-            </thead>
-            <tbody>
-              {fetchedFolders.length > 0 &&
-                fetchedFolders.map((item) => {
-                  return (
-                    <tr key={item.id}>
-                      <td>
-                        <Checkbox
-                          checked={selection.includes(item.id)}
-                          onChange={() => {
-                            toggleRow(item.id);
-                          }}
-                        />
-                      </td>
-                      <td>{item.name}</td>
-                      <td>{item.page}</td>
-                      <td>{item.project}</td>
-                      <td>{item.updatedDate}</td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </Table>
-          <Group position="right" py={16}>
-            <Button onClick={() => {
-              handleMove(docId,moveType)
-            }}>Confirm</Button>
-            <Button color="red" onClick={handleCloseModal}>
-              Cancel
-            </Button>
-          </Group>
-        </Modal.Body>
+          <Modal.Body>
+            <SearchBar
+              placeholder="Search by folder, page, project name"
+              handleSearch={handleSearch}
+              searchValue={searchValue}
+              setSearchValue={setSearchValue}
+              handleReset={handleReset}
+            />
+
+            <Table horizontalSpacing="lg" verticalSpacing="lg" highlightOnHover>
+              <thead>
+                <tr>
+                  <th>
+                    <Checkbox
+                      onChange={toggleAll}
+                      checked={selection.length === fetchedFolders.length}
+                      indeterminate={
+                        selection.length > 0 &&
+                        selection.length !== fetchedFolders.length
+                      }
+                    />
+                  </th>
+                  <th>Folder name</th>
+                  <th>Page</th>
+                  <th>Project</th>
+                  <th>Last updated</th>
+                </tr>
+              </thead>
+              <tbody>
+                {fetchedFolders.length > 0 &&
+                  fetchedFolders.map((item) => {
+                    return (
+                      <tr key={item.id}>
+                        <td>
+                          <Checkbox
+                            checked={selection.includes(item.id)}
+                            onChange={() => {
+                              toggleRow(item.id);
+                            }}
+                          />
+                        </td>
+                        <td>{item.name}</td>
+                        <td>{item.page}</td>
+                        <td>{item.project}</td>
+                        <td>{item.updatedDate}</td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </Table>
+            <Group position="right" py={16}>
+              <Button
+                onClick={() => {
+                  handleMove(targetId, moveType);
+                }}
+              >
+                Confirm
+              </Button>
+              <Button color="red" onClick={handleCloseModal}>
+                Cancel
+              </Button>
+            </Group>
+          </Modal.Body>
+        </Box>
       </Modal.Content>
     </Modal.Root>
   );

@@ -24,6 +24,8 @@ import useAlert from "../Alert/hooks";
 import { ALERT_CODES } from "@/constant";
 import { Folder } from "@/interfaces/Project";
 import { useForm } from "@mantine/form";
+import MoveToFolderModal from "../MoveToFolderModal";
+import useMoveToFolderModal from "../MoveToFolderModal/hooks/useMoveToFolderModal";
 
 const FolderCard = ({ folderName, updateFolderList, folderId }) => {
   const [opened, handler] = useDisclosure(false);
@@ -36,6 +38,39 @@ const FolderCard = ({ folderName, updateFolderList, folderId }) => {
       renameValue: folderName,
     },
   });
+
+  const {
+    opened: move2FolderOpened,
+    handleCloseModal,
+    handleOpenModal,
+    selection,
+    handleMove,
+    move2FolderSearch,
+    setSearchValue,
+    searchValue,
+    move2FolderResetSearch,
+    fetchedFolders,
+    toggleRow,
+    toggleAll,
+    loadingOverlayVisible
+  } = useMoveToFolderModal(docId);
+
+  const moveToFolderModalProps = {
+    opened: move2FolderOpened,
+    handleCloseModal,
+    fetchedFolders,
+    selection,
+    handleMove,
+    searchValue,
+    setSearchValue,
+    handleSearch: move2FolderSearch,
+    handleReset: move2FolderResetSearch,
+    toggleRow,
+    toggleAll,
+    moveType: "folder",
+    targetId: folderId,
+    loadingOverlayVisible
+  };
 
   const handleDeleteFolder = async () => {
     try {
@@ -84,6 +119,7 @@ const FolderCard = ({ folderName, updateFolderList, folderId }) => {
 
   return (
     <>
+      <MoveToFolderModal {...moveToFolderModalProps} />
       <Modal
         centered
         opened={renameOpened}
@@ -132,7 +168,10 @@ const FolderCard = ({ folderName, updateFolderList, folderId }) => {
 
             <Menu.Dropdown>
               <Menu.Label>Application</Menu.Label>
-              <Menu.Item icon={<IconFolderSymlink size={14} />}>
+              <Menu.Item
+                icon={<IconFolderSymlink size={14} />}
+                onClick={() => handleOpenModal(folderId, "folder")}
+              >
                 Move to folder
               </Menu.Item>
               <Menu.Item

@@ -56,6 +56,7 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
     setSearchValue,
     toggleRow,
     toggleAll,
+    loadingOverlayVisible
   } = useMoveToFolderModal(doc.page);
 
   const searchProps = {
@@ -76,8 +77,9 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
         toggleRow={toggleRow}
         toggleAll={toggleAll}
         {...searchProps}
-        docId={doc._id}
+        targetId={doc._id}
         moveType="doc"
+        loadingOverlayVisible={loadingOverlayVisible}
       />
       <Modal centered opened={opened} onClose={close} title="System notice">
         <Text>
@@ -103,7 +105,7 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
             <Menu.Dropdown>
               <Menu.Label>Application</Menu.Label>
               <Menu.Item
-                onClick={handleOpenModal}
+                onClick={() => {handleOpenModal(doc._id,"doc")}}
                 icon={<IconFolderSymlink size={14} />}
               >
                 Move to folder
