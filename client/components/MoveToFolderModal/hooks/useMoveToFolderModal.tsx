@@ -2,7 +2,7 @@ import useGetBaseUrl from "@/hooks/utilities/getUrl";
 import { Checkbox } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import classes from "../tableSelection.module.css";
 import cx from "clsx";
 
@@ -13,11 +13,8 @@ const useMoveToFolderModal = (pageId: string) => {
   const [baseUrl] = useGetBaseUrl();
   const [selection, setSelection] = useState<string[]>([]);
 
-  useEffect(() => {
-    // console.log(selection);
-  }, [selection]);
-
   const toggleRow = (id: string) => {
+    console.log(id);  
     setSelection((current) => {
       return current.includes(id)
         ? current.filter((item) => item !== id)

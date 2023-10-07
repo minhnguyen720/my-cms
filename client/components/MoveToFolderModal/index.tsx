@@ -1,5 +1,4 @@
 import { Checkbox, Modal, Table } from "@mantine/core";
-import React, { useState } from "react";
 
 interface Props {
   opened: boolean;
