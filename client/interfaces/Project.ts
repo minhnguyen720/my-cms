@@ -55,6 +55,8 @@ export interface Document {
   page?: string;
 
   description?: string;
+
+  parent?: string;
 }
 
 export interface Project {

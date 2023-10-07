@@ -1,5 +1,4 @@
 import DocCards from "@/components/DocCard";
-import { Anchor } from "@mantine/core";
 import React from "react";
 
 export const revalidate = 10;

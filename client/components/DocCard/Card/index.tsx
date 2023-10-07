@@ -24,6 +24,9 @@ import { baseUrlAtom } from "@/atoms";
 import { Document } from "@/interfaces/Project";
 import MoveToFolderModal from "@/components/MoveToFolderModal";
 import useMoveToFolderModal from "@/components/MoveToFolderModal/hooks/useMoveToFolderModal";
+import { MenuItem } from "@mantine/core/lib/Menu/MenuItem/MenuItem";
+import { BiHomeAlt } from "react-icons/bi";
+import { useParams } from "next/navigation";
 
 interface Props {
   doc: Document;
@@ -40,6 +43,7 @@ interface Props {
 const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
   const [opened, { open, close }] = useDisclosure(false);
   const baseUrl = useAtomValue(baseUrlAtom);
+  const params = useParams();
 
   const handleDeleteDocument = async () => {
     await axios.delete(`${baseUrl}/doc/${doc._id}`);
@@ -129,6 +133,13 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
                 }}
               >
                 Rename
+              </Menu.Item>
+              <Menu.Item
+                icon={<BiHomeAlt size={14}/>}
+                onClick={() => {console.log('root')}}
+                disabled={doc.parent === params.docId}
+              >
+                Move to root
               </Menu.Item>
 
               <Menu.Divider />
