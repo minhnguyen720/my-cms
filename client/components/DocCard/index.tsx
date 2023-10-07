@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Group,
-  Grid,
-  Title,
-  Modal,
-  TextInput,
-  Button,
-} from "@mantine/core";
+import { Group, Grid, Title, Modal, TextInput, Button } from "@mantine/core";
 import React, { useState } from "react";
 import CreateNewDocCard from "../CreateNewDocCard";
 import Card from "./Card";
@@ -92,6 +85,7 @@ const DocCards: React.FC<Props> = ({ docs, folders }) => {
                   }}
                 >
                   <FolderCard
+                    folderParent={folder.parent}
                     folderName={folder.name}
                     actionHandler={folderHandler}
                     folderId={folder._id}

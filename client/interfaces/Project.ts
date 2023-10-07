@@ -101,4 +101,6 @@ export interface Folder extends StandardSchema {
   name: string;
 
   page: string;
+
+  parent: string;
 }

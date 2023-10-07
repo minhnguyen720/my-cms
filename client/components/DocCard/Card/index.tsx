@@ -24,7 +24,6 @@ import { baseUrlAtom } from "@/atoms";
 import { Document } from "@/interfaces/Project";
 import MoveToFolderModal from "@/components/MoveToFolderModal";
 import useMoveToFolderModal from "@/components/MoveToFolderModal/hooks/useMoveToFolderModal";
-import { MenuItem } from "@mantine/core/lib/Menu/MenuItem/MenuItem";
 import { BiHomeAlt } from "react-icons/bi";
 import { useParams } from "next/navigation";
 
@@ -72,6 +71,7 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
     setSearchValue,
     toggleRow,
     loadingOverlayVisible,
+    backToRoot,
   } = useMoveToFolderModal(doc.page);
 
   const searchProps = {
@@ -135,8 +135,14 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
                 Rename
               </Menu.Item>
               <Menu.Item
-                icon={<BiHomeAlt size={14}/>}
-                onClick={() => {console.log('root')}}
+                icon={<BiHomeAlt size={14} />}
+                onClick={() => {
+                  backToRoot(doc._id, "doc");
+                  const newDocList = handler.getDocList().filter((item) => {
+                    return item._id !== doc._id;
+                  });
+                  handler.update(newDocList);
+                }}
                 disabled={doc.parent === params.docId}
               >
                 Move to root

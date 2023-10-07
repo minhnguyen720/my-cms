@@ -30,6 +30,14 @@ const useMoveToFolderModal = (pageId: string) => {
     });
   };
 
+  const backToRoot = (targetId: string, type: string) => {
+    axios.put(`${baseUrl}/folder/move`, {
+      movingId: pageId,
+      targetId: targetId,
+      type: type,
+    });
+  };
+
   const handleCloseModal = () => {
     setFetchedFolder([]);
     setSelection([]);
@@ -81,9 +89,8 @@ const useMoveToFolderModal = (pageId: string) => {
     });
     if (res.data.success) {
       openAlert("Move files successfully", ALERT_CODES.SUCCESS);
-      if(type === "folder") {
+      if (type === "folder") {
         // update folder list
-
       }
     } else {
       openAlert("Move files failed", ALERT_CODES.ERROR);
@@ -122,6 +129,7 @@ const useMoveToFolderModal = (pageId: string) => {
     toggleRow,
     loadingOverlayVisible,
     loadingOverlayHanlder,
+    backToRoot
   };
 };
 

@@ -20,10 +20,12 @@ import { useParams } from "next/navigation";
 import { useForm } from "@mantine/form";
 import MoveToFolderModal from "../MoveToFolderModal";
 import useMoveToFolderModal from "../MoveToFolderModal/hooks/useMoveToFolderModal";
+import { BiHomeAlt } from "react-icons/bi";
 
 const FolderCard = ({
   folderName,
   folderId,
+  folderParent,
   actionHandler,
   renameModal,
   confirmModal
@@ -48,7 +50,9 @@ const FolderCard = ({
     fetchedFolders,
     toggleRow,
     loadingOverlayVisible,
+    backToRoot
   } = useMoveToFolderModal(docId);
+  const params = useParams();
 
   //Override moving folder to folder process to update folder list
   const move = () => {
@@ -142,6 +146,19 @@ const FolderCard = ({
                 onClick={renameModal.handler.open}
               >
                 Rename
+              </Menu.Item>
+              <Menu.Item
+                icon={<BiHomeAlt size={14} />}
+                onClick={() => {
+                  backToRoot(folderId, "folder");
+                  const newDocList = actionHandler.getFolderList().filter((item) => {
+                    return item._id !== folderId;
+                  });
+                  actionHandler.update(newDocList);
+                }}
+                disabled={folderParent === params.docId}
+              >
+                Move to root
               </Menu.Item>
 
               <Menu.Divider />
