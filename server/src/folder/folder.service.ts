@@ -23,8 +23,9 @@ export class FolderService {
           const doc = await this.docModel.findById(body.targetId);
           if (doc === undefined) return { success: false };
 
-          const newDocFolders = doc.folders.concat(body.ids);
-          doc.folders = newDocFolders;
+          // const newDocFolders = doc.folders.concat(body.ids);
+          // doc.folders = newDocFolders;
+          doc.folders = body.ids;
           doc.save();
           return {
             success: true,
@@ -33,8 +34,9 @@ export class FolderService {
           const folder = await this.folderModel.findById(body.targetId);
           if (folder === undefined) return { success: false };
 
-          const newFolders = folder.folders.concat(body.ids);
-          folder.folders = newFolders;
+          // const newFolders = folder.folders.concat(body.ids);
+          // folder.folders = newFolders;
+          folder.folders = body.ids
           folder.save();
           return {
             success: true,
