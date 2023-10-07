@@ -3,6 +3,7 @@ import { useDisclosure } from "@mantine/hooks";
 import axios from "axios";
 import { useState } from "react";
 import useAlert from "@/components/Alert/hooks";
+import { ALERT_CODES } from "@/constant";
 
 const useMoveToFolderModal = (pageId: string) => {
   const [searchValue, setSearchValue] = useState<string>("");
@@ -11,6 +12,7 @@ const useMoveToFolderModal = (pageId: string) => {
 
   const [opened, { open, close }] = useDisclosure(false);
   const [baseUrl] = useGetBaseUrl();
+  const {openAlert} = useAlert();
 
   const toggleRow = (id: string) => {
     setSelection((current) => {
@@ -21,7 +23,11 @@ const useMoveToFolderModal = (pageId: string) => {
   };
 
   const toggleAll = () =>
-    setSelection((current) => (current.length === fetchedFolders.length ? [] : fetchedFolders.map((item) => item.id)));
+    setSelection((current) =>
+      current.length === fetchedFolders.length
+        ? []
+        : fetchedFolders.map((item) => item.id),
+    );
 
   const handleCloseModal = () => {
     setFetchedFolder([]);
@@ -44,8 +50,18 @@ const useMoveToFolderModal = (pageId: string) => {
     }
   };
 
-  const handleMove = async () => {
-    console.log(selection);
+  const handleMove = async (targetId: string, type: string) => {
+    const res = await axios.put(`${baseUrl}/folder/move`, {
+      ids: selection,
+      type,
+      targetId,
+    });
+    if(res.data.success) {
+      openAlert("Move files successfully", ALERT_CODES.SUCCESS);
+    } else {
+      openAlert("Move files failed", ALERT_CODES.ERROR);
+    }
+    handleCloseModal();
   };
 
   const move2FolderSearch = () => {
@@ -81,7 +97,7 @@ const useMoveToFolderModal = (pageId: string) => {
     move2FolderResetSearch,
     fetchedFolders,
     toggleRow,
-    toggleAll
+    toggleAll,
   };
 };
 

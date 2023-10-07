@@ -76,6 +76,8 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
         toggleRow={toggleRow}
         toggleAll={toggleAll}
         {...searchProps}
+        docId={doc._id}
+        moveType="doc"
       />
       <Modal centered opened={opened} onClose={close} title="System notice">
         <Text>

@@ -5,13 +5,47 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Folder } from 'src/schemas/folder.schema';
 import { Model } from 'mongoose';
 import { Page } from 'src/schemas/page.schema';
+import { Doc } from 'src/schemas/doc.schema';
+import { MoveFolderDto } from './dto/move-folder.dto';
 
 @Injectable()
 export class FolderService {
   constructor(
     @InjectModel(Folder.name) private folderModel: Model<Folder>,
     @InjectModel(Page.name) private pageModel: Model<Page>,
+    @InjectModel(Doc.name) private docModel: Model<Doc>,
   ) {}
+
+  async move(body: MoveFolderDto) {
+    try {
+      switch (body.type) {
+        case 'doc':
+          const doc = await this.docModel.findById(body.targetId);
+          if (doc === undefined) return { success: false };
+          
+          const newDocFolders = doc.folders.concat(body.ids);
+          doc.folders = newDocFolders;
+          doc.save();
+          return {
+            success: true,
+          };
+        case 'folder':
+          for (const id of body.ids) {
+            await this.folderModel.findByIdAndUpdate(body.targetId, {
+              folder: id,
+            });
+          }
+          return {
+            success: true,
+          };
+        default:
+          return;
+      }
+    } catch (error) {
+      console.error(error);
+      return { success: false };
+    }
+  }
 
   async create(createFolderDto: CreateFolderDto) {
     try {

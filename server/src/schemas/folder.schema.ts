@@ -33,6 +33,9 @@ export class Folder {
 
   @Prop()
   project: string;
+
+  @Prop()
+  folders?: string[];
 }
 
 export const FolderSchema = SchemaFactory.createForClass(Folder);

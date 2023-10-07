@@ -11,6 +11,7 @@ import {
 import { FolderService } from './folder.service';
 import { CreateFolderDto } from './dto/create-folder.dto';
 import { UpdateFolderDto } from './dto/update-folder.dto';
+import { MoveFolderDto } from './dto/move-folder.dto';
 
 @Controller('folder')
 export class FolderController {
@@ -19,6 +20,11 @@ export class FolderController {
   @Post()
   async create(@Body() createFolderDto: CreateFolderDto) {
     return this.folderService.create(createFolderDto);
+  }
+
+  @Put("move")
+  async move(@Body() body: MoveFolderDto) {
+    return await this.folderService.move(body);
   }
 
   @Get()

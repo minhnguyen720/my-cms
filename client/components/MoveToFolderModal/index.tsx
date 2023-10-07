@@ -14,6 +14,8 @@ interface Props {
   selection: any;
   toggleRow: (rowId: string) => void;
   toggleAll: () => void;
+  docId: string;
+  moveType: string;
 }
 
 const MoveToFolderModal: React.FC<Props> = ({
@@ -28,6 +30,8 @@ const MoveToFolderModal: React.FC<Props> = ({
   selection,
   toggleRow,
   toggleAll,
+  docId,
+  moveType
 }) => {
   return (
     <Modal.Root centered opened={opened} onClose={handleCloseModal} size="90%">
@@ -89,7 +93,9 @@ const MoveToFolderModal: React.FC<Props> = ({
             </tbody>
           </Table>
           <Group position="right" py={16}>
-            <Button onClick={handleMove}>Confirm</Button>
+            <Button onClick={() => {
+              handleMove(docId,moveType)
+            }}>Confirm</Button>
             <Button color="red" onClick={handleCloseModal}>
               Cancel
             </Button>
