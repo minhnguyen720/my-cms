@@ -31,6 +31,8 @@ interface Props {
     add: (doc: any) => void;
     remove: (docId: string) => void;
     rename: (docId: string, value: string) => void;
+    getDocList: () => Document[];
+    update: (docList: Document[]) => void;
   };
   updateOpenerData?: any;
 }
@@ -43,6 +45,16 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
     await axios.delete(`${baseUrl}/doc/${doc._id}`);
     handler.remove(doc._id);
   };
+
+  // Override move doc to folder process to remove moving file from the current UI
+  const move = () => {
+    const newDocList = handler.getDocList().filter((item) => {
+      return item._id !== doc._id;
+    });
+    handler.update(newDocList);
+    handleMove(doc._id, "doc");
+  };
+
   const {
     opened: move2FolderOpened,
     handleCloseModal,
@@ -55,8 +67,7 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
     searchValue,
     setSearchValue,
     toggleRow,
-    toggleAll,
-    loadingOverlayVisible
+    loadingOverlayVisible,
   } = useMoveToFolderModal(doc.page);
 
   const searchProps = {
@@ -73,13 +84,12 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
         handleCloseModal={handleCloseModal}
         fetchedFolders={fetchedFolders}
         selection={selection}
-        handleMove={handleMove}
+        handleMove={move}
         toggleRow={toggleRow}
-        toggleAll={toggleAll}
-        {...searchProps}
         targetId={doc._id}
         moveType="doc"
         loadingOverlayVisible={loadingOverlayVisible}
+        {...searchProps}
       />
       <Modal centered opened={opened} onClose={close} title="System notice">
         <Text>
@@ -105,7 +115,9 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
             <Menu.Dropdown>
               <Menu.Label>Application</Menu.Label>
               <Menu.Item
-                onClick={() => {handleOpenModal(doc._id,"doc")}}
+                onClick={() => {
+                  handleOpenModal(doc._id, "doc");
+                }}
                 icon={<IconFolderSymlink size={14} />}
               >
                 Move to folder

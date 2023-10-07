@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateDocDto } from './dto/create-doc.dto';
 import { UpdateDocDto } from './dto/update-doc.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Doc } from 'src/schemas/doc.schema';
 import { Page } from 'src/schemas/page.schema';
 import { Project } from 'src/schemas/project.schema';
@@ -18,10 +18,12 @@ export class DocService {
 
   async getDocByPageId(pageId: string) {
     const docPromise = this.docModel.find({
-      page: pageId,
+      page: new Types.ObjectId(pageId),
+      parent: pageId,
     });
     const pagePromise = this.pageModel.findById(pageId);
-    const folderPromise = this.folderModel.find({ page: pageId });
+    const folderPromise = this.folderModel.find({ parent: pageId });
+
     return Promise.all([docPromise, pagePromise, folderPromise]).then(
       async (values) => {
         const [docData, pageData, folderData] = values;
@@ -55,9 +57,6 @@ export class DocService {
       name,
       description,
     });
-    // const targetPage = await this.pageModel.findById(docId);
-    // targetPage.docs.push(newDoc);
-    // await targetPage.save();
 
     return newDoc;
   }

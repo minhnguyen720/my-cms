@@ -26,16 +26,9 @@ const useMoveToFolderModal = (pageId: string) => {
     setSelection((current) => {
       return current.includes(id)
         ? current.filter((item) => item !== id)
-        : [...current, id];
+        : [id];
     });
   };
-
-  const toggleAll = () =>
-    setSelection((current) =>
-      current.length === fetchedFolders.length
-        ? []
-        : fetchedFolders.map((item) => item.id),
-    );
 
   const handleCloseModal = () => {
     setFetchedFolder([]);
@@ -82,12 +75,16 @@ const useMoveToFolderModal = (pageId: string) => {
 
   const handleMove = async (targetId: string, type: string) => {
     const res = await axios.put(`${baseUrl}/folder/move`, {
-      ids: selection,
+      movingId: selection[0],
       type,
       targetId,
     });
     if (res.data.success) {
       openAlert("Move files successfully", ALERT_CODES.SUCCESS);
+      if(type === "folder") {
+        // update folder list
+
+      }
     } else {
       openAlert("Move files failed", ALERT_CODES.ERROR);
     }
@@ -123,7 +120,6 @@ const useMoveToFolderModal = (pageId: string) => {
     move2FolderResetSearch,
     fetchedFolders,
     toggleRow,
-    toggleAll,
     loadingOverlayVisible,
     loadingOverlayHanlder,
   };

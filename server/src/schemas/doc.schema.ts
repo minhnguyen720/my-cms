@@ -53,6 +53,9 @@ export class Doc {
 
   @Prop()
   description?: string;
+
+  @Prop()
+  parent: string;
 }
 
 export const DocSchema = SchemaFactory.createForClass(Doc);

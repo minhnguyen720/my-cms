@@ -16,7 +16,7 @@ import Card from "./Card";
 import FolderCard from "../FolderCard";
 import CreateNewFolder from "../CreateNewFolder";
 import useFolderCardAction from "../CreateNewFolder/hook";
-import useCreateNewCardAction from "../CreateNewDocCard/hook";
+import useCardAction from "../CreateNewDocCard/hook";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import { Document, Folder } from "@/interfaces/Project";
@@ -27,15 +27,20 @@ interface Props {
 }
 
 const DocCards: React.FC<Props> = ({ docs, folders }) => {
-  const { folderList, addFolderItem, updateFolderList } =
-    useFolderCardAction(folders);
-  const { docList, handler } = useCreateNewCardAction(docs);
+  const {
+    folderList,
+    folderHandler,
+    confirmModal,
+    renameModal
+  } = useFolderCardAction(folders);
+  const { docList, handler } = useCardAction(docs);
   const [opened, { open, close }] = useDisclosure(false);
   const form = useForm({
     initialValues: {
       renameValue: "",
     },
   });
+
   const [openerData, setOpenerData] = useState("");
   const updateOpenerData = (value) => {
     setOpenerData(value);
@@ -74,7 +79,7 @@ const DocCards: React.FC<Props> = ({ docs, folders }) => {
         <Grid.Col span={12}>
           <Group>
             <Title order={3}>Folders</Title>
-            <CreateNewFolder updateFolderList={updateFolderList} />
+            <CreateNewFolder updateFolderList={folderHandler.update} />
           </Group>
         </Grid.Col>
         {folderList.length > 0 ? (
@@ -84,8 +89,10 @@ const DocCards: React.FC<Props> = ({ docs, folders }) => {
                 <Grid.Col span={3} key={folder._id}>
                   <FolderCard
                     folderName={folder.name}
-                    updateFolderList={updateFolderList}
+                    actionHandler={folderHandler}
                     folderId={folder._id}
+                    confirmModal={confirmModal}
+                    renameModal={renameModal}
                   />
                 </Grid.Col>
               );

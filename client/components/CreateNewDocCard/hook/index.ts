@@ -4,9 +4,10 @@ import axios from "axios";
 import { useAtomValue } from "jotai";
 import { useState } from "react";
 
-const useCreateNewCardAction = (docs) => {
-const [docList, setDocList] = useState<Document[]>(docs);
+const useCardAction = (docs) => {
+  const [docList, setDocList] = useState<Document[]>(docs);
   const baseUrl = useAtomValue(baseUrlAtom);
+
   const add = (doc) => {
     setDocList((prev) => [...prev, doc]);
   };
@@ -19,6 +20,14 @@ const [docList, setDocList] = useState<Document[]>(docs);
     });
   };
 
+  const update = (newDocList: Document[]) => {
+    setDocList(newDocList);
+  };
+
+  const getDocList = () => {
+    return docList;
+  };
+
   const rename = async (targetData: any, value: string) => {
     const res = await axios.put(`${baseUrl}/doc/rename`, { targetData, value });
     if (typeof res.data !== "string" && res.data?.length > 0)
@@ -29,9 +38,11 @@ const [docList, setDocList] = useState<Document[]>(docs);
     remove,
     add,
     rename,
+    update,
+    getDocList
   };
 
   return { docList, handler };
 };
 
-export default useCreateNewCardAction;
+export default useCardAction;

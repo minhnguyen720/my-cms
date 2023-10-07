@@ -20,24 +20,21 @@ export class FolderService {
     try {
       switch (body.type) {
         case 'doc':
-          const doc = await this.docModel.findById(body.targetId);
+          const doc = await this.docModel.findByIdAndUpdate(body.targetId, {
+            parent: body.movingId,
+          });
           if (doc === undefined) return { success: false };
-
-          // const newDocFolders = doc.folders.concat(body.ids);
-          // doc.folders = newDocFolders;
-          doc.folders = body.ids;
-          doc.save();
           return {
             success: true,
           };
         case 'folder':
-          const folder = await this.folderModel.findById(body.targetId);
+          const folder = await this.folderModel.findByIdAndUpdate(
+            body.targetId,
+            {
+              parent: body.movingId,
+            },
+          );
           if (folder === undefined) return { success: false };
-
-          // const newFolders = folder.folders.concat(body.ids);
-          // folder.folders = newFolders;
-          folder.folders = body.ids
-          folder.save();
           return {
             success: true,
           };

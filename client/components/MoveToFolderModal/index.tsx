@@ -21,7 +21,6 @@ interface Props {
   handleReset: () => void;
   selection: any;
   toggleRow: (rowId: string) => void;
-  toggleAll: () => void;
   targetId: string;
   moveType: string;
   loadingOverlayVisible: boolean;
@@ -38,7 +37,6 @@ const MoveToFolderModal: React.FC<Props> = ({
   handleReset,
   selection,
   toggleRow,
-  toggleAll,
   targetId,
   moveType,
   loadingOverlayVisible,
@@ -71,16 +69,7 @@ const MoveToFolderModal: React.FC<Props> = ({
             <Table horizontalSpacing="lg" verticalSpacing="lg" highlightOnHover>
               <thead>
                 <tr>
-                  <th>
-                    <Checkbox
-                      onChange={toggleAll}
-                      checked={selection.length === fetchedFolders.length}
-                      indeterminate={
-                        selection.length > 0 &&
-                        selection.length !== fetchedFolders.length
-                      }
-                    />
-                  </th>
+                  <th></th>
                   <th>Folder name</th>
                   <th>Page</th>
                   <th>Project</th>

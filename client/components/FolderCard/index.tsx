@@ -16,23 +16,19 @@ import {
   Text,
   TextInput,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import axios from "axios";
-import useGetBaseUrl from "@/hooks/utilities/getUrl";
 import { useParams } from "next/navigation";
-import useAlert from "../Alert/hooks";
-import { ALERT_CODES } from "@/constant";
-import { Folder } from "@/interfaces/Project";
 import { useForm } from "@mantine/form";
 import MoveToFolderModal from "../MoveToFolderModal";
 import useMoveToFolderModal from "../MoveToFolderModal/hooks/useMoveToFolderModal";
 
-const FolderCard = ({ folderName, updateFolderList, folderId }) => {
-  const [opened, handler] = useDisclosure(false);
-  const [baseUrl] = useGetBaseUrl();
+const FolderCard = ({
+  folderName,
+  folderId,
+  actionHandler,
+  renameModal,
+  confirmModal
+}) => {
   const { docId } = useParams();
-  const { openAlert } = useAlert();
-  const [renameOpened, renameHandler] = useDisclosure(false);
   const form = useForm({
     initialValues: {
       renameValue: folderName,
@@ -51,70 +47,32 @@ const FolderCard = ({ folderName, updateFolderList, folderId }) => {
     move2FolderResetSearch,
     fetchedFolders,
     toggleRow,
-    toggleAll,
-    loadingOverlayVisible
+    loadingOverlayVisible,
   } = useMoveToFolderModal(docId);
+
+  //Override moving folder to folder process to update folder list
+  const move = () => {
+    const newFolderList = actionHandler.getFolderList().filter((item) => {
+      return item._id !== folderId;
+    });
+    actionHandler.update(newFolderList);
+    handleMove(folderId, "folder");
+  };
 
   const moveToFolderModalProps = {
     opened: move2FolderOpened,
     handleCloseModal,
     fetchedFolders,
     selection,
-    handleMove,
+    handleMove: move,
     searchValue,
     setSearchValue,
     handleSearch: move2FolderSearch,
     handleReset: move2FolderResetSearch,
     toggleRow,
-    toggleAll,
     moveType: "folder",
     targetId: folderId,
-    loadingOverlayVisible
-  };
-
-  const handleDeleteFolder = async () => {
-    try {
-      const res: {
-        data: { isSuccess: boolean; latestFolderList: Folder[] | undefined };
-      } = await axios.delete(`${baseUrl}/folder/${folderId}/${docId}`);
-      if (res.data.isSuccess) {
-        openAlert("Delete folder success", ALERT_CODES.SUCCESS);
-        updateFolderList(res.data.latestFolderList);
-        handler.close();
-      } else {
-        openAlert("Delete folder fail", ALERT_CODES.ERROR);
-        handler.close();
-      }
-    } catch (error) {
-      console.error(error);
-      openAlert("Delete folder fail", ALERT_CODES.ERROR);
-      handler.close();
-    }
-  };
-
-  const handleRenameFolder = async (values) => {
-    try {
-      const body = {
-        folderId: folderId,
-        name: values.renameValue,
-        pageId: docId,
-      };
-      const res: {
-        data: { isSuccess: boolean; latestFolderList: Folder[] | undefined };
-      } = await axios.put(`${baseUrl}/folder/rename`, body);
-      if (res.data.isSuccess) {
-        openAlert("Rename folder success", ALERT_CODES.SUCCESS);
-        await updateFolderList(res.data.latestFolderList);
-        renameHandler.close();
-      } else {
-        openAlert("Rename folder fail", ALERT_CODES.ERROR);
-        renameHandler.close();
-      }
-    } catch (error) {
-      console.error(error);
-      openAlert("Rename folder fail", ALERT_CODES.ERROR);
-      renameHandler.close();
-    }
+    loadingOverlayVisible,
   };
 
   return (
@@ -122,18 +80,18 @@ const FolderCard = ({ folderName, updateFolderList, folderId }) => {
       <MoveToFolderModal {...moveToFolderModalProps} />
       <Modal
         centered
-        opened={renameOpened}
-        onClose={renameHandler.close}
+        opened={renameModal.opened}
+        onClose={renameModal.handler.close}
         title="System notice"
       >
         <form
           onSubmit={form.onSubmit((values) => {
-            handleRenameFolder(values);
+            actionHandler.rename(values, docId);
           })}
         >
           <TextInput {...form.getInputProps("renameValue")} />
           <Group className="mt-4" position="right">
-            <Button onClick={renameHandler.close}>Cancel</Button>
+            <Button onClick={renameModal.handler.close}>Cancel</Button>
             <Button type="submit" color="blue">
               Process
             </Button>
@@ -142,8 +100,8 @@ const FolderCard = ({ folderName, updateFolderList, folderId }) => {
       </Modal>
       <Modal
         centered
-        opened={opened}
-        onClose={handler.close}
+        opened={confirmModal.opened}
+        onClose={confirmModal.handler.close}
         title="System notice"
       >
         <Text>
@@ -151,14 +109,19 @@ const FolderCard = ({ folderName, updateFolderList, folderId }) => {
           continue
         </Text>
         <Group className="mt-4" position="right">
-          <Button onClick={handler.close}>Cancel</Button>
-          <Button color="red" onClick={handleDeleteFolder}>
+          <Button onClick={confirmModal.handler.close}>Cancel</Button>
+          <Button
+            color="red"
+            onClick={() => {
+              actionHandler.remove(folderId, docId);
+            }}
+          >
             Process
           </Button>
         </Group>
       </Modal>
-      <div className="trasnition-all relative flex h-full w-full cursor-pointer flex-col items-center justify-around rounded-md border-2 border-solid border-white p-5 duration-150 hover:text-white">
-        <Box className="absolute right-0 top-0 z-50 m-2">
+      <div className="relative flex h-full w-full cursor-pointer items-center rounded-md border-2 border-solid border-white p-5 transition-all duration-150 hover:text-white">
+        <Box className="absolute right-0 z-[100] mr-4">
           <Menu shadow="md" width={200}>
             <Menu.Target>
               <ActionIcon>
@@ -176,7 +139,7 @@ const FolderCard = ({ folderName, updateFolderList, folderId }) => {
               </Menu.Item>
               <Menu.Item
                 icon={<IconCursorText size={14} />}
-                onClick={renameHandler.open}
+                onClick={renameModal.handler.open}
               >
                 Rename
               </Menu.Item>
@@ -187,7 +150,7 @@ const FolderCard = ({ folderName, updateFolderList, folderId }) => {
               <Menu.Item
                 color="red"
                 icon={<IconTrash size={14} />}
-                onClick={handler.open}
+                onClick={confirmModal.handler.open}
               >
                 Delete this folder
               </Menu.Item>
@@ -195,8 +158,10 @@ const FolderCard = ({ folderName, updateFolderList, folderId }) => {
           </Menu>
         </Box>
 
-        <IconFolder size={"13vmin"} />
-        <p className="text-md">{folderName}</p>
+        <IconFolder size={"2rem"} />
+        <div className="px-5">
+          <p className="text-md">{folderName}</p>
+        </div>
       </div>
     </>
   );

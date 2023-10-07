@@ -1,5 +1,5 @@
 export class MoveFolderDto {
-    ids:string[];
+    movingId:string;
     type: string;
     targetId: string;
 }
