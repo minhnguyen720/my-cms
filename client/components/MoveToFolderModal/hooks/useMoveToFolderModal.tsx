@@ -1,17 +1,21 @@
 import useGetBaseUrl from "@/hooks/utilities/getUrl";
-import { Checkbox } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import axios from "axios";
 import { useState } from "react";
-import classes from "../tableSelection.module.css";
-import cx from "clsx";
+import useAlert from "@/components/Alert/hooks";
+import { Checkbox } from "@mantine/core";
+import React from "react";
 
 const useMoveToFolderModal = (pageId: string) => {
-  const [opened, { open, close }] = useDisclosure(false);
+  const [searchResult, setSearchResult] = useState<any[]>([]);
+  const [searchValue, setSearchValue] = useState<string>("");
   const [fetchedFolders, setFetchedFolder] = useState<any[]>([]);
   const [rows, setRows] = useState<any[]>([]);
-  const [baseUrl] = useGetBaseUrl();
   const [selection, setSelection] = useState<string[]>([]);
+
+  const [opened, { open, close }] = useDisclosure(false);
+  const [baseUrl] = useGetBaseUrl();
+  const { openAlert } = useAlert();
 
   const toggleRow = (id: string) => {
     console.log(id);  
@@ -22,16 +26,9 @@ const useMoveToFolderModal = (pageId: string) => {
     });
   };
 
-  const toggleAll = () => {
-    setSelection((current) =>
-      current.length === fetchedFolders.length
-        ? []
-        : fetchedFolders.map((item) => item.id),
-    );
-  };
-
   const handleCloseModal = () => {
     setFetchedFolder([]);
+    setSelection([]);
     close();
   };
 
@@ -42,18 +39,16 @@ const useMoveToFolderModal = (pageId: string) => {
       );
       if (res === undefined) return;
 
-      const formatedRows = res.data.map((item) => {
-        const selected = selection.includes(item.id);
-        setFetchedFolder((prev) => {
-          return [...prev, { id: item.id }];
-        });
+      setFetchedFolder(res.data);
 
+      const formatedRows = res.data.map((item) => {
         return (
-          <tr key={item.id} className={cx({ [classes.rowSelected]: selected })}>
+          <tr key={item.id}>
             <td>
               <Checkbox
-                checked={selection.includes(item.id)}
-                onChange={() => toggleRow(item.id)}
+                onChange={() => {
+                  toggleRow(item.id);
+                }}
               />
             </td>
             <td>{item.name}</td>
@@ -66,17 +61,58 @@ const useMoveToFolderModal = (pageId: string) => {
 
       setRows(formatedRows);
       open();
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+      handleCloseModal();
+    }
+  };
+
+  const handleMove = async () => {
+    console.log(selection);
+  };
+
+  const move2FolderSearch = () => {
+    const filteredResult = fetchedFolders.filter((item) => {
+      return (
+        item.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+        item.page.toLowerCase().includes(searchValue.toLowerCase()) ||
+        item.project.toLowerCase().includes(searchValue.toLowerCase())
+      );
+    });
+    const formatedRows = filteredResult.map((item) => {
+      return (
+        <tr key={item.id}>
+          <td>
+            <Checkbox />
+          </td>
+          <td>{item.name}</td>
+          <td>{item.page}</td>
+          <td>{item.project}</td>
+          <td>{item.updatedDate}</td>
+        </tr>
+      );
+    });
+
+    setSearchResult(formatedRows);
+  };
+
+  const move2FolderResetSearch = () => {
+    setSearchValue("");
+    setSearchResult([]);
   };
 
   return {
     opened,
     handleCloseModal,
     handleOpenModal,
-    fetchedFolders,
-    toggleAll,
     selection,
     rows,
+    handleMove,
+    move2FolderSearch,
+    setSearchValue,
+    searchValue,
+    move2FolderResetSearch,
+    searchResult,
   };
 };
 

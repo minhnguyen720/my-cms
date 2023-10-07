@@ -4,19 +4,18 @@ import {
   IconSearch,
   IconRefresh,
   IconInfoCircleFilled,
-  IconPlus,
 } from "@tabler/icons-react";
 import useStyles from "./style";
-import { ChangeEvent, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Tips } from "./components/Tips";
-import { useRouter, usePathname } from "next/navigation";
 import { useMediaQuery } from "@mantine/hooks";
 
 interface Props {
-  handleSearch: (value: string) => void;
-  handleReset: () => void;
-  searchValue: string;
-  setSearchValue: (value: string | ChangeEvent<any>) => void;
+  handleSearch?: (value: string) => void;
+  handleReset?: () => void;
+  searchValue?: string;
+  setSearchValue?: React.Dispatch<React.SetStateAction<string>>;
+  placeholder?: string;
 }
 
 const SearchBar: React.FC<Props> = ({
@@ -24,11 +23,10 @@ const SearchBar: React.FC<Props> = ({
   handleReset,
   searchValue,
   setSearchValue,
+  placeholder,
 }) => {
   const { classes } = useStyles();
   const inputRef = useRef(null);
-  const navigator = useRouter();
-  const currentPathname = usePathname();
   const matches = useMediaQuery("(max-width: 474px)");
 
   useEffect(() => {
@@ -49,7 +47,7 @@ const SearchBar: React.FC<Props> = ({
             if (inputRef.current !== null) inputRef.current.blur();
           },
         ],
-      ])
+      ]),
     );
   }, [inputRef]);
 
@@ -59,7 +57,7 @@ const SearchBar: React.FC<Props> = ({
     <>
       <Tips opened={opened} close={close} />
       <Flex>
-        <Box className="mr-2 text-center my-auto">
+        <Box className="my-auto mr-2 text-center">
           <ActionIcon onClick={open}>
             <IconInfoCircleFilled />
           </ActionIcon>
@@ -82,7 +80,11 @@ const SearchBar: React.FC<Props> = ({
                 },
               ],
             ])}
-            placeholder="Search by document's name, created user's name and updated user's name"
+            placeholder={
+              placeholder
+                ? placeholder
+                : "Search by document's name, created user's name and updated user's name"
+            }
             onChange={(event) => setSearchValue(event.currentTarget.value)}
             value={searchValue}
           />
@@ -96,7 +98,8 @@ const SearchBar: React.FC<Props> = ({
           <ActionIcon
             className={classes.searchbarIcon}
             onClick={() => {
-              handleSearch(searchValue);
+              if (handleSearch) handleSearch(searchValue);
+              else console.log("search");
             }}
           >
             <IconSearch />
@@ -104,18 +107,11 @@ const SearchBar: React.FC<Props> = ({
           <ActionIcon
             className={classes.searchbarIcon}
             onClick={() => {
-              handleReset();
+              if (handleReset) handleReset();
+              else console.log("reset");
             }}
           >
             <IconRefresh />
-          </ActionIcon>
-          <ActionIcon
-            className={classes.searchbarIcon}
-            onClick={() => {
-              navigator.push(`${currentPathname}/new-page`);
-            }}
-          >
-            <IconPlus />
           </ActionIcon>
         </Group>
       </Flex>

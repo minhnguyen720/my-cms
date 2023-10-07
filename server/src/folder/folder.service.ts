@@ -29,16 +29,16 @@ export class FolderService {
     }
   }
 
-  findFolderByPageId(pageId: any) {
+  async findFolderByPageId(pageId: any) {
     return this.folderModel.find({
       page: pageId,
     });
   }
 
   async moveToFolderData(pageId: string) {
-    const pagePromise = await this.pageModel.findById(pageId).select('name');
-    const foldersPromise = await this.findFolderByPageId(pageId);
-    return Promise.all([pagePromise, foldersPromise]).then(values => {
+    const pagePromise = this.pageModel.findById(pageId).select('name');
+    const foldersPromise = this.findFolderByPageId(pageId);
+    return Promise.all([pagePromise, foldersPromise]).then((values) => {
       const [page, folders] = values;
       const mappedData = folders.map((folder) => {
         return {
@@ -50,7 +50,7 @@ export class FolderService {
         };
       });
       return mappedData;
-    })
+    });
   }
 
   async findAll() {
