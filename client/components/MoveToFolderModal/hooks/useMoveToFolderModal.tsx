@@ -3,28 +3,25 @@ import { useDisclosure } from "@mantine/hooks";
 import axios from "axios";
 import { useState } from "react";
 import useAlert from "@/components/Alert/hooks";
-import { Checkbox } from "@mantine/core";
-import React from "react";
 
 const useMoveToFolderModal = (pageId: string) => {
-  const [searchResult, setSearchResult] = useState<any[]>([]);
   const [searchValue, setSearchValue] = useState<string>("");
   const [fetchedFolders, setFetchedFolder] = useState<any[]>([]);
-  const [rows, setRows] = useState<any[]>([]);
   const [selection, setSelection] = useState<string[]>([]);
 
   const [opened, { open, close }] = useDisclosure(false);
   const [baseUrl] = useGetBaseUrl();
-  const { openAlert } = useAlert();
 
   const toggleRow = (id: string) => {
-    console.log(id);  
     setSelection((current) => {
       return current.includes(id)
         ? current.filter((item) => item !== id)
         : [...current, id];
     });
   };
+
+  const toggleAll = () =>
+    setSelection((current) => (current.length === fetchedFolders.length ? [] : fetchedFolders.map((item) => item.id)));
 
   const handleCloseModal = () => {
     setFetchedFolder([]);
@@ -40,26 +37,6 @@ const useMoveToFolderModal = (pageId: string) => {
       if (res === undefined) return;
 
       setFetchedFolder(res.data);
-
-      const formatedRows = res.data.map((item) => {
-        return (
-          <tr key={item.id}>
-            <td>
-              <Checkbox
-                onChange={() => {
-                  toggleRow(item.id);
-                }}
-              />
-            </td>
-            <td>{item.name}</td>
-            <td>{item.page}</td>
-            <td>{item.project}</td>
-            <td>{item.updatedDate}</td>
-          </tr>
-        );
-      });
-
-      setRows(formatedRows);
       open();
     } catch (error) {
       console.error(error);
@@ -79,26 +56,17 @@ const useMoveToFolderModal = (pageId: string) => {
         item.project.toLowerCase().includes(searchValue.toLowerCase())
       );
     });
-    const formatedRows = filteredResult.map((item) => {
-      return (
-        <tr key={item.id}>
-          <td>
-            <Checkbox />
-          </td>
-          <td>{item.name}</td>
-          <td>{item.page}</td>
-          <td>{item.project}</td>
-          <td>{item.updatedDate}</td>
-        </tr>
-      );
-    });
-
-    setSearchResult(formatedRows);
+    setFetchedFolder(filteredResult);
   };
 
-  const move2FolderResetSearch = () => {
+  const move2FolderResetSearch = async () => {
+    const res = await axios.get(
+      `${baseUrl}/folder/getMoveToFolderData/${pageId}`,
+    );
+    if (res === undefined) return;
+
+    setFetchedFolder(res.data);
     setSearchValue("");
-    setSearchResult([]);
   };
 
   return {
@@ -106,13 +74,14 @@ const useMoveToFolderModal = (pageId: string) => {
     handleCloseModal,
     handleOpenModal,
     selection,
-    rows,
     handleMove,
     move2FolderSearch,
     setSearchValue,
     searchValue,
     move2FolderResetSearch,
-    searchResult,
+    fetchedFolders,
+    toggleRow,
+    toggleAll
   };
 };
 

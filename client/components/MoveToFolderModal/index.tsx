@@ -1,30 +1,33 @@
-import { Button, Group, Modal, Table } from "@mantine/core";
-import { PiCursorClickBold } from "react-icons/pi";
+import { Button, Checkbox, Group, Modal, Table } from "@mantine/core";
 import SearchBar from "../SearchBar";
-import { ChangeEvent } from "react";
 
 interface Props {
   opened: boolean;
   handleCloseModal: () => void;
   handleMove: any;
-  rows: any;
+  fetchedFolders: any;
   handleSearch: any;
   searchValue: string;
   setSearchValue: React.Dispatch<React.SetStateAction<string>>;
   searchResult?: any;
   handleReset: () => void;
+  selection: any;
+  toggleRow: (rowId: string) => void;
+  toggleAll: () => void;
 }
 
 const MoveToFolderModal: React.FC<Props> = ({
   opened,
   handleCloseModal,
-  rows,
+  fetchedFolders,
   handleMove,
   handleSearch,
   searchValue,
   setSearchValue,
-  searchResult,
   handleReset,
+  selection,
+  toggleRow,
+  toggleAll,
 }) => {
   return (
     <Modal.Root centered opened={opened} onClose={handleCloseModal} size="90%">
@@ -48,7 +51,14 @@ const MoveToFolderModal: React.FC<Props> = ({
             <thead>
               <tr>
                 <th>
-                  <PiCursorClickBold className="text-lg" />
+                  <Checkbox
+                    onChange={toggleAll}
+                    checked={selection.length === fetchedFolders.length}
+                    indeterminate={
+                      selection.length > 0 &&
+                      selection.length !== fetchedFolders.length
+                    }
+                  />
                 </th>
                 <th>Folder name</th>
                 <th>Page</th>
@@ -56,7 +66,27 @@ const MoveToFolderModal: React.FC<Props> = ({
                 <th>Last updated</th>
               </tr>
             </thead>
-            <tbody>{searchResult.length > 0 ? searchResult : rows}</tbody>
+            <tbody>
+              {fetchedFolders.length > 0 &&
+                fetchedFolders.map((item) => {
+                  return (
+                    <tr key={item.id}>
+                      <td>
+                        <Checkbox
+                          checked={selection.includes(item.id)}
+                          onChange={() => {
+                            toggleRow(item.id);
+                          }}
+                        />
+                      </td>
+                      <td>{item.name}</td>
+                      <td>{item.page}</td>
+                      <td>{item.project}</td>
+                      <td>{item.updatedDate}</td>
+                    </tr>
+                  );
+                })}
+            </tbody>
           </Table>
           <Group position="right" py={16}>
             <Button onClick={handleMove}>Confirm</Button>

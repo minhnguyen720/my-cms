@@ -47,13 +47,15 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
     opened: move2FolderOpened,
     handleCloseModal,
     handleOpenModal,
-    rows,
+    fetchedFolders,
+    selection,
     handleMove,
     move2FolderSearch,
     move2FolderResetSearch,
     searchValue,
     setSearchValue,
-    searchResult
+    toggleRow,
+    toggleAll,
   } = useMoveToFolderModal(doc.page);
 
   const searchProps = {
@@ -61,7 +63,6 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
     setSearchValue,
     handleSearch: move2FolderSearch,
     handleReset: move2FolderResetSearch,
-    searchResult,
   };
 
   return (
@@ -69,8 +70,11 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
       <MoveToFolderModal
         opened={move2FolderOpened}
         handleCloseModal={handleCloseModal}
-        rows={rows}
+        fetchedFolders={fetchedFolders}
+        selection={selection}
         handleMove={handleMove}
+        toggleRow={toggleRow}
+        toggleAll={toggleAll}
         {...searchProps}
       />
       <Modal centered opened={opened} onClose={close} title="System notice">
