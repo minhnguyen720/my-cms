@@ -24,7 +24,7 @@ const CreateNewFolder = ({ updateFolderList }) => {
   const baseUrl = useAtomValue(baseUrlAtom);
   const { openAlert } = useAlert();
   const currentUser = useAtomValue(currentUserAtom);
-  const { docId, id } = useParams();
+  const { pageId, projectNameId } = useParams();
 
   const initialValues: {
     folderName: string;
@@ -43,8 +43,8 @@ const CreateNewFolder = ({ updateFolderList }) => {
         createdUser: currentUser.id,
         updatedUser: currentUser.id,
         name: values.folderName,
-        page: docId,
-        project: id,
+        page: pageId,
+        project: projectNameId,
       };
       const res: { data: { isSuccess: boolean; latestFolderList: Folder[] } } =
         await axios.post(`${baseUrl}/folder`, newFolderBody);

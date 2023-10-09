@@ -7,7 +7,7 @@ import useProjectOverall from "./hooks/useProjectOverall";
 import { projectIdAtom } from "@/atoms";
 import { useSetAtom } from "jotai";
 import { useEffect } from "react";
-import { ProjectTableItem } from "@/app/project/[id]/page";
+import { ProjectTableItem } from "@/app/project/[projectNameId]/page";
 
 interface Props {
   id?: string;

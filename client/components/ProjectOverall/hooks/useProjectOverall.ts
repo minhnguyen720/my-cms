@@ -7,7 +7,7 @@ import {
   notFoundAtom,
   projectIdAtom,
 } from "@/atoms";
-import { ProjectTableItem } from "@/app/project/[id]/page";
+import { ProjectTableItem } from "@/app/project/[projectNameId]/page";
 
 const useProjectOverall = (data: ProjectTableItem[]) => {
   const [datasource, setDataSource] = useAtom(datasourceAtom);

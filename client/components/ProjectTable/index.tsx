@@ -4,7 +4,7 @@ import ProjectTableDesktop from "./components/Desktop";
 import { useMediaQuery } from "@mantine/hooks";
 import SearchBar from "../SearchBar";
 import { useSearchBar } from "../SearchBar/hooks";
-import { ProjectTableItem } from "@/app/project/[id]/page";
+import { ProjectTableItem } from "@/app/project/[projectNameId]/page";
 import { ActionIcon, Group, Text } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { usePathname } from "next/navigation";

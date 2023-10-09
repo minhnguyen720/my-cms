@@ -30,7 +30,7 @@ const FolderCard = ({
   renameModal,
   confirmModal
 }) => {
-  const { docId } = useParams();
+  const { pageId } = useParams();
   const form = useForm({
     initialValues: {
       renameValue: folderName,
@@ -51,7 +51,7 @@ const FolderCard = ({
     toggleRow,
     loadingOverlayVisible,
     backToRoot
-  } = useMoveToFolderModal(docId);
+  } = useMoveToFolderModal(pageId);
   const params = useParams();
 
   //Override moving folder to folder process to update folder list
@@ -90,7 +90,7 @@ const FolderCard = ({
       >
         <form
           onSubmit={form.onSubmit((values) => {
-            actionHandler.rename(values, docId);
+            actionHandler.rename(values, pageId);
           })}
         >
           <TextInput {...form.getInputProps("renameValue")} />
@@ -117,7 +117,7 @@ const FolderCard = ({
           <Button
             color="red"
             onClick={() => {
-              actionHandler.remove(folderId, docId);
+              actionHandler.remove(folderId, pageId);
             }}
           >
             Process
@@ -156,7 +156,7 @@ const FolderCard = ({
                   });
                   actionHandler.update(newDocList);
                 }}
-                disabled={folderParent === params.docId}
+                disabled={folderParent === params.pageId}
               >
                 Move to root
               </Menu.Item>

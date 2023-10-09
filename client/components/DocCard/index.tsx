@@ -80,7 +80,7 @@ const DocCards: React.FC<Props> = ({ docs, folders }) => {
                   span={3}
                   key={folder._id}
                   onDoubleClick={() => {
-                    const path = `/project/${params.id}/${params.docId}/folder/${folder._id}`;
+                    const path = `/project/${params.projectNameId}/${params.pageId}/folder/${folder._id}`;
                     navigator.push(path);
                   }}
                 >

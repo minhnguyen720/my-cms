@@ -25,7 +25,7 @@ import { Document } from "@/interfaces/Project";
 import MoveToFolderModal from "@/components/MoveToFolderModal";
 import useMoveToFolderModal from "@/components/MoveToFolderModal/hooks/useMoveToFolderModal";
 import { BiHomeAlt } from "react-icons/bi";
-import { useParams } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 
 interface Props {
   doc: Document;
@@ -43,6 +43,8 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
   const [opened, { open, close }] = useDisclosure(false);
   const baseUrl = useAtomValue(baseUrlAtom);
   const params = useParams();
+  const currentPathname = usePathname();
+  const navigator = useRouter();
 
   const handleDeleteDocument = async () => {
     await axios.delete(`${baseUrl}/doc/${doc._id}`);
@@ -182,7 +184,9 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
             <DetailItem label="Number of fields" content={doc.fields?.length} />
           </Text>
 
-          <Button variant="light" color="blue" fullWidth mt="md" radius="md">
+          <Button variant="light" color="blue" fullWidth mt="md" radius="md" onClick={() => {
+            navigator.push(`${currentPathname}/detail/${doc._id}`)
+          }}>
             Go to document detail
           </Button>
         </MantineCard>

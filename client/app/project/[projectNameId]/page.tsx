@@ -22,7 +22,7 @@ async function getProjectData(id: string) {
 
 interface Props {
   params: {
-    id: string;
+    projectNameId: string;
   };
 }
 
@@ -36,10 +36,10 @@ export interface ProjectTableItem {
   project?: string;
 }
 
-const ProjectOverallPage: React.FC<Props> = async ({ params: { id } }) => {
+const ProjectOverallPage: React.FC<Props> = async ({ params: { projectNameId } }) => {
   try {
-    const data: ProjectTableItem[] = await getProjectData(id);
-    return <ProjectOverall id={id} data={data} />;
+    const data: ProjectTableItem[] = await getProjectData(projectNameId);
+    return <ProjectOverall id={projectNameId} data={data} />;
   } catch (error) {
     console.error(error);
     return <GeneralNotFound />;

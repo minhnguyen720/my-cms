@@ -68,7 +68,7 @@ const Navbar: React.FC<Props> = ({
               key={index}
               handleActive={() => {
                 if (!item.children) handleCurrentMenu(Number(index));
-                
+
                 if (item.children === undefined) setOpened(false);
 
                 setActive(index);

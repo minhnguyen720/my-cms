@@ -17,7 +17,7 @@ async function getDocData(id: string) {
 }
 
 const ProjectDetail: React.FC<any> = async ({ params }) => {
-  const res = await getDocData(params.docId);
+  const res = await getDocData(params.pageId);
   return (
     <div className="px-5">
       <PageDetail data={res} />

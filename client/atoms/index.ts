@@ -1,4 +1,4 @@
-import { ProjectTableItem } from "@/app/project/[id]/page";
+import { ProjectTableItem } from "@/app/project/[projectNameId]/page";
 import { ALERT_CODES } from "@/constant";
 import { Project } from "@/interfaces/Project";
 import { atom } from "jotai";
