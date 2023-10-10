@@ -1,11 +1,12 @@
-'use client'
+"use client";
 
 import cx from "clsx";
 import { rem, Text } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { IconGripVertical } from "@tabler/icons-react";
-import classes from "./DndListHandle.module.css";
+import { useStyles } from "./style";
+import { useEffect } from "react";
 
 const data = [
   { position: 6, mass: 12.011, symbol: "C", name: "Carbon" },
@@ -17,6 +18,12 @@ const data = [
 
 export default function DetailDraggable() {
   const [state, handlers] = useListState(data);
+  const { classes } = useStyles();
+
+  // update db goes here...
+  useEffect(() => {
+    console.log(state);
+  }, [state]);
 
   const items = state.map((item, index) => (
     <Draggable key={item.symbol} index={index} draggableId={item.symbol}>
@@ -49,8 +56,6 @@ export default function DetailDraggable() {
   return (
     <DragDropContext
       onDragEnd={({ destination, source }) => {
-        console.log(destination);
-        console.log(source);
         handlers.reorder({ from: source.index, to: destination?.index || 0 });
       }}
     >

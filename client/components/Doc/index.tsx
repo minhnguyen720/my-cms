@@ -13,7 +13,7 @@ import { useWindowScroll } from "@mantine/hooks";
 import { IconArrowUp } from "@tabler/icons-react";
 import React, { useState } from "react";
 import FormContainer from "../FormContainer";
-import Form from "@/components/Form";
+import FormDetailItem from "@/components/FormDetailItem";
 
 const Doc = () => {
   const { form, handleSubmit } = useFieldsControl(projectStructure.data);
@@ -36,7 +36,7 @@ const Doc = () => {
             })}
           >
             <FormContainer>
-              <Form data={projectStructure.data} form={form} />
+              <FormDetailItem data={projectStructure.data} form={form} />
             </FormContainer>
           </form>
         </>

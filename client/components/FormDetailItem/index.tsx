@@ -6,17 +6,15 @@ import Image from "@/components/FieldTypes/Image";
 import ImageText from "@/components/FieldTypes/ImageText";
 import { UseFormReturnType } from "@mantine/form";
 import { Field } from "@/interfaces/Project";
-import { Center } from "@mantine/core";
 
 interface Props {
   data: Field[];
   form: UseFormReturnType<any>;
 }
 
-const Form: React.FC<Props> = ({ data, form }) => {
+const FormDetailItem: React.FC<Props> = ({ data, form }) => {
   return data.map((item, index) => {
     const textFieldProps = {
-      key: index,
       form,
       label: item.label,
       fieldId: item.field_id,
@@ -25,9 +23,9 @@ const Form: React.FC<Props> = ({ data, form }) => {
     };
     switch (item.type) {
       case "text":
-        return <Text {...textFieldProps} />;
+        return <Text {...textFieldProps} key={index}/>;
       case "long_text":
-        return <LongText {...textFieldProps} />;
+        return <LongText {...textFieldProps} key={index}/>;
       case "image":
         return <Image alt={`attch_${index}`} key={index} src={item.value} />;
       case "image_text":
@@ -50,4 +48,4 @@ const Form: React.FC<Props> = ({ data, form }) => {
   });
 };
 
-export default Form;
+export default FormDetailItem;
