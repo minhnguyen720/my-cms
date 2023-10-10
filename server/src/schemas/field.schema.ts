@@ -40,6 +40,9 @@ export class Field {
   @Prop()
   isUseEditor?: boolean;
 
+  @Prop()
+  order: number;
+
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Field' })
   doc: Doc;
 }

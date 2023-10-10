@@ -46,14 +46,14 @@ export class DocService {
   }
 
   async create(createDocDto: CreateDocDto) {
-    const { name, description, docId } = createDocDto;
+    const { name, description, pageId } = createDocDto;
     const newDoc = await this.docModel.create({
       createdDate: new Date(),
       updatedDate: new Date(),
       createdUser: 'admin',
       updatedUser: 'admin',
       active: true,
-      page: docId,
+      page: pageId,
       name,
       description,
     });
