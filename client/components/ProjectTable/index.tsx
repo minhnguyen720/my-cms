@@ -9,7 +9,7 @@ import { ActionIcon, Group, Text } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
-import useStyles from "../SearchBar/style";
+import {useStyles} from "../SearchBar/style";
 
 interface Props {
   data: ProjectTableItem[] | boolean;
@@ -35,7 +35,7 @@ const ProjectTable: React.FC<Props> = ({ data }) => {
           setSearchValue={setSearchValue}
         />
         <Group py={16}>
-          <Text>Create new folder</Text>
+          <Text>Create new page</Text>
           <ActionIcon
             className={classes.searchbarIcon}
             onClick={() => {

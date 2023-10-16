@@ -15,18 +15,8 @@ interface Props {
   setOpened: React.Dispatch<SetStateAction<boolean>>;
 }
 
-const projects: iNavlink[] = [
-  {
-    label: "Champions",
-    href: "/project/chmp",
-  },
-  { label: "CLV Homepage", href: "/project/clgh" },
-  { label: "Asset Management", href: "/project/asm" },
-];
-
 const navbarData: iNavlink[] = [
-  { icon: IconHome2, href: "/", label: "Home" },
-  { icon: IconBook, label: "Projects", children: projects },
+  { icon: IconHome2, href: "/", label: "Home" }
 ];
 
 const Navbar: React.FC<Props> = ({
@@ -52,7 +42,7 @@ const Navbar: React.FC<Props> = ({
 
   return (
     <MantineNavbar
-      width={{ sm: 200, lg: 300 }}
+      width={{ sm: 200, lg: 250 }}
       p="xs"
       hidden={hidden}
       hiddenBreakpoint={hiddenBreakpoint}

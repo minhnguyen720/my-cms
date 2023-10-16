@@ -1,23 +1,21 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
-import { Page } from './page.schema';
-import { Transform } from 'class-transformer';
 
 export type ProjectDocument = HydratedDocument<Project>;
 
 @Schema({ collection: 'projects' })
 export class Project {
-  @Transform(({ value }) => value.toString())
-  _id: string;
-
-  @Prop({ required: true })
-  id: string;
+  // @Transform(({ value }) => value.toString())
+  // _id: string;
 
   @Prop()
-  createDate: Date;
+  id?: string;
 
   @Prop()
-  updatedDate: Date;
+  createdDate: string;
+
+  @Prop()
+  updatedDate: string;
 
   @Prop()
   createdUser: string;
@@ -28,6 +26,11 @@ export class Project {
   @Prop()
   superAdminId: string;
 
+  @Prop()
+  name?: string;
+
+  @Prop()
+  active: boolean;
   // @Prop({ type: MongooseSchema.Types.Array, ref: 'Page' })
   // pages?: Page[];
 }

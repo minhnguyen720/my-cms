@@ -18,8 +18,8 @@ import {
 } from "@mantine/core";
 import { useParams } from "next/navigation";
 import { useForm } from "@mantine/form";
-import MoveToFolderModal from "../MoveToFolderModal";
-import useMoveToFolderModal from "../MoveToFolderModal/hooks/useMoveToFolderModal";
+import MoveToFolderModal from "../Modals/MoveToFolderModal";
+import useMoveToFolderModal from "../Modals/MoveToFolderModal/hooks/useMoveToFolderModal";
 import { BiHomeAlt } from "react-icons/bi";
 
 const FolderCard = ({
@@ -28,7 +28,7 @@ const FolderCard = ({
   folderParent,
   actionHandler,
   renameModal,
-  confirmModal
+  confirmModal,
 }) => {
   const { pageId } = useParams();
   const form = useForm({
@@ -50,7 +50,7 @@ const FolderCard = ({
     fetchedFolders,
     toggleRow,
     loadingOverlayVisible,
-    backToRoot
+    backToRoot,
   } = useMoveToFolderModal(pageId);
   const params = useParams();
 
@@ -151,9 +151,11 @@ const FolderCard = ({
                 icon={<BiHomeAlt size={14} />}
                 onClick={() => {
                   backToRoot(folderId, "folder");
-                  const newDocList = actionHandler.getFolderList().filter((item) => {
-                    return item._id !== folderId;
-                  });
+                  const newDocList = actionHandler
+                    .getFolderList()
+                    .filter((item) => {
+                      return item._id !== folderId;
+                    });
                   actionHandler.update(newDocList);
                 }}
                 disabled={folderParent === params.pageId}

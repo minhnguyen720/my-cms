@@ -22,8 +22,8 @@ import axios from "axios";
 import { useAtomValue } from "jotai";
 import { baseUrlAtom } from "@/atoms";
 import { Document } from "@/interfaces/Project";
-import MoveToFolderModal from "@/components/MoveToFolderModal";
-import useMoveToFolderModal from "@/components/MoveToFolderModal/hooks/useMoveToFolderModal";
+import MoveToFolderModal from "@/components/Modals/MoveToFolderModal";
+import useMoveToFolderModal from "@/components/Modals/MoveToFolderModal/hooks/useMoveToFolderModal";
 import { BiHomeAlt } from "react-icons/bi";
 import { useParams, usePathname, useRouter } from "next/navigation";
 

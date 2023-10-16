@@ -9,6 +9,9 @@ import {
   Title,
   Divider,
 } from "@mantine/core";
+import DashboardProjects from "./components/DashboardProjects";
+import { getFormattedTime } from "@/hooks/utilities/dayjs";
+import dayjs from "dayjs";
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -22,10 +25,15 @@ const useStyles = createStyles((theme) => ({
 
 interface StatsGridIconsProps {
   data: { title: string; value: string }[];
+  projects: any[];
 }
 
-export const Dashboard: React.FC<StatsGridIconsProps> = ({ data }) => {
+export const Dashboard: React.FC<StatsGridIconsProps> = ({
+  data,
+  projects,
+}) => {
   const { classes } = useStyles();
+
   const stats = data.map((stat) => {
     return (
       <Paper
@@ -66,12 +74,14 @@ export const Dashboard: React.FC<StatsGridIconsProps> = ({ data }) => {
     <div className={classes.root}>
       <Title order={2}>Welcome back!</Title>
       <Divider className="my-8" />
-      <Title order={3} className="py-5">
-        Projects overview
+      <Title order={1} className="pb-8">
+        Overview
       </Title>
       <SimpleGrid cols={3} breakpoints={[{ maxWidth: "sm", cols: 1 }]}>
         {stats}
       </SimpleGrid>
+
+      <DashboardProjects projects={projects} />
     </div>
   );
 };

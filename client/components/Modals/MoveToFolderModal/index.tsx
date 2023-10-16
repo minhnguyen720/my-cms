@@ -7,7 +7,7 @@ import {
   Modal,
   Table,
 } from "@mantine/core";
-import SearchBar from "../SearchBar";
+import SearchBar from "@/components/SearchBar";
 
 interface Props {
   opened: boolean;

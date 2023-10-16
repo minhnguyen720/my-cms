@@ -10,7 +10,8 @@ import Superscript from "@tiptap/extension-superscript";
 import SubScript from "@tiptap/extension-subscript";
 import { UseFormReturnType } from "@mantine/form";
 import { Input } from "@mantine/core";
-import FieldControlSwitch from "@/components/FieldControlSwitch";
+import FieldControlSwitch from "@/components/Fields/FieldControlSwitch";
+import Config from "../../Config";
 
 interface Props {
   label?: string;
@@ -20,7 +21,13 @@ interface Props {
   active: boolean;
 }
 
-const LongText:React.FC<Props> = ({ form, label, fieldId, required, active }) => {
+const LongText: React.FC<Props> = ({
+  form,
+  label,
+  fieldId,
+  required,
+  active,
+}) => {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -39,13 +46,6 @@ const LongText:React.FC<Props> = ({ form, label, fieldId, required, active }) =>
 
   return (
     <div className="form_item">
-      <FieldControlSwitch
-        controlFlags={{
-          required,
-          active,
-        }}
-        // isVisible
-      />
       <Input.Wrapper label={label} {...form.getInputProps(fieldId)}>
         <RichTextEditor editor={editor}>
           <RichTextEditor.Toolbar sticky stickyOffset={60}>
@@ -86,6 +86,10 @@ const LongText:React.FC<Props> = ({ form, label, fieldId, required, active }) =>
               <RichTextEditor.AlignJustify />
               <RichTextEditor.AlignRight />
             </RichTextEditor.ControlsGroup>
+
+            <RichTextEditor.ControlsGroup>
+              <Config required={true} active={true} />
+            </RichTextEditor.ControlsGroup>
           </RichTextEditor.Toolbar>
 
           <RichTextEditor.Content />
@@ -93,6 +97,6 @@ const LongText:React.FC<Props> = ({ form, label, fieldId, required, active }) =>
       </Input.Wrapper>
     </div>
   );
-}
+};
 
 export default LongText;

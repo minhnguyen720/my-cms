@@ -3,4 +3,6 @@ export interface iNavlink {
   label: string;
   href?: string;
   children?: iNavlink[];
+  createdDate?: string;
+  updatedDate?: string;
 }
