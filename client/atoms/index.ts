@@ -28,3 +28,5 @@ export const activeAlertAtom = atom<{
 export const currentUserAtom = atom({
   id: "admin",
 });
+
+export const globalLoadingAtom = atom<boolean>(false);

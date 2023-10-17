@@ -3,7 +3,7 @@ import { Divider, Navbar as MantineNavbar } from "@mantine/core";
 import NavLink from "@/components/NavLink";
 import { IconHome2, IconBook } from "@tabler/icons-react";
 import UserFooter from "../UserFooter";
-import { iNavlink } from "@/interfaces/NavLink";
+import { Navlink } from "@/interfaces/NavLink";
 import { userData } from "@/static/dummyUser";
 import { useLocalStorage } from "@mantine/hooks";
 
@@ -15,7 +15,7 @@ interface Props {
   setOpened: React.Dispatch<SetStateAction<boolean>>;
 }
 
-const navbarData: iNavlink[] = [
+const navbarData: Navlink[] = [
   { icon: IconHome2, href: "/", label: "Home" }
 ];
 

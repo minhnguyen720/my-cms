@@ -1,32 +1,33 @@
-import useGetBaseUrl from "@/hooks/utilities/getUrl";
-import axios from "axios";
-import React, { useState } from "react";
+import { useAtom } from "jotai";
+import { selectionAtom } from "../atoms";
 
 const useProjectSelection = () => {
-  const [selection, setSelection] = useState<string[]>([]);
-  const [baseUrl] = useGetBaseUrl();
+  const [selection,setSelection] = useAtom(selectionAtom);
 
-  const toggleRow = (id: string) =>
+  const updateSelection = (value) => {
+    setSelection(value);
+  }
+
+  const toggleRow = (id: string) => {
+    selection.includes(id)
     setSelection((current) =>
-      current.includes(id)
-        ? current.filter((item) => item !== id)
-        : [...current, id],
-    );
+    current.includes(id)
+      ? current.filter((item) => item !== id)
+      : [...current, id],
+  );
+  }
 
   const toggleAll = (data) =>
     setSelection((current) =>
       current.length === data.length ? [] : data.map((item) => item.id),
     );
 
-  const removeSelection = async () => {
-    const res = await axios.put(`${baseUrl}/project`, { ids: selection });
+  return {
+    toggleRow,
+    toggleAll,
+    selection,
+    updateSelection
   };
-
-  const deactiveSelection = async () => {
-
-  }
-
-  return { toggleRow, toggleAll, selection, removeSelection, deactiveSelection };
 };
 
 export default useProjectSelection;

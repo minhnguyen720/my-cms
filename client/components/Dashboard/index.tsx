@@ -10,8 +10,7 @@ import {
   Divider,
 } from "@mantine/core";
 import DashboardProjects from "./components/DashboardProjects";
-import { getFormattedTime } from "@/hooks/utilities/dayjs";
-import dayjs from "dayjs";
+import { Navlink } from "@/interfaces/NavLink";
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -25,7 +24,7 @@ const useStyles = createStyles((theme) => ({
 
 interface StatsGridIconsProps {
   data: { title: string; value: string }[];
-  projects: any[];
+  projects: Navlink[];
 }
 
 export const Dashboard: React.FC<StatsGridIconsProps> = ({

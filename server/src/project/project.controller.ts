@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -30,18 +31,13 @@ export class ProjectController {
     return await this.projectService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.projectService.findOne(id);
+  @Put('active/toggle')
+  async toggleActive(@Body() body: { id: string; value: boolean }) {
+    return await this.projectService.toggleActive(body);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProjectDto: UpdateProjectDto) {
-    return this.projectService.update(+id, updateProjectDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.projectService.remove(+id);
+  @Put('remove')
+  async removeSelection(@Body() body: { ids: string[] }) {
+    return await this.projectService.removeSelection(body.ids);
   }
 }

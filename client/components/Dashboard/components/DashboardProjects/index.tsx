@@ -1,40 +1,30 @@
 import SearchBar from "@/components/SearchBar";
-import {
-  Title,
-  Group,
-  Table,
-  Checkbox,
-  Tooltip,
-  ActionIcon,
-} from "@mantine/core";
+import { Title, Table, Checkbox } from "@mantine/core";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import CreateNewProjectModal from "@/components/Modals/CreateNewProjectModal";
 import dayjs from "dayjs";
 import axios from "axios";
 import useGetBaseUrl from "@/hooks/utilities/getUrl";
 import ActiveSwitch from "../ActiveSwitch";
 import useProjectSelection from "../../hooks/useProjectSelection";
-import { IconTrash, IconZzz } from "@tabler/icons-react";
+import { Navlink } from "@/interfaces/NavLink";
+import DashboardToolbar from "../DashboardToolbar";
 
-const DashboardProjects = ({ projects }) => {
+interface Props {
+  projects: Navlink[];
+}
+
+const DashboardProjects: React.FC<Props> = ({ projects }) => {
   const router = useRouter();
   const [baseUrl] = useGetBaseUrl();
 
   const [searchValue, setSearchValue] = useState("");
-  // projects will be replaced by data from server
-  const [searchResult, setSearchResult] = useState(() => {
+  const [searchResult, setSearchResult] = useState<Navlink[]>(() => {
     if (projects) return projects;
     else return [];
   });
 
-  const {
-    toggleAll,
-    toggleRow,
-    selection,
-    removeSelection,
-    deactiveSelection,
-  } = useProjectSelection();
+  const { toggleAll, toggleRow, selection } = useProjectSelection();
 
   const updateResult = async () => {
     const res = await axios.get(`${baseUrl}/project`);
@@ -55,6 +45,10 @@ const DashboardProjects = ({ projects }) => {
     setSearchValue("");
   };
 
+  const updateSearchResult = (value) => {
+    setSearchResult(value);
+  }
+
   return (
     <div className="pb-12">
       <Title order={1} className="py-9">
@@ -67,30 +61,7 @@ const DashboardProjects = ({ projects }) => {
         handleReset={handleReset}
         handleSearch={handleSearch}
       />
-      <Group className="my-4">
-        <Tooltip label="Create new project">
-          <CreateNewProjectModal update={updateResult} />
-        </Tooltip>
-        <Tooltip label="Delete selected items" disabled={selection.length <= 0}>
-          <ActionIcon
-            onClick={removeSelection}
-            disabled={selection.length <= 0}
-          >
-            <IconTrash />
-          </ActionIcon>
-        </Tooltip>
-        <Tooltip
-          label="Deactive selected items"
-          disabled={selection.length <= 0}
-        >
-          <ActionIcon
-            onClick={deactiveSelection}
-            disabled={selection.length <= 0}
-          >
-            <IconZzz />
-          </ActionIcon>
-        </Tooltip>
-      </Group>
+      <DashboardToolbar create={updateResult} updateSearchResult={updateSearchResult}/>
       <div className="max-h-[30rem] overflow-y-auto">
         <Table highlightOnHover verticalSpacing={"md"}>
           <thead>

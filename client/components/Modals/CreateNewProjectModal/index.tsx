@@ -7,18 +7,23 @@ import dayjs from "dayjs";
 import useUserData from "@/hooks/utilities/useUser";
 import useGetBaseUrl from "@/hooks/utilities/getUrl";
 import axios from "axios";
+import useLoading from "@/hooks/utilities/useLoading";
+import { ALERT_CODES } from "@/constant";
+import useAlert from "@/components/Alert/hooks";
 
 interface Props {
-  update: () => Promise<void>;
+  updateNewList: () => Promise<void>;
 }
 
 type Ref = HTMLDivElement;
 
 const CreateNewProjectModal = forwardRef<Ref, Props>((props, ref) => {
-  const { update } = props;
+  const { updateNewList } = props;
   const [opened, handler] = useDisclosure(false);
   const { getCurrentUser } = useUserData();
   const [baseUrl] = useGetBaseUrl();
+  const { showLoading, hideLoading } = useLoading();
+  const { openAlert } = useAlert();
 
   const form = useForm({
     initialValues: {
@@ -27,18 +32,29 @@ const CreateNewProjectModal = forwardRef<Ref, Props>((props, ref) => {
   });
 
   const handleCreateNewProject = async () => {
-    const body = {
-      name: form.values.name,
-      createdDate: dayjs(),
-      updatedDate: dayjs(),
-      createdUser: getCurrentUser().id,
-      updatedUser: getCurrentUser().id,
-      active: true,
-      superAdminId: "super admin",
-    };
-    await axios.post(`${baseUrl}/project`, body);
-    await update();
-    handler.close();
+    try {
+      showLoading();
+      const body = {
+        name: form.values.name,
+        createdDate: dayjs(),
+        updatedDate: dayjs(),
+        createdUser: getCurrentUser().id,
+        updatedUser: getCurrentUser().id,
+        active: true,
+        superAdminId: "super admin",
+      };
+      await axios.post(`${baseUrl}/project`, body);
+      await updateNewList();
+      handler.close();
+      form.reset();
+      openAlert("Create new project success", ALERT_CODES.SUCCESS);
+    } catch (error) {
+      handler.close();
+      form.reset();
+      openAlert("Create new project failed", ALERT_CODES.ERROR);
+    } finally {
+      hideLoading();
+    }
   };
 
   const handleOnClose = () => {
