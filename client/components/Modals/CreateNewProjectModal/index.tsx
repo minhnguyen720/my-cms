@@ -1,15 +1,21 @@
-import React from "react";
+import { forwardRef } from "react";
 import { useForm } from "@mantine/form";
 import { IconPlus } from "@tabler/icons-react";
 import { ActionIcon, Button, Group, Modal, TextInput } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { getFormattedTime } from "@/hooks/utilities/dayjs";
 import dayjs from "dayjs";
 import useUserData from "@/hooks/utilities/useUser";
 import useGetBaseUrl from "@/hooks/utilities/getUrl";
 import axios from "axios";
 
-const CreateNewProjectModal = ({update}) => {
+interface Props {
+  update: () => Promise<void>;
+}
+
+type Ref = HTMLDivElement;
+
+const CreateNewProjectModal = forwardRef<Ref, Props>((props, ref) => {
+  const { update } = props;
   const [opened, handler] = useDisclosure(false);
   const { getCurrentUser } = useUserData();
   const [baseUrl] = useGetBaseUrl();
@@ -45,7 +51,7 @@ const CreateNewProjectModal = ({update}) => {
   };
 
   return (
-    <>
+    <div ref={ref}>
       <Modal
         centered
         opened={opened}
@@ -70,8 +76,8 @@ const CreateNewProjectModal = ({update}) => {
       <ActionIcon onClick={handleOnOpen}>
         <IconPlus />
       </ActionIcon>
-    </>
+    </div>
   );
-};
+});
 
 export default CreateNewProjectModal;

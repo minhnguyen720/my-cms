@@ -5,4 +5,6 @@ export interface iNavlink {
   children?: iNavlink[];
   createdDate?: string;
   updatedDate?: string;
+  name?: string;
+  id?: string;
 }
