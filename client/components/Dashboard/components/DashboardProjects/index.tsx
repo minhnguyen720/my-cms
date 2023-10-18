@@ -47,7 +47,7 @@ const DashboardProjects: React.FC<Props> = ({ projects }) => {
 
   const updateSearchResult = (value) => {
     setSearchResult(value);
-  }
+  };
 
   return (
     <div className="pb-12">
@@ -61,7 +61,10 @@ const DashboardProjects: React.FC<Props> = ({ projects }) => {
         handleReset={handleReset}
         handleSearch={handleSearch}
       />
-      <DashboardToolbar create={updateResult} updateSearchResult={updateSearchResult}/>
+      <DashboardToolbar
+        create={updateResult}
+        updateSearchResult={updateSearchResult}
+      />
       <div className="max-h-[30rem] overflow-y-auto">
         <Table highlightOnHover verticalSpacing={"md"}>
           <thead>

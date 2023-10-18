@@ -20,6 +20,7 @@ const getActiveProjectLength = async () => {
   }
 };
 
+
 export default async function Home() {
   const res = await getActiveProjectLength();
   const data = [

@@ -11,6 +11,9 @@ import {
 } from "@mantine/core";
 import DashboardProjects from "./components/DashboardProjects";
 import { Navlink } from "@/interfaces/NavLink";
+import { useAtomValue } from "jotai";
+import { useHydrateAtoms } from "jotai/utils";
+import { statAtom } from "./atoms";
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -32,42 +35,8 @@ export const Dashboard: React.FC<StatsGridIconsProps> = ({
   projects,
 }) => {
   const { classes } = useStyles();
-
-  const stats = data.map((stat) => {
-    return (
-      <Paper
-        withBorder
-        p="md"
-        radius="md"
-        key={stat.title}
-        sx={(theme) => ({
-          transition: "all 200ms linear",
-          cursor: "pointer",
-
-          "&:hover": {
-            borderColor: theme.colors.cyan[5],
-          },
-        })}
-      >
-        <Group position="apart">
-          <div>
-            <Text
-              c="dimmed"
-              tt="uppercase"
-              fw={700}
-              fz="xs"
-              className={classes.label}
-            >
-              {stat.title}
-            </Text>
-            <Text fw={700} fz="xl">
-              {stat.value}
-            </Text>
-          </div>
-        </Group>
-      </Paper>
-    );
-  });
+  useHydrateAtoms([[statAtom, data]])
+  const [statData] = useAtomValue(statAtom);
 
   return (
     <div className={classes.root}>
@@ -77,7 +46,41 @@ export const Dashboard: React.FC<StatsGridIconsProps> = ({
         Overview
       </Title>
       <SimpleGrid cols={3} breakpoints={[{ maxWidth: "sm", cols: 1 }]}>
-        {stats}
+        {statData.map((stat) => {
+          return (
+            <Paper
+              withBorder
+              p="md"
+              radius="md"
+              key={stat.title}
+              sx={(theme) => ({
+                transition: "all 200ms linear",
+                cursor: "pointer",
+
+                "&:hover": {
+                  borderColor: theme.colors.cyan[5],
+                },
+              })}
+            >
+              <Group position="apart">
+                <div>
+                  <Text
+                    c="dimmed"
+                    tt="uppercase"
+                    fw={700}
+                    fz="xs"
+                    className={classes.label}
+                  >
+                    {stat.title}
+                  </Text>
+                  <Text fw={700} fz="xl">
+                    {stat.value}
+                  </Text>
+                </div>
+              </Group>
+            </Paper>
+          );
+        })}
       </SimpleGrid>
 
       <DashboardProjects projects={projects} />

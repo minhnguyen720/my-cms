@@ -1,6 +1,5 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateProjectDto } from './dto/create-project.dto';
-import { UpdateProjectDto } from './dto/update-project.dto';
 import { Project } from 'src/schemas/project.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
@@ -20,12 +19,16 @@ export class ProjectService {
     return Promise.all([
       this.projectModel.find({ active: true }).count().exec(),
       this.projectModel.find({ active: false }).count().exec(),
-      this.projectModel.find(),
+      this.getProjectsByUserId(),
     ]).then((values) => {
       const [activeLength, deactiveLength, projects] = values;
-      const mappedProjects = this.formatProjectData(projects);
-      return { activeLength, deactiveLength, projects: mappedProjects };
+      return { activeLength, deactiveLength, projects };
     });
+  }
+
+  async getProjectsByUserId() {
+    const result = await this.projectModel.find();
+    return this.formatProjectData(result);
   }
 
   async toggleActive(body: { id: string; value: boolean }) {
@@ -33,26 +36,28 @@ export class ProjectService {
       await this.projectModel.findByIdAndUpdate(body.id, {
         active: body.value,
       });
-      return true;
+      const { activeLength, deactiveLength } = await this.getDashboardStat();
+      return {
+        success: true,
+        activeLength,
+        deactiveLength,
+      };
     } catch (error) {
-      return false;
+      return {success: false};
     }
   }
 
   async findAll() {
-    const result = await this.projectModel.find();
-    const mappedProjects = this.formatProjectData(result);
-    return { projects: mappedProjects };
+    const result = await this.getProjectsByUserId();
+    return { projects: result };
   }
 
   async removeSelection(ids: string[]) {
     try {
       await this.projectModel.deleteMany({ _id: { $in: ids } });
-      const updatedProjectList = await this.projectModel.find();
-      return this.formatProjectData(updatedProjectList);
+      return await this.getProjectsByUserId();
     } catch (error) {
-      const updatedProjectList = await this.projectModel.find();
-      return this.formatProjectData(updatedProjectList);
+      return await this.getProjectsByUserId();
     }
   }
 
