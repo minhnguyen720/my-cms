@@ -13,9 +13,18 @@ import {
   IconArrowNarrowRight,
   IconFileDescription,
   IconTrash,
+  IconZzz,
 } from "@tabler/icons-react";
 import useDelete from "@/components/ProjectTable/hooks/delete";
 import { usePathname, useRouter } from "next/navigation";
+import { TbPlugConnected } from "react-icons/tb";
+import axios from "axios";
+import useGetBaseUrl from "@/hooks/utilities/getUrl";
+import useLoading from "@/hooks/utilities/useLoading";
+import useAlert from "@/components/Alert/hooks";
+import { ALERT_CODES } from "@/constant";
+import { useSetAtom } from "jotai";
+import { datasourceAtom } from "@/atoms";
 
 interface Props {
   rowId: string;
@@ -23,6 +32,7 @@ interface Props {
   pageId: string;
   projectName: string;
   isMobile: boolean;
+  pageStatus: boolean;
 }
 
 const MoreActions: React.FC<Props> = ({
@@ -31,6 +41,7 @@ const MoreActions: React.FC<Props> = ({
   pageId,
   projectName,
   isMobile,
+  pageStatus,
 }) => {
   const [opened, { toggle, close: closeBurger }] = useDisclosure(false);
   const {
@@ -42,9 +53,34 @@ const MoreActions: React.FC<Props> = ({
   } = useDelete(rowId, projectId, pageId, projectName);
   const router = useRouter();
   const pathname = usePathname();
+  const [baseUrl] = useGetBaseUrl();
+  const { showLoading, hideLoading } = useLoading();
+  const { openAlert } = useAlert();
+  const setDatasource = useSetAtom(datasourceAtom);
 
   const goToDetail = () => {
     router.push(`${pathname}/${pageId}`);
+  };
+
+  const toggleStatus = async () => {
+    try {
+      showLoading();
+      const res = await axios.put(`${baseUrl}/page/status`, {
+        id: pageId,
+        value: !pageStatus,
+        projectId: projectId,
+      });
+      if (res.data.isSuccess) {
+        openAlert("Update page status success", ALERT_CODES.SUCCESS);
+        setDatasource(res.data.latest);
+      } else {
+        openAlert("Update page status failed", ALERT_CODES.ERROR);
+      }
+    } catch (error) {
+      openAlert("Update page status failed", ALERT_CODES.ERROR);
+    } finally {
+      hideLoading();
+    }
   };
 
   return (
@@ -58,14 +94,14 @@ const MoreActions: React.FC<Props> = ({
         <Text>
           This will permanently delete any data related to this page. To
           confirm, type
-          <span className="font-bold mx-2.5">{rowId}</span>
+          <span className="mx-2.5 font-bold">{rowId}</span>
           in the box below.
         </Text>
         <TextInput className="mt-4" onChange={handleDeleteConfirm} />
         <Button
           variant="outline"
           color="red"
-          className={`w-full mt-4 ${isMobile ? "text-[3.25vmin]" : "text-md"}`}
+          className={`mt-4 w-full ${isMobile ? "text-[3.25vmin]" : "text-md"}`}
           disabled={!allowToDelete}
           onClick={handleDelete}
         >
@@ -108,6 +144,18 @@ const MoreActions: React.FC<Props> = ({
               onClick={goToDetail}
             >
               Go to page detail
+            </Menu.Item>
+            <Menu.Item
+              icon={
+                pageStatus ? (
+                  <IconZzz size={14} />
+                ) : (
+                  <TbPlugConnected size={14} />
+                )
+              }
+              onClick={toggleStatus}
+            >
+              {pageStatus ? "Deactive this page" : "Active this page"}
             </Menu.Item>
             <Menu.Divider />
 

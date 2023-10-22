@@ -20,6 +20,7 @@ interface PageFormValues extends StandardSchema {
   docs: any[];
   docSchema?: any;
   name: string;
+  active?: boolean;
 }
 
 const CreatingPage = ({ params: { projectNameId } }) => {
@@ -31,6 +32,7 @@ const CreatingPage = ({ params: { projectNameId } }) => {
     docs: [],
     project: projectNameId,
     name: "",
+    active: true,
   };
   const form = useForm({
     initialValues,
@@ -40,7 +42,7 @@ const CreatingPage = ({ params: { projectNameId } }) => {
   const [opened, { open, close }] = useDisclosure(false);
   const { openAlert } = useAlert();
   const setDatasource = useSetAtom(datasourceAtom);
-  const {getCurrentId} = useCurrentProject();
+  const { getCurrentId } = useCurrentProject();
 
   const backToHome = () => {
     router.push(`/project/${getCurrentId()}`);
@@ -49,7 +51,11 @@ const CreatingPage = ({ params: { projectNameId } }) => {
   const handleSubmit = async (values: PageFormValues) => {
     try {
       const res: {
-        data: { success: boolean; message: string; newProjectData: ProjectTableItem[] };
+        data: {
+          success: boolean;
+          message: string;
+          newProjectData: ProjectTableItem[];
+        };
       } = await axios.post(`${baseUrl}/page`, values);
       if (res.data.success) {
         setDatasource(res.data.newProjectData);
@@ -58,7 +64,7 @@ const CreatingPage = ({ params: { projectNameId } }) => {
       } else {
         openAlert(
           `${MESSAGES.CREATE_NEW_PAGE.FAIL}: ${res.data.message}`,
-          ALERT_CODES.ERROR
+          ALERT_CODES.ERROR,
         );
       }
     } catch (error) {
@@ -74,7 +80,7 @@ const CreatingPage = ({ params: { projectNameId } }) => {
 
   return (
     <div className="p-6">
-      <p className="font-bold text-[1.5rem] sm:text-[2.25rem]">
+      <p className="text-[1.5rem] font-bold sm:text-[2.25rem]">
         Creating new page
       </p>
       <form

@@ -9,7 +9,7 @@ import { ActionIcon, Group, Text } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
-import {useStyles} from "../SearchBar/style";
+import { useStyles } from "../SearchBar/style";
 
 const ProjectTable: React.FC = () => {
   const { rows, items } = useProjectTable();
@@ -23,7 +23,7 @@ const ProjectTable: React.FC = () => {
   return (
     <>
       <h4 className="mb-3 mt-5">Current active pages</h4>
-      <div >
+      <div>
         <SearchBar
           handleReset={handleReset}
           handleSearch={handleSearch}

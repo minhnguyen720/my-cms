@@ -91,8 +91,6 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
     handleReset: move2FolderResetSearch,
   };
 
-  console.log(doc);
-
   return (
     <>
       <MoveToFolderModal
@@ -155,7 +153,7 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
                   });
                   handler.update(newDocList);
                 }}
-                disabled={doc.parent === params.docId}
+                disabled={doc.parent === params.pageId}
               >
                 Move to root
               </Menu.Item>

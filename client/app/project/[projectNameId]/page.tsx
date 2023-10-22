@@ -34,6 +34,7 @@ export interface ProjectTableItem {
   createdUser?: string;
   updatedUser?: string;
   project?: string;
+  active?:boolean
 }
 
 const ProjectOverallPage: React.FC<Props> = async ({ params: { projectNameId } }) => {

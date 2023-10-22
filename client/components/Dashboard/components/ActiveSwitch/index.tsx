@@ -1,12 +1,11 @@
 import useLoading from "@/hooks/utilities/useLoading";
 import { Navlink } from "@/interfaces/NavLink";
-import { Page } from "@/interfaces/Project";
 import { Switch, useMantineTheme } from "@mantine/core";
 import { IconCheck, IconX } from "@tabler/icons-react";
 import React, { useState } from "react";
 
 interface Props {
-  element?: Navlink | Page;
+  element?: Navlink | { id: string; active: boolean };
   onChange?: (any?: any) => Promise<any>;
 }
 

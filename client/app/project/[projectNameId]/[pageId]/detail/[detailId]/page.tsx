@@ -3,37 +3,26 @@ import DocDetailContainer from "@/components/DocDetailContainer";
 export const revalidate = 10;
 const baseUrl = "http://localhost:4000";
 
-const getPageData = async (pageId: string) => {
+const getDetailData = async (detailId: string) => {
   try {
-    const page = await fetch(`${baseUrl}/page/${pageId}`, {
+    const data = await fetch(`${baseUrl}/doc/key/${detailId}`, {
       cache: "no-store",
     });
 
-    return page.json();
-  } catch (error) {
-    return false;
-  }
-};
+    if (!data.ok) throw new Error("Failed to fetch data");  
 
-const getDocDetail = async (detailId: string) => {
-  try {
-    const docDetail = await fetch(`${baseUrl}/doc/${detailId}`, {
-      cache: "no-store",
-    });
-
-    return docDetail.json();
+    return data.json();
   } catch (error) {
     return false;
   }
 };
 
 const DocDetail = async ({ params }) => {
-  const pageDataPromise = getPageData(params.pageId);
-  const docDetailPromise = getDocDetail(params.pageId);
+  const data = await getDetailData(params.detailId);
 
-  const [page, doc] = await Promise.all([pageDataPromise, docDetailPromise]);
-
-  return <DocDetailContainer page={page} doc={doc} />;
+  return (
+    <DocDetailContainer switchProps={{ id: data._id, active: data.active }} />
+  );
 };
 
 export default DocDetail;

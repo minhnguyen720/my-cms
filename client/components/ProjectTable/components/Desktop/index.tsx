@@ -14,6 +14,7 @@ const ProjectTableDesktop: React.FC<Props> = ({ rows }) => {
     "Updated date",
     "Created user",
     "Updated user",
+    "Status",
     // empty item is for setting button
     "",
   ]);

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { List, Accordion, Stack, Text, Title } from "@mantine/core";
+import { List, Accordion, Stack, Text, Title, Badge } from "@mantine/core";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import { useAtomValue } from "jotai";
@@ -14,7 +14,7 @@ const { Item, Panel, Control } = Accordion;
 const useProjectTable = () => {
   const DATE_FORMAT = "DD/MM/YYYY";
   const router = useRouter();
-  const {getCurrentId} = useCurrentProject();
+  const { getCurrentId } = useCurrentProject();
   const datasource = useAtomValue(datasourceAtom);
 
   const rows = useMemo(() => {
@@ -36,7 +36,11 @@ const useProjectTable = () => {
             <td>{element.createdUser}</td>
             <td>{element.updatedUser}</td>
             <td>
+              <Badge color={element.active ? "green": "red"}>{element.active ? "Online" : "Offline"}</Badge>
+            </td>
+            <td>
               <MoreActions
+                pageStatus={element.active}
                 isMobile={false}
                 rowId={`${element.name}`}
                 projectId={element.project}
@@ -95,6 +99,7 @@ const useProjectTable = () => {
                   projectId={element.project}
                   pageId={element._id}
                   projectName={element._id}
+                  pageStatus={element.active}
                 />
               </Panel>
             </Item>
