@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { PageService } from './page.service';
 import { CreatePageDto } from './dto/create-page.dto';
@@ -20,6 +21,13 @@ export class PageController {
     return await this.pageService.create(createPageDto);
   }
 
+  @Put('status')
+  async updateStatus(
+    @Body() body: { id: string; value: boolean; projectId: string },
+  ) {
+    return await this.pageService.updateStatus(body);
+  }
+
   @Get()
   findAll() {
     return this.pageService.findAll();
@@ -30,7 +38,7 @@ export class PageController {
     return await this.pageService.findPageBelongToProject(projectId);
   }
 
-  @Get(':id')
+  @Get('key/:id')
   async findOne(@Param('id') id: string) {
     return await this.pageService.findOne(id);
   }

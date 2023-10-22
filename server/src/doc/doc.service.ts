@@ -16,6 +16,22 @@ export class DocService {
     @InjectModel(Folder.name) private folderModel: Model<Folder>,
   ) {}
 
+  async updateStatus(body: { id: string; value: boolean }) {
+    try {
+      await this.docModel.findByIdAndUpdate(body.id, { active: body.value });
+
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  }
+
+  async getDocDetail(detailId: string) {
+    // return await this.docModel.findById(detailId);
+    return detailId;
+  }
+
   async getDocByPageId(pageId: string) {
     const docPromise = this.docModel.find({
       page: new Types.ObjectId(pageId),
@@ -38,11 +54,7 @@ export class DocService {
   }
 
   async findByKey(key: string) {
-    if (key !== 'a321a0cc-eac3-4ec4-a1e9-4c8648229248') return [];
-    return await this.docModel
-      .findById({ _id: '64e043c9476e09720111aaeb' })
-      .populate('data')
-      .exec();
+    return await this.docModel.findById(key);
   }
 
   async create(createDocDto: CreateDocDto) {
@@ -61,14 +73,6 @@ export class DocService {
     });
 
     return newDoc;
-  }
-
-  findAll() {
-    return `This action returns all doc`;
-  }
-
-  findOne(id: string) {
-    return `This action returns a #${id} doc`;
   }
 
   update(id: number, updateDocDto: UpdateDocDto) {

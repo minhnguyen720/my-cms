@@ -21,24 +21,19 @@ export class DocController {
     return await this.docService.getDocByPageId(pageId);
   }
 
+  @Get('/detail/:detailId')
+  async getDocDetail(@Param('detailId') detailId: string) {
+    return await this.docService.getDocDetail(detailId);
+  }
+
   @Post()
   async create(@Body() createDocDto: CreateDocDto) {
     return await this.docService.create(createDocDto);
   }
 
-  @Get()
-  findAll() {
-    return this.docService.findAll();
-  }
-
-  @Get(':key')
+  @Get('key/:key')
   async findByKey(@Param('key') key: string) {
     return await this.docService.findByKey(key);
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.docService.findOne(id);
   }
 
   @Patch(':id')
@@ -49,6 +44,11 @@ export class DocController {
   @Put('rename')
   async rename(@Body() data) {
     return await this.docService.rename(data);
+  }
+
+  @Put('status')
+  async updateStatus(@Body() body: { id: string; value: boolean }) {
+    return await this.docService.updateStatus(body);
   }
 
   @Delete(':id')

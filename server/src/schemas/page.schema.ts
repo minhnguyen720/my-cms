@@ -33,6 +33,9 @@ export class Page {
 
   // @Prop({ type: MongooseSchema.Types.Array, ref: 'Doc' })
   // docs?: Doc[];
+
+  @Prop()
+  active: boolean;
 }
 
 export const PageSchema = SchemaFactory.createForClass(Page);

@@ -29,6 +29,19 @@ export class PageService {
     }
   }
 
+  async updateStatus(body: { id: string; value: boolean; projectId: string }) {
+    try {
+      await this.pageModel.findByIdAndUpdate(body.id, { active: body.value });
+      const newData = await this.findPageBelongToProject(body.projectId);
+      return {
+        isSuccess: true,
+        latest: newData,
+      };
+    } catch (error) {
+      return false;
+    }
+  }
+
   async create(createPageDto: CreatePageDto) {
     try {
       await this.pageModel.create(createPageDto);
