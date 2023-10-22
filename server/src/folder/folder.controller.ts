@@ -21,13 +21,13 @@ export class FolderController {
   async getFolderDetail(@Param('id') id: string) {
     return this.folderService.getFolderDetail(id);
   }
-  
+
   @Post()
   async create(@Body() createFolderDto: CreateFolderDto) {
     return this.folderService.create(createFolderDto);
   }
 
-  @Put("move")
+  @Put('move')
   async move(@Body() body: MoveFolderDto) {
     return await this.folderService.move(body);
   }

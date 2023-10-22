@@ -91,6 +91,8 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
     handleReset: move2FolderResetSearch,
   };
 
+  console.log(doc);
+
   return (
     <>
       <MoveToFolderModal

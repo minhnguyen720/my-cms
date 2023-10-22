@@ -28,15 +28,18 @@ interface createNewDocDto {
 const CreateNewDocCard: React.FC<Props> = ({ addDocItem }) => {
   const [opened, { open, close }] = useDisclosure();
   const baseUrl = useAtomValue(baseUrlAtom);
-  const { projectNameId, pageId } = useParams();
+  const { pageId } = useParams();
 
   const handleCreateNewDoc = async (values: createNewDocDto) => {
     try {
       const res = await axios.post(`${baseUrl}/doc`, {
         ...values,
-        projectNameId,
+        createdDate: dayjs().toString(),
+        updatedDate: dayjs().toString(),
         pageId,
+        parent: pageId,
       });
+
       const {
         _id,
         name,
@@ -49,6 +52,7 @@ const CreateNewDocCard: React.FC<Props> = ({ addDocItem }) => {
         page,
         description,
       } = await res.data;
+
       addDocItem({
         id: _id,
         name,

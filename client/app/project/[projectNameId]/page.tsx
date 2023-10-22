@@ -27,7 +27,7 @@ interface Props {
 }
 
 export interface ProjectTableItem {
-  id?: string;
+  _id?: string;
   name?: string;
   createdDate?: string;
   updatedDate?: string;

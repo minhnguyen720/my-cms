@@ -45,6 +45,7 @@ const CreateNewFolder = ({ updateFolderList }) => {
         name: values.folderName,
         page: pageId,
         project: projectNameId,
+        parent: pageId
       };
       const res: { data: { isSuccess: boolean; latestFolderList: Folder[] } } =
         await axios.post(`${baseUrl}/folder`, newFolderBody);

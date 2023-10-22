@@ -11,11 +11,7 @@ import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import {useStyles} from "../SearchBar/style";
 
-interface Props {
-  data: ProjectTableItem[] | boolean;
-}
-
-const ProjectTable: React.FC<Props> = ({ data }) => {
+const ProjectTable: React.FC = () => {
   const { rows, items } = useProjectTable();
   const mobileTableMatches = useMediaQuery("(max-width: 512px)");
   const { handleSearch, handleReset, searchValue, setSearchValue } =

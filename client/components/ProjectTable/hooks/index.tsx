@@ -1,19 +1,20 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { Button, List, Accordion, Stack, Text, Title } from "@mantine/core";
+import { List, Accordion, Stack, Text, Title } from "@mantine/core";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import { useAtomValue } from "jotai";
-import { datasourceAtom, projectIdAtom } from "@/atoms";
+import { datasourceAtom } from "@/atoms";
 import MoreActions from "../components/MoreAction";
+import useCurrentProject from "@/hooks/utilities/useCurrentProject";
 
 const { Item, Panel, Control } = Accordion;
 
 const useProjectTable = () => {
   const DATE_FORMAT = "DD/MM/YYYY";
   const router = useRouter();
-  const projectId = useAtomValue(projectIdAtom);
+  const {getCurrentId} = useCurrentProject();
   const datasource = useAtomValue(datasourceAtom);
 
   const rows = useMemo(() => {
@@ -22,9 +23,9 @@ const useProjectTable = () => {
         typeof datasource !== "boolean" &&
         datasource.map((element) => (
           <tr
-            key={element.id}
+            key={element._id}
             onDoubleClick={() => {
-              router.push(`/project/${projectId}/${element.id}`);
+              router.push(`/project/${getCurrentId()}/${element._id}`);
             }}
           >
             <td>
@@ -37,10 +38,10 @@ const useProjectTable = () => {
             <td>
               <MoreActions
                 isMobile={false}
-                rowId={`${element.id}/${element.name}`}
+                rowId={`${element.name}`}
                 projectId={element.project}
-                pageId={element.id}
-                projectName={element.id}
+                pageId={element._id}
+                projectName={element._id}
               />
             </td>
           </tr>
@@ -49,7 +50,7 @@ const useProjectTable = () => {
     } catch (error) {
       return <></>;
     }
-  }, [datasource, projectId, router]);
+  }, [datasource, getCurrentId, router]);
 
   const items = useMemo(() => {
     try {
@@ -57,7 +58,7 @@ const useProjectTable = () => {
         typeof datasource !== "boolean" &&
         datasource.map((element) => {
           return (
-            <Item value={element.id} key={element.id}>
+            <Item value={element._id} key={element._id}>
               <Control>
                 <Stack spacing={"xs"}>
                   <Title order={3}>{element.name}</Title>
@@ -90,10 +91,10 @@ const useProjectTable = () => {
                 </List>
                 <MoreActions
                   isMobile={true}
-                  rowId={`${element.id}/${element.name}`}
+                  rowId={`${element._id}/${element.name}`}
                   projectId={element.project}
-                  pageId={element.id}
-                  projectName={element.id}
+                  pageId={element._id}
+                  projectName={element._id}
                 />
               </Panel>
             </Item>

@@ -31,18 +31,14 @@ export class PageService {
 
   async create(createPageDto: CreatePageDto) {
     try {
-      const projectRes = await this.projectModel.findOne({
-        id: createPageDto.project,
-      });
-      const newPageData = await this.pageModel.create({
-        ...createPageDto,
-        project: projectRes._id.toString(),
-      });
-      newPageData.id = newPageData._id;
-      await newPageData.save();
-      
+      await this.pageModel.create(createPageDto);
+      const projectRes = await this.projectModel.findById(
+        createPageDto.project,
+      );
+
       return { success: true, message: '', newProjectData: projectRes };
     } catch (error) {
+      console.error(error);
       return {
         success: false,
         message: HttpStatus.INTERNAL_SERVER_ERROR,
@@ -55,7 +51,7 @@ export class PageService {
   }
 
   async findOne(id: string) {
-    return await this.pageModel.findById(id)
+    return await this.pageModel.findById(id);
   }
 
   update(id: number, updatePageDto: UpdatePageDto) {

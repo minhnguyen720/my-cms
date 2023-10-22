@@ -1,6 +1,15 @@
 "use client";
 
-import { Group, Grid, Title, Modal, TextInput, Button } from "@mantine/core";
+import {
+  Group,
+  Grid,
+  Title,
+  Modal,
+  TextInput,
+  Button,
+  Image,
+  Box,
+} from "@mantine/core";
 import React, { useState } from "react";
 import CreateNewDocCard from "../CreateNewDocCard";
 import Card from "./Card";
@@ -17,6 +26,18 @@ interface Props {
   docs: Document[];
   folders: Folder[];
 }
+
+const EmptySectionSVG = () => {
+  return (
+    <div className="mx-auto max-w-[200px] py-2">
+      <Image
+        src="/images/empty.svg"
+        alt="nothing here"
+        caption="You don't have any data in this section"
+      />
+    </div>
+  );
+};
 
 const DocCards: React.FC<Props> = ({ docs, folders }) => {
   const { folderList, folderHandler, confirmModal, renameModal } =
@@ -72,7 +93,7 @@ const DocCards: React.FC<Props> = ({ docs, folders }) => {
             <CreateNewFolder updateFolderList={folderHandler.update} />
           </Group>
         </Grid.Col>
-        {folderList.length > 0 && (
+        {folderList.length > 0 ? (
           <>
             {folderList.map((folder) => {
               return (
@@ -96,6 +117,8 @@ const DocCards: React.FC<Props> = ({ docs, folders }) => {
               );
             })}
           </>
+        ) : (
+          <EmptySectionSVG />
         )}
       </Grid>
       <Grid className="my-2">
@@ -105,17 +128,21 @@ const DocCards: React.FC<Props> = ({ docs, folders }) => {
             <CreateNewDocCard addDocItem={handler.add} />
           </Group>
         </Grid.Col>
-        {docList.map((doc, i) => {
-          return (
-            <Grid.Col xs={6} md={4} key={i}>
-              <Card
-                doc={doc}
-                handler={handler}
-                updateOpenerData={updateOpenerData}
-              />
-            </Grid.Col>
-          );
-        })}
+        {docList.length > 0 ? (
+          docList.map((doc, i) => {
+            return (
+              <Grid.Col xs={6} md={4} key={i}>
+                <Card
+                  doc={doc}
+                  handler={handler}
+                  updateOpenerData={updateOpenerData}
+                />
+              </Grid.Col>
+            );
+          })
+        ) : (
+          <EmptySectionSVG />
+        )}
       </Grid>
     </>
   );

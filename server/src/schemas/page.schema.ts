@@ -6,12 +6,9 @@ export type PageDocument = HydratedDocument<Page>;
 
 @Schema({ collection: 'page' })
 export class Page {
-  @Prop()
-  _id: Types.ObjectId;
-
   // use id as an param to fetch data
   @Prop()
-  id: string;
+  id?: string;
 
   // this name describe the purpose of this page
   @Prop({ required: true })

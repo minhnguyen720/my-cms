@@ -58,7 +58,7 @@ const MoreActions: React.FC<Props> = ({
         <Text>
           This will permanently delete any data related to this page. To
           confirm, type
-          <span className="font-bold mx-2.5">&apos;{rowId}&apos;</span>
+          <span className="font-bold mx-2.5">{rowId}</span>
           in the box below.
         </Text>
         <TextInput className="mt-4" onChange={handleDeleteConfirm} />

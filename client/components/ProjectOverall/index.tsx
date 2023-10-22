@@ -4,10 +4,9 @@ import { GeneralNotFound } from "@/components/GeneralNotFound";
 import ProjectTable from "@/components/ProjectTable";
 import { Center, Loader } from "@mantine/core";
 import useProjectOverall from "./hooks/useProjectOverall";
-import { projectIdAtom } from "@/atoms";
-import { useSetAtom } from "jotai";
 import { useEffect } from "react";
 import { ProjectTableItem } from "@/app/project/[projectNameId]/page";
+import useCurrentProject from "@/hooks/utilities/useCurrentProject";
 
 interface Props {
   id?: string;
@@ -16,11 +15,11 @@ interface Props {
 
 const ProjectOverall: React.FC<Props> = ({ id, data }) => {
   const { notfound, datasource } = useProjectOverall(data);
+  const {updateCurrentId} = useCurrentProject();
 
-  const setProjectId = useSetAtom(projectIdAtom);
   useEffect(() => {
-    setProjectId(id);
-  }, [id, setProjectId]);
+    updateCurrentId(id);
+  }, [id, updateCurrentId]);
 
   return (
     <>
@@ -36,7 +35,7 @@ const ProjectOverall: React.FC<Props> = ({ id, data }) => {
               <Loader py={"10%"} variant="bars" />
             </Center>
           ) : (
-            <ProjectTable data={datasource} />
+            <ProjectTable />
           )}
         </>
       )}

@@ -5,7 +5,7 @@ import { useForm } from "@mantine/form";
 import React from "react";
 import { Button, Group, Modal, Stack, TextInput } from "@mantine/core";
 import { useAtomValue, useSetAtom } from "jotai";
-import { baseUrlAtom, datasourceAtom, projectIdAtom } from "@/atoms";
+import { baseUrlAtom, datasourceAtom } from "@/atoms";
 import axios from "axios";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
@@ -13,6 +13,7 @@ import { useDisclosure } from "@mantine/hooks";
 import useAlert from "@/components/Alert/hooks";
 import { ALERT_CODES, MESSAGES } from "@/constant";
 import { ProjectTableItem } from "../page";
+import useCurrentProject from "@/hooks/utilities/useCurrentProject";
 
 interface PageFormValues extends StandardSchema {
   project?: string;
@@ -23,9 +24,8 @@ interface PageFormValues extends StandardSchema {
 
 const CreatingPage = ({ params: { projectNameId } }) => {
   const initialValues: PageFormValues = {
-    id:"",
-    createdDate: dayjs().format("DD/MM/YYYY"),
-    updatedDate: dayjs().format("DD/MM/YYYY"),
+    createdDate: dayjs().toString(),
+    updatedDate: dayjs().toString(),
     createdUser: "admin",
     updatedUser: "admin",
     docs: [],
@@ -39,11 +39,11 @@ const CreatingPage = ({ params: { projectNameId } }) => {
   const router = useRouter();
   const [opened, { open, close }] = useDisclosure(false);
   const { openAlert } = useAlert();
-  const currentProjectId = useAtomValue(projectIdAtom);
   const setDatasource = useSetAtom(datasourceAtom);
+  const {getCurrentId} = useCurrentProject();
 
   const backToHome = () => {
-    router.push(`/project/${currentProjectId}`);
+    router.push(`/project/${getCurrentId()}`);
   };
 
   const handleSubmit = async (values: PageFormValues) => {

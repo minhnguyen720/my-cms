@@ -3,4 +3,7 @@ export class CreateDocDto {
   description: string;
   id: string;
   pageId: string;
+  createdDate: string;
+  updatedDate: string;
+  parent: string;
 }
