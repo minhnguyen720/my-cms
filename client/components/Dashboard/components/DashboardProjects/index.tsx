@@ -9,6 +9,10 @@ import ActiveSwitch from "../ActiveSwitch";
 import useProjectSelection from "../../hooks/useProjectSelection";
 import { Navlink } from "@/interfaces/NavLink";
 import DashboardToolbar from "../DashboardToolbar";
+import { useSetAtom } from "jotai";
+import { statAtom } from "../../atoms";
+import useAlert from "@/components/Alert/hooks";
+import { ALERT_CODES } from "@/constant";
 
 interface Props {
   projects: Navlink[];
@@ -17,6 +21,8 @@ interface Props {
 const DashboardProjects: React.FC<Props> = ({ projects }) => {
   const router = useRouter();
   const [baseUrl] = useGetBaseUrl();
+  const setStatData = useSetAtom(statAtom);
+  const { openAlert } = useAlert();
 
   const [searchValue, setSearchValue] = useState("");
   const [searchResult, setSearchResult] = useState<Navlink[]>(() => {
@@ -47,6 +53,26 @@ const DashboardProjects: React.FC<Props> = ({ projects }) => {
 
   const updateSearchResult = (value) => {
     setSearchResult(value);
+  };
+
+  const onChangeActiveSwitch = async (event) => {
+    const res = await axios.put(`${baseUrl}/project/active/toggle`, {
+      id: event.currentTarget.id,
+      value: event.currentTarget.checked,
+    });
+    const newStat = [
+      { title: "Active project", value: res.data.activeLength.toString() },
+      {
+        title: "Deactive project",
+        value: res.data.deactiveLength.toString(),
+      },
+    ];
+    setStatData(newStat);
+    if (res.data.success) {
+      openAlert("Deactive successful", ALERT_CODES.SUCCESS);
+    } else {
+      openAlert("Deactive failed", ALERT_CODES.ERROR);
+    }
   };
 
   return (
@@ -109,7 +135,7 @@ const DashboardProjects: React.FC<Props> = ({ projects }) => {
                     <td>{dayjs(element.createdDate).format("DD/MM/YYYY")}</td>
                     <td>{dayjs(element.updatedDate).format("DD/MM/YYYY")}</td>
                     <td>
-                      <ActiveSwitch element={element} />
+                      <ActiveSwitch element={element} onChange={onChangeActiveSwitch}/>
                     </td>
                   </tr>
                 );

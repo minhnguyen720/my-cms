@@ -1,47 +1,39 @@
-"use client";
+import DocDetailContainer from "@/components/DocDetailContainer";
 
-import React from "react";
-import { Group, Stack } from "@mantine/core";
-import ManageOrderModal from "@/components/Modals/ManageOrderModal";
-import CreateNewField from "@/components/CreateNewField";
-import FormDetailItem from "@/components/FormDetailItem";
-import { useForm } from "@mantine/form";
-import SaveButton from "@/components/SaveButton";
+export const revalidate = 10;
+const baseUrl = "http://localhost:4000";
 
-const DocDetail = () => {
-  const form = useForm();
+const getPageData = async (pageId: string) => {
+  try {
+    const page = await fetch(`${baseUrl}/page/${pageId}`, {
+      cache: "no-store",
+    });
 
-  const imageDetail = {
-    type: "image",
-    field_id: "hehe",
-    label: "Image Test",
-    active: true,
-    required: true,
-    value:
-      "https://i.pinimg.com/564x/2a/ed/3c/2aed3c332a284221006174d818eddaba.jpg",
-  };
+    return page.json();
+  } catch (error) {
+    return false;
+  }
+};
 
-  const textDetail = {
-    type: "text",
-    field_id: "hehe",
-    label: "Test",
-    active: true,
-    required: true,
-    value:
-      "https://i.pinimg.com/564x/2a/ed/3c/2aed3c332a284221006174d818eddaba.jpg",
-  };
+const getDocDetail = async (detailId: string) => {
+  try {
+    const docDetail = await fetch(`${baseUrl}/doc/${detailId}`, {
+      cache: "no-store",
+    });
 
-  return (
-    <Stack>
-      <Group>
-        <ManageOrderModal />
-        <CreateNewField />
-        <SaveButton />
-      </Group>
+    return docDetail.json();
+  } catch (error) {
+    return false;
+  }
+};
 
-      <FormDetailItem data={[imageDetail, textDetail]} form={form} />
-    </Stack>
-  );
+const DocDetail = async ({ params }) => {
+  const pageDataPromise = getPageData(params.pageId);
+  const docDetailPromise = getDocDetail(params.pageId);
+
+  const [page, doc] = await Promise.all([pageDataPromise, docDetailPromise]);
+
+  return <DocDetailContainer page={page} doc={doc} />;
 };
 
 export default DocDetail;

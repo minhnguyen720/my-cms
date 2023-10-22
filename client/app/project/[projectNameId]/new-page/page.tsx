@@ -2,7 +2,6 @@
 
 import { StandardSchema } from "@/interfaces/StandardSchema";
 import { useForm } from "@mantine/form";
-import { v4 } from "uuid";
 import React from "react";
 import { Button, Group, Modal, Stack, TextInput } from "@mantine/core";
 import { useAtomValue, useSetAtom } from "jotai";
@@ -22,7 +21,7 @@ interface PageFormValues extends StandardSchema {
   name: string;
 }
 
-const CreatingPage = ({ params: { id } }) => {
+const CreatingPage = ({ params: { projectNameId } }) => {
   const initialValues: PageFormValues = {
     id:"",
     createdDate: dayjs().format("DD/MM/YYYY"),
@@ -30,7 +29,7 @@ const CreatingPage = ({ params: { id } }) => {
     createdUser: "admin",
     updatedUser: "admin",
     docs: [],
-    project: id,
+    project: projectNameId,
     name: "",
   };
   const form = useForm({
@@ -50,7 +49,7 @@ const CreatingPage = ({ params: { id } }) => {
   const handleSubmit = async (values: PageFormValues) => {
     try {
       const res: {
-        data: { success: boolean; message: string; newProjectData: ProjectTableItem };
+        data: { success: boolean; message: string; newProjectData: ProjectTableItem[] };
       } = await axios.post(`${baseUrl}/page`, values);
       if (res.data.success) {
         setDatasource(res.data.newProjectData);

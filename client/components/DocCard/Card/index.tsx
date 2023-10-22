@@ -9,7 +9,6 @@ import {
   ActionIcon,
   Modal,
 } from "@mantine/core";
-import { DetailItem } from "@/components/DocDetail";
 import { getFormattedTime } from "@/hooks/utilities/dayjs";
 import {
   IconTrash,
@@ -38,6 +37,15 @@ interface Props {
   };
   updateOpenerData?: any;
 }
+
+const DetailItem = ({ label, content }) => {
+  return (
+    <p>
+      <span className="mr-2">{label}:</span>
+      {content}
+    </p>
+  );
+};
 
 const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
   const [opened, { open, close }] = useDisclosure(false);

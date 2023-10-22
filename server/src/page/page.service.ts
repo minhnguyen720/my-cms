@@ -15,11 +15,9 @@ export class PageService {
 
   async findPageBelongToProject(projectId: string) {
     try {
-      const project = await this.projectModel
-        .findOne({ id: projectId })
-        .select('_id');
+      // const project = await this.projectModel.findById(projectId);
       const pages = await this.pageModel.find({
-        project: project._id,
+        project: projectId,
       });
       return pages;
     } catch (error) {
@@ -42,8 +40,7 @@ export class PageService {
       });
       newPageData.id = newPageData._id;
       await newPageData.save();
-      // projectRes.pages.push(newPageData);
-      // await projectRes.save();
+      
       return { success: true, message: '', newProjectData: projectRes };
     } catch (error) {
       return {
@@ -57,8 +54,8 @@ export class PageService {
     return `This action returns all page`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} page`;
+  async findOne(id: string) {
+    return await this.pageModel.findById(id)
   }
 
   update(id: number, updatePageDto: UpdatePageDto) {

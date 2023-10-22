@@ -1,5 +1,4 @@
 import DocCards from "@/components/DocCard";
-import PageDetail from "@/components/DocDetail";
 
 export const revalidate = 10;
 
@@ -20,7 +19,6 @@ const ProjectDetail: React.FC<any> = async ({ params }) => {
   const res = await getDocData(params.pageId);
   return (
     <div className="px-5">
-      <PageDetail data={res} />
       <DocCards docs={res.docData} folders={res.folderData} />
     </div>
   );

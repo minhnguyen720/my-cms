@@ -36,7 +36,7 @@ export const Dashboard: React.FC<StatsGridIconsProps> = ({
 }) => {
   const { classes } = useStyles();
   useHydrateAtoms([[statAtom, data]])
-  const [statData] = useAtomValue(statAtom);
+  const statData = useAtomValue(statAtom);
 
   return (
     <div className={classes.root}>

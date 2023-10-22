@@ -84,15 +84,8 @@ export interface Page extends StandardSchema {
   _id?: string;
   superAdminId?: string;
   name?: string;
-  pages?: {
-    id?: string;
-    name?: string;
-    createdDate?: string;
-    updatedDate?: string;
-    createdUser?: string;
-    updatedUser?: string;
-    project?: string;
-  }[];
+  active?: boolean;
+  project?: string;
 }
 
 export interface Folder extends StandardSchema {

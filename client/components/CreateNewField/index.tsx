@@ -31,10 +31,7 @@ const CreateNewField = () => {
 
   const handleOnClose = () => {
     close();
-    form.setValues({
-      name: "",
-      type: "",
-    });
+    form.reset();
   };
 
   const handleOnOpen = () => {
@@ -81,7 +78,7 @@ const CreateNewField = () => {
           </Grid>
           <Group position="right" className="mt-8">
             <Button type="submit">Create</Button>
-            <Button color="red">Cancel</Button>
+            <Button color="red" onClick={handleOnClose}>Cancel</Button>
           </Group>
         </form>
       </Modal>
