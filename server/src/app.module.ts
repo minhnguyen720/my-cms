@@ -11,12 +11,12 @@ import { FolderModule } from './folder/folder.module';
 @Module({
   imports: [
     ProjectModule,
-    MongooseModule.forRoot(
-      'mongodb+srv://willie:williedaspidie@cluster0.guq9sem.mongodb.net/my_cms_prototype?retryWrites=true&w=majority',
-    ),
-    // MongooseModule.forRoot('mongodb://127.0.0.1:27017', {
-    //   dbName: 'myCMSPrototype',
-    // }),
+    // MongooseModule.forRoot(
+    //   'mongodb+srv://willie:williedaspidie@cluster0.guq9sem.mongodb.net/my_cms_prototype?retryWrites=true&w=majority',
+    // ),
+    MongooseModule.forRoot('mongodb://127.0.0.1:27017', {
+      dbName: 'myCMSPrototype',
+    }),
     PageModule,
     DocModule,
     ClientModule,
