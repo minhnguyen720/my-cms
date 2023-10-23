@@ -8,6 +8,7 @@ import {
   Box,
   ActionIcon,
   Modal,
+  Badge,
 } from "@mantine/core";
 import { getFormattedTime } from "@/hooks/utilities/dayjs";
 import {
@@ -18,13 +19,18 @@ import {
 } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import axios from "axios";
-import { useAtomValue } from "jotai";
-import { baseUrlAtom } from "@/atoms";
 import { Document } from "@/interfaces/Project";
 import MoveToFolderModal from "@/components/Modals/MoveToFolderModal";
 import useMoveToFolderModal from "@/components/Modals/MoveToFolderModal/hooks/useMoveToFolderModal";
 import { BiHomeAlt } from "react-icons/bi";
 import { useParams, usePathname, useRouter } from "next/navigation";
+import { IconZzz } from "@tabler/icons-react";
+import { TbPlugConnected } from "react-icons/tb";
+import OnlineBadge from "@/components/Badge";
+import useLoading from "@/hooks/utilities/useLoading";
+import useAlert from "@/components/Alert/hooks";
+import useGetBaseUrl from "@/hooks/utilities/getUrl";
+import { ALERT_CODES } from "@/constant";
 
 interface Props {
   doc: Document;
@@ -49,10 +55,12 @@ const DetailItem = ({ label, content }) => {
 
 const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
   const [opened, { open, close }] = useDisclosure(false);
-  const baseUrl = useAtomValue(baseUrlAtom);
+  const [baseUrl] = useGetBaseUrl();
   const params = useParams();
   const currentPathname = usePathname();
   const navigator = useRouter();
+  const { showLoading, hideLoading } = useLoading();
+  const { openAlert } = useAlert();
 
   const handleDeleteDocument = async () => {
     await axios.delete(`${baseUrl}/doc/${doc._id}`);
@@ -66,6 +74,29 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
     });
     handler.update(newDocList);
     handleMove(doc._id, "doc");
+  };
+
+  const handleUpdateStatus = async () => {
+    try {
+      showLoading();
+
+      const res = await axios.put(`${baseUrl}/doc/status`, {
+        id: doc._id,
+        value: !doc.active,
+        parent: doc.parent,
+      });
+
+      if (res.data.isSuccess) {
+        openAlert("Update status success", ALERT_CODES.SUCCESS);
+        handler.update(res.data.newDoc);
+      } else {
+        openAlert("Update status failed", ALERT_CODES.ERROR);
+      }
+    } catch (error) {
+      openAlert("Update status failed", ALERT_CODES.ERROR);
+    } finally {
+      hideLoading();
+    }
   };
 
   const {
@@ -145,6 +176,18 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
                 Rename
               </Menu.Item>
               <Menu.Item
+                icon={
+                  doc.active ? (
+                    <IconZzz size={14} />
+                  ) : (
+                    <TbPlugConnected size={14} />
+                  )
+                }
+                onClick={handleUpdateStatus}
+              >
+                {doc.active ? "Deactive this document" : "Active this document"}
+              </Menu.Item>
+              <Menu.Item
                 icon={<BiHomeAlt size={14} />}
                 onClick={() => {
                   backToRoot(doc._id, "doc");
@@ -176,6 +219,7 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
             <Text weight={500} className="text-xl">
               {doc.name}
             </Text>
+            <OnlineBadge flag={doc.active} />
           </Group>
 
           <Text size="sm" color="dimmed">
@@ -192,9 +236,16 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
             <DetailItem label="Number of fields" content={doc.fields?.length} />
           </Text>
 
-          <Button variant="light" color="blue" fullWidth mt="md" radius="md" onClick={() => {
-            navigator.push(`${currentPathname}/detail/${doc._id}`)
-          }}>
+          <Button
+            variant="light"
+            color="blue"
+            fullWidth
+            mt="md"
+            radius="md"
+            onClick={() => {
+              navigator.push(`${currentPathname}/detail/${doc._id}`);
+            }}
+          >
             Go to document detail
           </Button>
         </MantineCard>

@@ -38,6 +38,7 @@ const CreateNewDocCard: React.FC<Props> = ({ addDocItem }) => {
         updatedDate: dayjs().toString(),
         pageId,
         parent: pageId,
+        active: true,
       });
 
       const {

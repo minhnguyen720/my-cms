@@ -1,13 +1,14 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { List, Accordion, Stack, Text, Title, Badge } from "@mantine/core";
+import { List, Accordion, Stack, Text, Title } from "@mantine/core";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import { useAtomValue } from "jotai";
 import { datasourceAtom } from "@/atoms";
 import MoreActions from "../components/MoreAction";
 import useCurrentProject from "@/hooks/utilities/useCurrentProject";
+import OnlineBadge from "@/components/Badge";
 
 const { Item, Panel, Control } = Accordion;
 
@@ -36,7 +37,7 @@ const useProjectTable = () => {
             <td>{element.createdUser}</td>
             <td>{element.updatedUser}</td>
             <td>
-              <Badge color={element.active ? "green": "red"}>{element.active ? "Online" : "Offline"}</Badge>
+              <OnlineBadge flag={element.active} />
             </td>
             <td>
               <MoreActions

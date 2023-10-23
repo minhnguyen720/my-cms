@@ -6,4 +6,5 @@ export class CreateDocDto {
   createdDate: string;
   updatedDate: string;
   parent: string;
+  active: boolean;
 }

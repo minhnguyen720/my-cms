@@ -47,7 +47,9 @@ export class DocController {
   }
 
   @Put('status')
-  async updateStatus(@Body() body: { id: string; value: boolean }) {
+  async updateStatus(
+    @Body() body: { id: string; value: boolean; parent: string },
+  ) {
     return await this.docService.updateStatus(body);
   }
 

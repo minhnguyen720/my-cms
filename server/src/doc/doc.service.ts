@@ -16,14 +16,20 @@ export class DocService {
     @InjectModel(Folder.name) private folderModel: Model<Folder>,
   ) {}
 
-  async updateStatus(body: { id: string; value: boolean }) {
+  async updateStatus(body: { id: string; value: boolean; parent: string }) {
     try {
       await this.docModel.findByIdAndUpdate(body.id, { active: body.value });
+      const newDoc = await this.docModel.find({ parent: body.parent });
 
-      return true;
+      return {
+        isSuccess: true,
+        newDoc: newDoc,
+      };
     } catch (error) {
       console.error(error);
-      return false;
+      return {
+        isSuccess: false,
+      };
     }
   }
 
@@ -58,18 +64,25 @@ export class DocService {
   }
 
   async create(createDocDto: CreateDocDto) {
-    const { name, description, pageId, createdDate, updatedDate, parent } =
-      createDocDto;
+    const {
+      name,
+      description,
+      pageId,
+      createdDate,
+      updatedDate,
+      parent,
+      active,
+    } = createDocDto;
     const newDoc = await this.docModel.create({
       createdDate,
       updatedDate,
       createdUser: 'admin',
       updatedUser: 'admin',
-      active: true,
       page: pageId,
       name,
       description,
       parent,
+      active,
     });
 
     return newDoc;
