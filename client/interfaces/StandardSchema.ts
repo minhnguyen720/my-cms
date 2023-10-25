@@ -4,4 +4,5 @@ export interface StandardSchema {
     updatedDate: string;
     createdUser: string;
     updatedUser: string;
+    __v?: number;
 }

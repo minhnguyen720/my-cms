@@ -48,6 +48,11 @@ export class PageController {
     return this.pageService.update(+id, updatePageDto);
   }
 
+  @Put('movetotrash')
+  async moveToTrash(@Body() body) {
+    return await this.pageService.moveToTrash(body);
+  }
+
   @Delete(':projectId/:pageId')
   remove(
     @Param('projectId') projectId: string,

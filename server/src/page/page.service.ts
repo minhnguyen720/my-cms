@@ -103,4 +103,16 @@ export class PageService {
       return error;
     }
   }
+
+  async moveToTrash(body) {
+    try {
+      return {
+        isSuccess: true,
+      };
+    } catch (error) {
+      return {
+        isSucces: false,
+      };
+    }
+  }
 }
