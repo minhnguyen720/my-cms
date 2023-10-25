@@ -7,6 +7,8 @@ import { Doc } from 'src/schemas/doc.schema';
 import { Page } from 'src/schemas/page.schema';
 import { Project } from 'src/schemas/project.schema';
 import { Folder } from 'src/schemas/folder.schema';
+import * as dayjs from 'dayjs';
+
 @Injectable()
 export class DocService {
   constructor(
@@ -64,18 +66,10 @@ export class DocService {
   }
 
   async create(createDocDto: CreateDocDto) {
-    const {
-      name,
-      description,
-      pageId,
-      createdDate,
-      updatedDate,
-      parent,
-      active,
-    } = createDocDto;
+    const { name, description, pageId, parent, active } = createDocDto;
     const newDoc = await this.docModel.create({
-      createdDate,
-      updatedDate,
+      createdDate: dayjs().toString(),
+      updatedDate: dayjs().toString(),
       createdUser: 'admin',
       updatedUser: 'admin',
       page: pageId,

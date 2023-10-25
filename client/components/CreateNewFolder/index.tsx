@@ -38,8 +38,6 @@ const CreateNewFolder = ({ updateFolderList }) => {
   const handleCreateNewFolder = async (values: { folderName: string }) => {
     try {
       const newFolderBody = {
-        createdDate: dayjs().toString(),
-        updatedDate: dayjs().toString(),
         createdUser: currentUser.id,
         updatedUser: currentUser.id,
         name: values.folderName,

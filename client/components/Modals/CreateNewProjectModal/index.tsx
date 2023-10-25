@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import { forwardRef } from "react";
 import { useForm } from "@mantine/form";
 import { IconPlus } from "@tabler/icons-react";
@@ -36,8 +37,6 @@ const CreateNewProjectModal = forwardRef<Ref, Props>((props, ref) => {
       showLoading();
       const body = {
         name: form.values.name,
-        createdDate: dayjs(),
-        updatedDate: dayjs(),
         createdUser: getCurrentUser().id,
         updatedUser: getCurrentUser().id,
         active: true,

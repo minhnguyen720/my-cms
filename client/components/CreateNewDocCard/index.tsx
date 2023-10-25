@@ -34,8 +34,6 @@ const CreateNewDocCard: React.FC<Props> = ({ addDocItem }) => {
     try {
       const res = await axios.post(`${baseUrl}/doc`, {
         ...values,
-        createdDate: dayjs().toString(),
-        updatedDate: dayjs().toString(),
         pageId,
         parent: pageId,
         active: true,

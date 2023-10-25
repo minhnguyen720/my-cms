@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { CreateFolderDto } from './dto/create-folder.dto';
-import { UpdateFolderDto } from './dto/update-folder.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Folder } from 'src/schemas/folder.schema';
 import { Model } from 'mongoose';
 import { Page } from 'src/schemas/page.schema';
 import { Doc } from 'src/schemas/doc.schema';
 import { MoveFolderDto } from './dto/move-folder.dto';
+import * as dayjs from 'dayjs';
 
 @Injectable()
 export class FolderService {
@@ -64,7 +64,11 @@ export class FolderService {
 
   async create(createFolderDto: CreateFolderDto) {
     try {
-      await this.folderModel.create(createFolderDto);
+      await this.folderModel.create({
+        createdDate: dayjs().toString(),
+        updatedDate: dayjs().toString(),
+        ...createFolderDto,
+      });
       return {
         isSuccess: true,
         latestFolderList: await this.findFolderByPageId(createFolderDto.page),
@@ -127,10 +131,6 @@ export class FolderService {
 
   findOne(id: number) {
     return `This action returns a #${id} folder`;
-  }
-
-  update(id: number, updateFolderDto: UpdateFolderDto) {
-    return `This action updates a #${id} folder`;
   }
 
   async rename(body) {

@@ -4,6 +4,7 @@ import { Project } from 'src/schemas/project.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import * as dayjs from 'dayjs';
 
 @Injectable()
 export class ProjectService {
@@ -12,7 +13,11 @@ export class ProjectService {
   ) {}
 
   async create(createProjectDto: CreateProjectDto) {
-    await this.projectModel.create(createProjectDto);
+    await this.projectModel.create({
+      createdDate: dayjs().toString(),
+      updatedDate: dayjs().toString(),
+      ...createProjectDto,
+    });
   }
 
   async getDashboardStat() {
@@ -43,7 +48,7 @@ export class ProjectService {
         deactiveLength,
       };
     } catch (error) {
-      return {success: false};
+      return { success: false };
     }
   }
 
@@ -62,7 +67,7 @@ export class ProjectService {
   }
 
   formatProjectData(
-    projects: (Document<unknown, {}, Project> &
+    projects: (Document<unknown, any, Project> &
       Project & {
         _id: Types.ObjectId;
       })[],
