@@ -1,5 +1,4 @@
 import { NavLink as MantineNavLink } from "@mantine/core";
-import { IconChevronRight } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 
 interface Props {
@@ -26,7 +25,6 @@ const NavLink: React.FC<Props> = ({
       active={active}
       label={label}
       icon={icon}
-      rightSection={<IconChevronRight size="0.8rem" stroke={1.5} />}
       onClick={() => {
         if (handleActive) handleActive();
         router.push(href);

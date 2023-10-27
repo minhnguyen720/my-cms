@@ -43,11 +43,6 @@ export class PageController {
     return await this.pageService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePageDto: UpdatePageDto) {
-    return this.pageService.update(+id, updatePageDto);
-  }
-
   @Put('movetotrash')
   async moveToTrash(@Body() body) {
     return await this.pageService.moveToTrash(body);

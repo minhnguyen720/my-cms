@@ -31,11 +31,11 @@ export class Page {
   @Prop()
   project: string;
 
-  // @Prop({ type: MongooseSchema.Types.Array, ref: 'Doc' })
-  // docs?: Doc[];
-
   @Prop()
   active: boolean;
+
+  @Prop()
+  isRemove: boolean;
 }
 
 export const PageSchema = SchemaFactory.createForClass(Page);

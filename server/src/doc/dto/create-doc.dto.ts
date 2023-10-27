@@ -5,4 +5,5 @@ export class CreateDocDto {
   pageId: string;
   parent: string;
   active: boolean;
+  isRemove: boolean;
 }

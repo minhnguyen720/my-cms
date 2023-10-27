@@ -56,6 +56,9 @@ export class Doc {
 
   @Prop()
   parent: string;
+
+  @Prop()
+  isRemove: boolean;
 }
 
 export const DocSchema = SchemaFactory.createForClass(Doc);

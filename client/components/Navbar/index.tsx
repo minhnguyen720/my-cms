@@ -1,7 +1,7 @@
 import { SetStateAction, useEffect, useState } from "react";
 import { Divider, Navbar as MantineNavbar } from "@mantine/core";
 import NavLink from "@/components/NavLink";
-import { IconHome2, IconBook } from "@tabler/icons-react";
+import { IconHome2, IconTrash } from "@tabler/icons-react";
 import UserFooter from "../UserFooter";
 import { Navlink } from "@/interfaces/NavLink";
 import { userData } from "@/static/dummyUser";
@@ -16,7 +16,8 @@ interface Props {
 }
 
 const navbarData: Navlink[] = [
-  { icon: IconHome2, href: "/", label: "Home" }
+  { icon: IconHome2, href: "/", label: "Home" },
+  { icon: IconTrash, href: "/trashbin", label: "Trash" },
 ];
 
 const Navbar: React.FC<Props> = ({

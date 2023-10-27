@@ -66,7 +66,8 @@ export class DocService {
   }
 
   async create(createDocDto: CreateDocDto) {
-    const { name, description, pageId, parent, active } = createDocDto;
+    const { name, description, pageId, parent, active, isRemove } =
+      createDocDto;
     const newDoc = await this.docModel.create({
       createdDate: dayjs().toString(),
       updatedDate: dayjs().toString(),
@@ -77,13 +78,10 @@ export class DocService {
       description,
       parent,
       active,
+      isRemove,
     });
 
     return newDoc;
-  }
-
-  update(id: number, updateDocDto: UpdateDocDto) {
-    return `This action updates a #${id} doc`;
   }
 
   async remove(id: string) {

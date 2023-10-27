@@ -5,6 +5,7 @@ import { Page } from 'src/schemas/page.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Project } from 'src/schemas/project.schema';
+import * as dayjs from 'dayjs';
 
 @Injectable()
 export class PageService {
@@ -44,7 +45,12 @@ export class PageService {
 
   async create(createPageDto: CreatePageDto) {
     try {
-      await this.pageModel.create(createPageDto);
+      await this.pageModel.create({
+        ...createPageDto,
+        isRemove: false,
+        createdDate: dayjs().toString(), // use date of server not user local date
+        updatedDate: dayjs().toString(), // use date of server not user local date
+      });
       const projectRes = await this.projectModel.findById(
         createPageDto.project,
       );
@@ -67,37 +73,15 @@ export class PageService {
     return await this.pageModel.findById(id);
   }
 
-  update(id: number, updatePageDto: UpdatePageDto) {
-    return `This action updates a #${id} page`;
-  }
-
   async remove(deleteData: { projectId: string; pageId: string }) {
     try {
       const { projectId, pageId } = deleteData;
-      // const projectRes = await this.projectModel.findById(projectId);
-      // projectRes.pages.splice(
-      //   projectRes.pages.findIndex((e) => e.id === pageId),
-      //   1,
-      // );
-      // await projectRes.save();
-
-      // await this.pageModel.deleteOne({
-      //   id: pageId,
-      // });
-
       Promise.all([
         this.projectModel.findById(projectId),
         this.pageModel.deleteOne({
           id: pageId,
         }),
-      ]).then(async (values) => {
-        // const [projectRes] = values;
-        // projectRes.pages.splice(
-        //   projectRes.pages.findIndex((e) => e.id === pageId),
-        //   1,
-        // );
-        // await projectRes.save();
-      });
+      ]);
     } catch (error) {
       console.error(error);
       return error;

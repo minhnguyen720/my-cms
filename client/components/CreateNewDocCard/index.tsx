@@ -37,6 +37,7 @@ const CreateNewDocCard: React.FC<Props> = ({ addDocItem }) => {
         pageId,
         parent: pageId,
         active: true,
+        isRemove:false
       });
 
       const {

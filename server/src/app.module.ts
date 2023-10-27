@@ -7,9 +7,12 @@ import { PageModule } from './page/page.module';
 import { DocModule } from './doc/doc.module';
 import { ClientModule } from './client/client.module';
 import { FolderModule } from './folder/folder.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TrashbinCronService } from './cron/trashBinCron/trashbin.cron.service';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ProjectModule,
     // MongooseModule.forRoot(
     //   'mongodb+srv://willie:williedaspidie@cluster0.guq9sem.mongodb.net/my_cms_prototype?retryWrites=true&w=majority',

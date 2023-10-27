@@ -31,8 +31,9 @@ export class Project {
 
   @Prop()
   active: boolean;
-  // @Prop({ type: MongooseSchema.Types.Array, ref: 'Page' })
-  // pages?: Page[];
+
+  @Prop()
+  isRemove: boolean;
 }
 
 export const ProjectSchema = SchemaFactory.createForClass(Project);

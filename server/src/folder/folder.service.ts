@@ -67,6 +67,7 @@ export class FolderService {
       await this.folderModel.create({
         createdDate: dayjs().toString(),
         updatedDate: dayjs().toString(),
+        isRemove: false,
         ...createFolderDto,
       });
       return {
