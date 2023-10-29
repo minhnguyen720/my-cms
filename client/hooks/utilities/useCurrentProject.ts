@@ -10,7 +10,7 @@ const useCurrentProject = () => {
 
   const getCurrentId = () => {
     return currentProjectId;
-  }
+  };
 
   return { updateCurrentId, getCurrentId };
 };

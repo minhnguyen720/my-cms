@@ -1,30 +1,27 @@
-import { useAtom } from "jotai";
-import { removedItemAtom } from "../atoms";
 import axios from "axios";
 import useGetBaseUrl from "@/hooks/utilities/getUrl";
 import useNotificationPreset from "@/hooks/notifications";
+import { useState } from "react";
 
 const useTrashbin = () => {
-  const [removedItems, setRemovedItems] = useAtom(removedItemAtom);
   const [baseUrl] = useGetBaseUrl();
   const noti = useNotificationPreset();
-
-  const getRemoved = () => {
-    return removedItems;
-  };
 
   const emptyTrashbin = async () => {
     noti.loadingNotification(
       "empty_trash_loading",
       "Empty trash bin done",
       async () => {
-        await axios.put(`${baseUrl}/trash/empty`, { removedItems });
-        setRemovedItems([]);
+        await axios.put(`${baseUrl}/trash/empty`);
       },
     );
   };
 
-  return { getRemoved, emptyTrashbin };
+  const removeSelected = async (ids: string[]) => {
+
+  };
+
+  return { emptyTrashbin, removeSelected };
 };
 
 export default useTrashbin;

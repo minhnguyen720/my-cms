@@ -4,12 +4,11 @@ import ProjectTableDesktop from "./components/Desktop";
 import { useMediaQuery } from "@mantine/hooks";
 import SearchBar from "../SearchBar";
 import { useSearchBar } from "../SearchBar/hooks";
-import { ProjectTableItem } from "@/app/project/[projectNameId]/page";
-import { ActionIcon, Group, Text } from "@mantine/core";
-import { IconPlus } from "@tabler/icons-react";
+import { ActionIcon, Group, Tooltip } from "@mantine/core";
+import { IconPlus, IconTrash } from "@tabler/icons-react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { useStyles } from "../SearchBar/style";
+import useCurrentProject from "@/hooks/utilities/useCurrentProject";
 
 const ProjectTable: React.FC = () => {
   const { rows, items } = useProjectTable();
@@ -18,7 +17,7 @@ const ProjectTable: React.FC = () => {
     useSearchBar();
   const navigator = useRouter();
   const currentPathname = usePathname();
-  const { classes } = useStyles();
+  const { getCurrentId } = useCurrentProject();
 
   return (
     <>
@@ -30,16 +29,25 @@ const ProjectTable: React.FC = () => {
           searchValue={searchValue}
           setSearchValue={setSearchValue}
         />
-        <Group py={16}>
-          <Text>Create new page</Text>
-          <ActionIcon
-            className={classes.searchbarIcon}
-            onClick={() => {
-              navigator.push(`${currentPathname}/new-page`);
-            }}
-          >
-            <IconPlus />
-          </ActionIcon>
+        <Group className="py-6">
+          <Tooltip label="Create new page">
+            <ActionIcon
+              onClick={() => {
+                navigator.push(`${currentPathname}/new-page`);
+              }}
+            >
+              <IconPlus />
+            </ActionIcon>
+          </Tooltip>
+          <Tooltip label="Trash">
+            <ActionIcon
+              onClick={() => {
+                navigator.push(`/trashbin/${getCurrentId()}`);
+              }}
+            >
+              <IconTrash />
+            </ActionIcon>
+          </Tooltip>
         </Group>
       </div>
       {mobileTableMatches ? (

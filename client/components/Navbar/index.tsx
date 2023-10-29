@@ -16,8 +16,7 @@ interface Props {
 }
 
 const navbarData: Navlink[] = [
-  { icon: IconHome2, href: "/", label: "Home" },
-  { icon: IconTrash, href: "/trashbin", label: "Trash" },
+  { icon: IconHome2, href: "/", label: "Home" }
 ];
 
 const Navbar: React.FC<Props> = ({

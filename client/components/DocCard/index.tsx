@@ -8,7 +8,6 @@ import {
   TextInput,
   Button,
   Image,
-  Box,
 } from "@mantine/core";
 import React, { useState } from "react";
 import CreateNewDocCard from "../CreateNewDocCard";

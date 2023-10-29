@@ -86,6 +86,7 @@ export interface Page extends StandardSchema {
   name?: string;
   active?: boolean;
   project?: string;
+  isRemove?:boolean;
 }
 
 export interface Folder extends StandardSchema {
@@ -96,4 +97,6 @@ export interface Folder extends StandardSchema {
   page: string;
 
   parent: string;
+
+  isRemove?:boolean;
 }

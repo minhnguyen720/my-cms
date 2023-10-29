@@ -32,7 +32,7 @@ export class ProjectService {
   }
 
   async getProjectsByUserId() {
-    const result = await this.projectModel.find({ isRemove: false });
+    const result = await this.projectModel.find();
     return this.formatProjectData(result);
   }
 

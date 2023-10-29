@@ -12,7 +12,6 @@ import { ALERT_CODES } from "@/constant";
 const TrashbinHeader = () => {
   const [opened, { open, close }] = useDisclosure(false);
   const { showLoading, hideLoading } = useLoading();
-  const { width } = useViewportSize();
   const { emptyTrashbin } = useTrashbin();
   const { openAlert } = useAlert();
 
@@ -55,7 +54,7 @@ const TrashbinHeader = () => {
         color="cyan"
         className="mb-4"
       >
-        <div className={width < 768 ? "block" : "flex justify-between"}>
+        <div className="block">
           <div>Trash bin will be empty automatically in 30 days</div>
           <div
             className="mr-6 w-fit cursor-pointer font-semibold"
