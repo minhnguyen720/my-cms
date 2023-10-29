@@ -32,7 +32,7 @@ export class ProjectService {
   }
 
   async getProjectsByUserId() {
-    const result = await this.projectModel.find();
+    const result = await this.projectModel.find({ isRemove: false });
     return this.formatProjectData(result);
   }
 
@@ -59,7 +59,11 @@ export class ProjectService {
 
   async removeSelection(ids: string[]) {
     try {
-      await this.projectModel.deleteMany({ _id: { $in: ids } });
+      // await this.projectModel.deleteMany({ _id: { $in: ids } });
+      await this.projectModel.updateMany(
+        { _id: { $in: ids } },
+        { isRemove: true },
+      );
       return await this.getProjectsByUserId();
     } catch (error) {
       return await this.getProjectsByUserId();
