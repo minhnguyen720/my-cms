@@ -23,4 +23,9 @@ export class TrashController {
   async restore(@Body() body: RestoreDto) {
     return await this.trashService.restore(body);
   }
+
+  @Put('rmselected')
+  async removeSelected(@Body() body: RestoreDto) {
+    return await this.trashService.removeSelected(body);
+  }
 }

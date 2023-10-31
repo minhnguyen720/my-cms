@@ -53,9 +53,23 @@ const useTrashbin = () => {
     }
   };
 
-  const removeSelected = async (ids: string[]) => {
+  const removeSelected = async (ids: string[], type: string) => {
     try {
       showLoading();
+
+      const res = await axios.put(`${baseUrl}/trash/rmselected`, {
+        projectId: params.projectId,
+        ids,
+        type,
+      });
+
+      if(res.data.isSuccess) {
+        generalNotification(MESSAGES.REMOVED_ITEM.SUCCESS,'green');
+        setRemovedItems(res.data.newList);
+      } else {
+        generalNotification(MESSAGES.REMOVED_ITEM.FAIL,'red');
+      }
+
     } catch (error) {
       generalNotification(MESSAGES.REMOVED_ITEM.FAIL, "red");
     } finally {

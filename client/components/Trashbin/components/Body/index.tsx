@@ -9,8 +9,11 @@ import {
   Checkbox,
   Image,
   Tooltip,
+  Modal,
+  Text,
+  Button,
 } from "@mantine/core";
-import { useViewportSize } from "@mantine/hooks";
+import { useDisclosure, useViewportSize } from "@mantine/hooks";
 import { IconTrash, IconRestore } from "@tabler/icons-react";
 import React, { useState } from "react";
 import {
@@ -28,6 +31,7 @@ const TrashbinBody = ({ initialData }) => {
 
   const [scrolled, setScrolled] = useState<boolean>(false);
   const [selected, setSelected] = useAtom(selectedAtom);
+  const [opened, { open, close }] = useDisclosure(false);
 
   const { width } = useViewportSize();
   const { handleSegmentChanged, value, removedItems } = useSegmentedControl();
@@ -43,8 +47,33 @@ const TrashbinBody = ({ initialData }) => {
     });
   };
 
+  const handleOnClose = () => {
+    close();
+  };
+
+  const handleOnOpen = () => {
+    open();
+  }
+
   return (
     <>
+      <Modal title="System notice" opened={opened} onClose={handleOnClose} centered>
+        <Text>Any data are selected will be removed permanently</Text>
+        <Group className="mt-4" position="right">
+          <Button
+            variant="light"
+            onClick={async () => {
+              await removeSelected(selected, value);
+              handleOnClose();
+            }}
+          >
+            Confirm
+          </Button>
+          <Button color="red" variant="light" onClick={handleOnClose}>
+            Cancel
+          </Button>
+        </Group>
+      </Modal>
       <SegmentedControl
         orientation={width <= 425 ? "vertical" : "horizontal"}
         fullWidth
@@ -56,17 +85,18 @@ const TrashbinBody = ({ initialData }) => {
         <Tooltip label="Remove from trash bin">
           <ActionIcon
             disabled={selected.length <= 0}
-            onClick={async () => {
-              await removeSelected(selected);
-            }}
+            onClick={handleOnOpen}
           >
             <IconTrash />
           </ActionIcon>
         </Tooltip>
         <Tooltip label="Restore selected items">
-          <ActionIcon disabled={selected.length <= 0} onClick={() => {
-            restoreSelected(selected,value)
-          }}>
+          <ActionIcon
+            disabled={selected.length <= 0}
+            onClick={() => {
+              restoreSelected(selected, value);
+            }}
+          >
             <IconRestore />
           </ActionIcon>
         </Tooltip>

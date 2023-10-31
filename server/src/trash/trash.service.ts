@@ -12,6 +12,56 @@ export class TrashService {
     @InjectModel(Page.name) private pageModel: Model<Page>,
   ) {}
 
+  async removeSelected(body: RestoreDto) {
+    switch (body.type) {
+      case 'folder':
+        try {
+          await this.folderModel.deleteMany({
+            _id: { $in: body.ids },
+            isRemove: true,
+          });
+          const newList = await this.folderModel.find({
+            project: body.projectId,
+          });
+          return {
+            isSuccess: true,
+            newList,
+          };
+        } catch (error) {
+          console.error(error);
+          return {
+            isSuccess: false,
+            newList: [],
+          };
+        }
+      case 'page':
+        try {
+          await this.pageModel.deleteMany({
+            _id: { $in: body.ids },
+            isRemove: true,
+          });
+          const newList = await this.pageModel.find({
+            project: body.projectId,
+          });
+          return {
+            isSuccess: true,
+            newList,
+          };
+        } catch (error) {
+          console.error(error);
+          return {
+            isSuccess: false,
+            newList: [],
+          };
+        }
+      default:
+        return {
+          isSuccess: false,
+          newList: [],
+        };
+    }
+  }
+
   async restore(body: RestoreDto) {
     switch (body.type) {
       case 'folder':
