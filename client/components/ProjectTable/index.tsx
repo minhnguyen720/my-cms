@@ -9,6 +9,7 @@ import { IconPlus, IconTrash } from "@tabler/icons-react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import useCurrentProject from "@/hooks/utilities/useCurrentProject";
+import { MdOutlineDeleteSweep } from "react-icons/md";
 
 const ProjectTable: React.FC = () => {
   const { rows, items } = useProjectTable();
@@ -39,13 +40,13 @@ const ProjectTable: React.FC = () => {
               <IconPlus />
             </ActionIcon>
           </Tooltip>
-          <Tooltip label="Trash">
+          <Tooltip label="Go to trash bin">
             <ActionIcon
               onClick={() => {
                 navigator.push(`/trashbin/${getCurrentId()}`);
               }}
             >
-              <IconTrash />
+              <MdOutlineDeleteSweep size={24}/>
             </ActionIcon>
           </Tooltip>
         </Group>

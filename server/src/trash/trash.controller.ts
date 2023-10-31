@@ -1,5 +1,6 @@
-import { Controller, Get, Param, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Put } from '@nestjs/common';
 import { TrashService } from './trash.service';
+import { RestoreDto } from './dto/restore.dto';
 
 @Controller('trash')
 export class TrashController {
@@ -16,5 +17,10 @@ export class TrashController {
   @Put('empty')
   async empty() {
     return await this.trashService.empty();
+  }
+
+  @Put('restore')
+  async restore(@Body() body: RestoreDto) {
+    return await this.trashService.restore(body);
   }
 }

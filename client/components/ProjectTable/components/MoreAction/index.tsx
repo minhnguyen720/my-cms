@@ -22,9 +22,10 @@ import axios from "axios";
 import useGetBaseUrl from "@/hooks/utilities/getUrl";
 import useLoading from "@/hooks/utilities/useLoading";
 import useAlert from "@/components/Alert/hooks";
-import { ALERT_CODES } from "@/constant";
+import { MESSAGES } from "@/constant";
 import { useSetAtom } from "jotai";
 import { datasourceAtom } from "@/atoms";
+import { generalNotification } from "@/hooks/notifications/notificationPreset";
 
 interface Props {
   rowId: string;
@@ -50,7 +51,7 @@ const MoreActions: React.FC<Props> = ({
     dangerzoneOpened,
     dzModalHandler,
     handleDeleteConfirm,
-  } = useDelete(rowId, projectId, pageId, projectName);
+  } = useDelete(rowId, projectId, pageId);
   const router = useRouter();
   const pathname = usePathname();
   const [baseUrl] = useGetBaseUrl();
@@ -71,13 +72,13 @@ const MoreActions: React.FC<Props> = ({
         projectId: projectId,
       });
       if (res.data.isSuccess) {
-        openAlert("Update page status success", ALERT_CODES.SUCCESS);
+        generalNotification(MESSAGES.UPDATE_STATUS.SUCCESS, "green");
         setDatasource(res.data.latest);
       } else {
-        openAlert("Update page status failed", ALERT_CODES.ERROR);
+        generalNotification(MESSAGES.UPDATE_STATUS.FAIL, "red");
       }
     } catch (error) {
-      openAlert("Update page status failed", ALERT_CODES.ERROR);
+      generalNotification(MESSAGES.UPDATE_STATUS.FAIL, "red");
     } finally {
       hideLoading();
     }

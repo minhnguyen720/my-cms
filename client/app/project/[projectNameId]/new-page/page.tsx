@@ -14,6 +14,7 @@ import useAlert from "@/components/Alert/hooks";
 import { ALERT_CODES, MESSAGES } from "@/constant";
 import { ProjectTableItem } from "../page";
 import useCurrentProject from "@/hooks/utilities/useCurrentProject";
+import { generalNotification } from "@/hooks/notifications/notificationPreset";
 
 interface PageFormValues extends StandardSchema {
   project?: string;
@@ -59,17 +60,12 @@ const CreatingPage = ({ params: { projectNameId } }) => {
       } = await axios.post(`${baseUrl}/page`, values);
       if (res.data.success) {
         setDatasource(res.data.newProjectData);
-        openAlert(MESSAGES.CREATE_NEW_PAGE.SUCCESS, ALERT_CODES.SUCCESS);
+        generalNotification(MESSAGES.CREATE_NEW_PAGE.SUCCESS, "green");
         backToHome();
-      } else {
-        openAlert(
-          `${MESSAGES.CREATE_NEW_PAGE.FAIL}: ${res.data.message}`,
-          ALERT_CODES.ERROR,
-        );
-      }
+      } else generalNotification(MESSAGES.CREATE_NEW_PAGE.FAIL, "red");
     } catch (error) {
       console.error(error);
-      openAlert(MESSAGES.CREATE_NEW_PAGE.FAIL, ALERT_CODES.ERROR);
+      generalNotification(MESSAGES.CREATE_NEW_PAGE.FAIL, "red");
     }
   };
 

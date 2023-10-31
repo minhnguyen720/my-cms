@@ -1,31 +1,14 @@
 "use client";
 
-import useLoading from "@/hooks/utilities/useLoading";
 import { Text, Modal, Group, Button, Title, Alert } from "@mantine/core";
-import { useDisclosure, useViewportSize } from "@mantine/hooks";
+import { useDisclosure } from "@mantine/hooks";
 import { IconAlertCircle } from "@tabler/icons-react";
 import React from "react";
 import useTrashbin from "../../hooks/useTrashbin";
-import useAlert from "@/components/Alert/hooks";
-import { ALERT_CODES } from "@/constant";
 
 const TrashbinHeader = () => {
   const [opened, { open, close }] = useDisclosure(false);
-  const { showLoading, hideLoading } = useLoading();
   const { emptyTrashbin } = useTrashbin();
-  const { openAlert } = useAlert();
-
-  const handleEmptyTrashBin = async () => {
-    try {
-      showLoading();
-      emptyTrashbin();
-      close();
-    } catch (error) {
-      openAlert(error, ALERT_CODES.ERROR);
-    } finally {
-      hideLoading();
-    }
-  };
 
   return (
     <>
@@ -40,7 +23,7 @@ const TrashbinHeader = () => {
           process.
         </Text>
         <Group position="right" className="mt-4">
-          <Button onClick={handleEmptyTrashBin}>Confirm</Button>
+          <Button onClick={emptyTrashbin}>Confirm</Button>
           <Button color="red" onClick={close}>
             Cancel
           </Button>

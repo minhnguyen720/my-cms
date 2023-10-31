@@ -1,23 +1,18 @@
 import { baseUrlAtom, datasourceAtom } from "@/atoms";
 import useAlert from "@/components/Alert/hooks";
 import { MESSAGES, ALERT_CODES } from "@/constant";
+import { generalNotification } from "@/hooks/notifications/notificationPreset";
 import { useDisclosure } from "@mantine/hooks";
 import axios from "axios";
 import { useAtomValue, useSetAtom } from "jotai";
 import { ChangeEvent, useEffect, useState } from "react";
 
-const useDelete = (
-  rowId: string,
-  projectId: string,
-  pageId: string,
-  projectName: string
-) => {
+const useDelete = (rowId: string, projectId: string, pageId: string) => {
   const [dangerzoneOpened, dzModalHandler] = useDisclosure(false);
   const [deleteConfirm, setDeleteConfirm] = useState<string>("");
   const [allowToDelete, setAllowToDelete] = useState<boolean>(false);
   const baseUrl = useAtomValue(baseUrlAtom);
   const setDatasource = useSetAtom(datasourceAtom);
-  const { openAlert } = useAlert();
 
   useEffect(() => {
     if (deleteConfirm === rowId) setAllowToDelete(true);
@@ -26,15 +21,16 @@ const useDelete = (
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`${baseUrl}/page/${projectId}/${pageId}`);
-      const newDatasource = (await axios.get(`${baseUrl}/page/${projectName}`))
-        .data;
-      setDatasource(newDatasource);
-      openAlert(MESSAGES.DELETE_PAGE.SUCCESS, ALERT_CODES.SUCCESS);
+      const res = await axios.put(`${baseUrl}/page/movetotrash/`, {
+        projectId,
+        pageId,
+      });
+      setDatasource(res.data.newDatasource);
+      generalNotification(MESSAGES.DELETE_PAGE.SUCCESS, "green");
       dzModalHandler.close();
     } catch (error) {
       console.error(error);
-      openAlert(MESSAGES.DELETE_PAGE.FAIL, ALERT_CODES.ERROR);
+      generalNotification(MESSAGES.DELETE_PAGE.FAIL, "red");
       dzModalHandler.close();
     }
   };

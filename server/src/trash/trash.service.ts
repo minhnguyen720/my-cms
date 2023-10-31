@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Folder } from 'src/schemas/folder.schema';
 import { Page } from 'src/schemas/page.schema';
+import { RestoreDto } from './dto/restore.dto';
 
 @Injectable()
 export class TrashService {
@@ -10,6 +11,58 @@ export class TrashService {
     @InjectModel(Folder.name) private folderModel: Model<Folder>,
     @InjectModel(Page.name) private pageModel: Model<Page>,
   ) {}
+
+  async restore(body: RestoreDto) {
+    switch (body.type) {
+      case 'folder':
+        try {
+          await this.folderModel.updateMany(
+            { _id: { $in: body.ids } },
+            { isRemove: false },
+          );
+          const newList = await this.folderModel.find({
+            isRemove: true,
+            project: body.projectId,
+          });
+          return {
+            isSuccess: true,
+            newList,
+          };
+        } catch (error) {
+          console.error(error);
+          return {
+            isSuccess: false,
+            newList: [],
+          };
+        }
+      case 'page':
+        try {
+          await this.pageModel.updateMany(
+            { _id: { $in: body.ids } },
+            { isRemove: false },
+          );
+          const newList = await this.pageModel.find({
+            isRemove: true,
+            project: body.projectId,
+          });
+          return {
+            isSuccess: true,
+            newList,
+          };
+        } catch (error) {
+          console.error(error);
+          return {
+            isSuccess: false,
+            newList: [],
+          };
+        }
+      default:
+        return {
+          isSuccess: false,
+          newList: [],
+        };
+    }
+  }
 
   async getTrashDataByType(type: string, projectId: string) {
     switch (type) {

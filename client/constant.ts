@@ -24,4 +24,20 @@ export const MESSAGES = {
     SUCCESS: "Delete process is complete",
     FAIL: "Fail to detele this page, please check again",
   },
+  UPDATE_STATUS: {
+    SUCCESS:"Update page status success",
+    FAIL: "Fail to update status"
+  },
+  EMPTY_TRASH: {
+    SUCCESS: "Empty trash bin process is complete",
+    FAIL: "Fail to empty trash bin"
+  },
+  RESTORE_REMOVED_ITEM: {
+    SUCCESS: "Items have been restored",
+    FAIL: "Fail to restore items"
+  },
+  REMOVED_ITEM: {
+    SUCCESS: "Remove selected item successfully",
+    FAIL: "Fail to remove items"
+  }
 };

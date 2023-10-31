@@ -3,14 +3,13 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   Put,
 } from '@nestjs/common';
 import { PageService } from './page.service';
 import { CreatePageDto } from './dto/create-page.dto';
-import { UpdatePageDto } from './dto/update-page.dto';
+import { MoveToTrashDto } from './dto/movetotrash.dto';
 
 @Controller('page')
 export class PageController {
@@ -28,11 +27,6 @@ export class PageController {
     return await this.pageService.updateStatus(body);
   }
 
-  @Get()
-  findAll() {
-    return this.pageService.findAll();
-  }
-
   @Get(':projectId')
   async findPageBelongToProject(@Param('projectId') projectId: string) {
     return await this.pageService.findPageBelongToProject(projectId);
@@ -44,7 +38,7 @@ export class PageController {
   }
 
   @Put('movetotrash')
-  async moveToTrash(@Body() body) {
+  async moveToTrash(@Body() body: MoveToTrashDto) {
     return await this.pageService.moveToTrash(body);
   }
 

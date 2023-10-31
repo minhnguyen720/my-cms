@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import useGetBaseUrl from "@/hooks/utilities/getUrl";
-import { removedItemAtom } from "../atoms";
-import { useAtom } from "jotai";
+import { removedItemAtom, selectedAtom } from "../atoms";
+import { useAtom, useSetAtom } from "jotai";
 import useCurrentProject from "@/hooks/utilities/useCurrentProject";
 import { useParams } from "next/navigation";
 import useLoading from "@/hooks/utilities/useLoading";
@@ -17,6 +17,8 @@ export const useSegmentedControl = () => {
   const [value, setValue] = useState<string>("page");
   const [baseUrl] = useGetBaseUrl();
   const [removedItems, setRemovedItems] = useAtom(removedItemAtom);
+  const setSelected = useSetAtom(selectedAtom);
+
   const { projectId } = useParams();
   const { showLoading, hideLoading } = useLoading();
 
@@ -39,6 +41,7 @@ export const useSegmentedControl = () => {
 
   const handleSegmentChanged = (newValue: string) => {
     setValue(newValue);
+    setSelected([]);
   };
 
   return { handleSegmentChanged, value, removedItems };

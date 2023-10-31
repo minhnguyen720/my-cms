@@ -6,6 +6,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Project } from 'src/schemas/project.schema';
 import * as dayjs from 'dayjs';
+import { MoveToTrashDto } from './dto/movetotrash.dto';
 
 @Injectable()
 export class PageService {
@@ -19,6 +20,7 @@ export class PageService {
       // const project = await this.projectModel.findById(projectId);
       const pages = await this.pageModel.find({
         project: projectId,
+        isRemove: false,
       });
       return pages;
     } catch (error) {
@@ -65,10 +67,6 @@ export class PageService {
     }
   }
 
-  findAll() {
-    return `This action returns all page`;
-  }
-
   async findOne(id: string) {
     return await this.pageModel.findById(id);
   }
@@ -88,10 +86,17 @@ export class PageService {
     }
   }
 
-  async moveToTrash(body) {
+  async moveToTrash(body: MoveToTrashDto) {
     try {
+      await this.pageModel.findByIdAndUpdate(body.pageId, { isRemove: true });
+      const newDatasource = await this.pageModel.find({
+        project: body.projectId,
+        isRemove: false,
+      });
+
       return {
         isSuccess: true,
+        newDatasource,
       };
     } catch (error) {
       return {

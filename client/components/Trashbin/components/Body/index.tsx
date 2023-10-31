@@ -8,6 +8,7 @@ import {
   Table,
   Checkbox,
   Image,
+  Tooltip,
 } from "@mantine/core";
 import { useViewportSize } from "@mantine/hooks";
 import { IconTrash, IconRestore } from "@tabler/icons-react";
@@ -17,19 +18,20 @@ import {
   useSegmentedControl,
 } from "../../hooks/useSegmentedControl";
 import { useHydrateAtoms } from "jotai/utils";
-import { removedItemAtom } from "../../atoms";
+import { removedItemAtom, selectedAtom } from "../../atoms";
 import dayjs from "dayjs";
 import useTrashbin from "../../hooks/useTrashbin";
+import { useAtom } from "jotai";
 
 const TrashbinBody = ({ initialData }) => {
   useHydrateAtoms([[removedItemAtom, initialData]]);
 
   const [scrolled, setScrolled] = useState<boolean>(false);
-  const [selected, setSelected] = useState<string[]>([]);
+  const [selected, setSelected] = useAtom(selectedAtom);
 
   const { width } = useViewportSize();
   const { handleSegmentChanged, value, removedItems } = useSegmentedControl();
-  const { removeSelected } = useTrashbin();
+  const { removeSelected, restoreSelected, emptyTrashbin } = useTrashbin();
 
   const handleSelected = (id: string) => {
     setSelected((prev) => {
@@ -51,17 +53,23 @@ const TrashbinBody = ({ initialData }) => {
         data={segmentedData}
       />
       <Group className="my-2 sm:my-4">
-        <ActionIcon
-          disabled={selected.length <= 0}
-          onClick={async () => {
-            await removeSelected(selected);
-          }}
-        >
-          <IconTrash />
-        </ActionIcon>
-        <ActionIcon disabled={selected.length <= 0}>
-          <IconRestore />
-        </ActionIcon>
+        <Tooltip label="Remove from trash bin">
+          <ActionIcon
+            disabled={selected.length <= 0}
+            onClick={async () => {
+              await removeSelected(selected);
+            }}
+          >
+            <IconTrash />
+          </ActionIcon>
+        </Tooltip>
+        <Tooltip label="Restore selected items">
+          <ActionIcon disabled={selected.length <= 0} onClick={() => {
+            restoreSelected(selected,value)
+          }}>
+            <IconRestore />
+          </ActionIcon>
+        </Tooltip>
       </Group>
       <ScrollArea
         h={300}
