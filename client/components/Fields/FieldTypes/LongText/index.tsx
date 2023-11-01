@@ -9,8 +9,7 @@ import TextAlign from "@tiptap/extension-text-align";
 import Superscript from "@tiptap/extension-superscript";
 import SubScript from "@tiptap/extension-subscript";
 import { UseFormReturnType } from "@mantine/form";
-import { Input } from "@mantine/core";
-import FieldControlSwitch from "@/components/Fields/FieldControlSwitch";
+import { Input, Text } from "@mantine/core";
 import Config from "../../Config";
 
 interface Props {
@@ -19,6 +18,7 @@ interface Props {
   fieldId: string;
   required: boolean;
   active: boolean;
+  fieldHandler: any;
 }
 
 const LongText: React.FC<Props> = ({
@@ -27,6 +27,7 @@ const LongText: React.FC<Props> = ({
   fieldId,
   required,
   active,
+  fieldHandler,
 }) => {
   const editor = useEditor({
     extensions: [
@@ -45,56 +46,69 @@ const LongText: React.FC<Props> = ({
   });
 
   return (
-    <div className="form_item">
-      <Input.Wrapper label={label} {...form.getInputProps(fieldId)}>
-        <RichTextEditor editor={editor}>
-          <RichTextEditor.Toolbar sticky stickyOffset={60}>
-            <RichTextEditor.ControlsGroup>
-              <RichTextEditor.Bold />
-              <RichTextEditor.Italic />
-              <RichTextEditor.Underline />
-              <RichTextEditor.Strikethrough />
-              <RichTextEditor.ClearFormatting />
-              <RichTextEditor.Highlight />
-              <RichTextEditor.Code />
-            </RichTextEditor.ControlsGroup>
+    <div className="form_item flex">
+      <Input.Wrapper
+        className="basis-[90%]"
+        withAsterisk={required}
+        label={label}
+        {...form.getInputProps(fieldId)}
+      >
+        {active ? (
+          <RichTextEditor editor={editor}>
+            <RichTextEditor.Toolbar sticky stickyOffset={60}>
+              <RichTextEditor.ControlsGroup>
+                <RichTextEditor.Bold />
+                <RichTextEditor.Italic />
+                <RichTextEditor.Underline />
+                <RichTextEditor.Strikethrough />
+                <RichTextEditor.ClearFormatting />
+                <RichTextEditor.Highlight />
+                <RichTextEditor.Code />
+              </RichTextEditor.ControlsGroup>
 
-            <RichTextEditor.ControlsGroup>
-              <RichTextEditor.H1 />
-              <RichTextEditor.H2 />
-              <RichTextEditor.H3 />
-              <RichTextEditor.H4 />
-            </RichTextEditor.ControlsGroup>
+              <RichTextEditor.ControlsGroup>
+                <RichTextEditor.H1 />
+                <RichTextEditor.H2 />
+                <RichTextEditor.H3 />
+                <RichTextEditor.H4 />
+              </RichTextEditor.ControlsGroup>
 
-            <RichTextEditor.ControlsGroup>
-              <RichTextEditor.Blockquote />
-              <RichTextEditor.Hr />
-              <RichTextEditor.BulletList />
-              <RichTextEditor.OrderedList />
-              <RichTextEditor.Subscript />
-              <RichTextEditor.Superscript />
-            </RichTextEditor.ControlsGroup>
+              <RichTextEditor.ControlsGroup>
+                <RichTextEditor.Blockquote />
+                <RichTextEditor.Hr />
+                <RichTextEditor.BulletList />
+                <RichTextEditor.OrderedList />
+                <RichTextEditor.Subscript />
+                <RichTextEditor.Superscript />
+              </RichTextEditor.ControlsGroup>
 
-            <RichTextEditor.ControlsGroup>
-              <RichTextEditor.Link />
-              <RichTextEditor.Unlink />
-            </RichTextEditor.ControlsGroup>
+              <RichTextEditor.ControlsGroup>
+                <RichTextEditor.Link />
+                <RichTextEditor.Unlink />
+              </RichTextEditor.ControlsGroup>
 
-            <RichTextEditor.ControlsGroup>
-              <RichTextEditor.AlignLeft />
-              <RichTextEditor.AlignCenter />
-              <RichTextEditor.AlignJustify />
-              <RichTextEditor.AlignRight />
-            </RichTextEditor.ControlsGroup>
+              <RichTextEditor.ControlsGroup>
+                <RichTextEditor.AlignLeft />
+                <RichTextEditor.AlignCenter />
+                <RichTextEditor.AlignJustify />
+                <RichTextEditor.AlignRight />
+              </RichTextEditor.ControlsGroup>
+            </RichTextEditor.Toolbar>
 
-            <RichTextEditor.ControlsGroup>
-              <Config required={true} active={true} />
-            </RichTextEditor.ControlsGroup>
-          </RichTextEditor.Toolbar>
-
-          <RichTextEditor.Content />
-        </RichTextEditor>
+            <RichTextEditor.Content />
+          </RichTextEditor>
+        ) : (
+          <Text>Editor is disabled</Text>
+        )}
       </Input.Wrapper>
+      <div className="ml-3 flex items-center">
+        <Config
+          required={required}
+          active={active}
+          fieldId={fieldId}
+          fieldHandler={fieldHandler}
+        />
+      </div>
     </div>
   );
 };

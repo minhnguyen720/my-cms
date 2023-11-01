@@ -1,11 +1,8 @@
 "use client";
 
-import { TextInput, Modal, ActionIcon, Group, Button } from "@mantine/core";
+import { TextInput } from "@mantine/core";
 import { ReactNode } from "react";
 import { UseFormReturnType } from "@mantine/form";
-import FieldControlSwitch from "@/components/Fields/FieldControlSwitch";
-import { useDisclosure } from "@mantine/hooks";
-import { IconSettings2 } from "@tabler/icons-react";
 import Config from "../../Config";
 
 interface Props {
@@ -16,6 +13,7 @@ interface Props {
   icon?: ReactNode;
   fieldId: string;
   form: UseFormReturnType<any>;
+  fieldHandler: any;
 }
 
 const Text: React.FC<Props> = ({
@@ -26,19 +24,23 @@ const Text: React.FC<Props> = ({
   fieldId,
   form,
   active,
+  fieldHandler,
 }) => {
-  const [opened, { open, close }] = useDisclosure(false);
-
   return (
-    <TextInput
-      label={label}
-      placeholder={placeholder && placeholder}
-      withAsterisk={required}
-      icon={icon && icon}
-      disabled={!active}
-      rightSection={<Config required={required} active={active} />}
-      {...form.getInputProps(fieldId)}
-    />
+    <div className="flex">
+      <TextInput
+        className="basis-[90%]"
+        label={label}
+        placeholder={placeholder && placeholder}
+        withAsterisk={required}
+        icon={icon && icon}
+        disabled={!active}
+        {...form.getInputProps(fieldId)}
+      />
+      <div className="flex items-end ml-2">
+        <Config required={required} active={active} fieldId={fieldId} fieldHandler={fieldHandler}/>
+      </div>
+    </div>
   );
 };
 

@@ -13,18 +13,20 @@ import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import React from "react";
 import { IconPlus } from "@tabler/icons-react";
-import useFieldAction from "../hooks/useFieldAction";
+import useFields from "../hooks/useFields";
 import { useParams } from "next/navigation";
 import useLoading from "@/hooks/utilities/useLoading";
 import axios from "axios";
 import useGetBaseUrl from "@/hooks/utilities/getUrl";
-import { errorNotification, successNotification } from "@/hooks/notifications/notificationPreset";
+import {
+  errorNotification,
+  successNotification,
+} from "@/hooks/notifications/notificationPreset";
 import { MESSAGES } from "@/constant";
 
-const CreateNewField = () => {
+const CreateNewField = ({ fieldHandler }) => {
   const [opened, { open, close }] = useDisclosure(false);
   const params = useParams();
-  const fieldHandler = useFieldAction();
   const { showLoading, hideLoading } = useLoading();
   const [baseUrl] = useGetBaseUrl();
 
@@ -61,15 +63,14 @@ const CreateNewField = () => {
         doc: params.detailId,
       };
 
-      const res = await axios.post(`${baseUrl}/fields/new`,body);
+      const res = await axios.post(`${baseUrl}/fields/new`, body);
 
-      if(res.data.isSuccess) {
+      if (res.data.isSuccess) {
         successNotification(MESSAGES.CREATE_ITEM.SUCCESS);
-        console.log(res.data.newList);
+        fieldHandler.updateFields(res.data.newList);
       } else {
         errorNotification(MESSAGES.CREATE_ITEM.FAIL);
       }
-
     } catch (error) {
       handleOnClose();
       errorNotification(MESSAGES.CREATE_ITEM.SUCCESS);
@@ -85,7 +86,7 @@ const CreateNewField = () => {
       <Modal
         opened={opened}
         onClose={handleOnClose}
-        size="50%"
+        size="60%"
         title="Create new field"
         centered
       >

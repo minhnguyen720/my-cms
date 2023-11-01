@@ -10,10 +10,12 @@ import { useForm } from "@mantine/form";
 import ActiveSwitch from "../../Dashboard/components/ActiveSwitch";
 import axios from "axios";
 import useGetBaseUrl from "@/hooks/utilities/getUrl";
+import useFields from "@/components/Fields/hooks/useFields";
 
 const DocDetailContainer = ({ switchProps }) => {
   const form = useForm();
   const [baseUrl] = useGetBaseUrl();
+  const fieldHandler = useFields();
 
   const handleDetailOnChange = async () => {
     await axios.put(`${baseUrl}/doc/status`, {
@@ -26,12 +28,12 @@ const DocDetailContainer = ({ switchProps }) => {
     <Stack>
       <Group>
         {/* <ManageOrderModal /> */}
-        <CreateNewField />
+        <CreateNewField fieldHandler={fieldHandler} />
         <SaveButton />
         <ActiveSwitch element={switchProps} onChange={handleDetailOnChange} />
       </Group>
 
-      <FormDetailItem data={[]} form={form} />
+      <FormDetailItem form={form} fieldHandler={fieldHandler} />
     </Stack>
   );
 };

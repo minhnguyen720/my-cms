@@ -5,34 +5,34 @@ import LongText from "@/components/Fields/FieldTypes/LongText";
 import ImageText from "@/components/Fields/FieldTypes/ImageText";
 import { Affix, Button, Stack, Transition, rem } from "@mantine/core";
 import { UseFormReturnType } from "@mantine/form";
-import { Field } from "@/interfaces/Project";
 import UpdatableImage from "../UpdatableImage";
 import { IconArrowUp } from "@tabler/icons-react";
 import { useWindowScroll } from "@mantine/hooks";
 
 interface Props {
-  data: Field[];
+  fieldHandler: any;
   form: UseFormReturnType<any>;
 }
 
-const FormDetailItem: React.FC<Props> = ({ data, form }) => {
+const FormDetailItem: React.FC<Props> = ({ fieldHandler, form }) => {
   const [scroll, scrollTo] = useWindowScroll();
-  
+
   return (
     <>
       <Stack spacing="lg">
-        {data.map((item, index) => {
+        {fieldHandler.getFields().map((item, index) => {
           const textFieldProps = {
             form,
             label: item.label,
-            fieldId: item.field_id,
+            fieldId: item._id,
             required: item.required,
             active: item.active,
+            fieldHandler: fieldHandler,
           };
           switch (item.type) {
-            case "text":
+            case "shortText":
               return <Text {...textFieldProps} key={index} />;
-            case "long_text":
+            case "longText":
               return <LongText {...textFieldProps} key={index} />;
             case "image":
               return (
@@ -58,7 +58,7 @@ const FormDetailItem: React.FC<Props> = ({ data, form }) => {
             //     />
             //   );
             default:
-              return <></>;
+              return;
           }
         })}
       </Stack>
