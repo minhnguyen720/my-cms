@@ -1,4 +1,4 @@
-import DocCards from "@/components/DocCard";
+import DocCards from "@/components/Doc/DocCard";
 import PageDetailToolbar from "@/components/PageDetailToolbar";
 
 export const revalidate = 10;

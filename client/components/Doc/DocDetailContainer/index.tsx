@@ -2,12 +2,12 @@
 
 import { Stack, Group } from "@mantine/core";
 import React from "react";
-import CreateNewField from "../CreateNewField";
-import FormDetailItem from "../FormDetailItem";
-import ManageOrderModal from "../Modals/ManageOrderModal";
-import SaveButton from "../SaveButton";
+import CreateNewField from "../../Fields/CreateNewField";
+import FormDetailItem from "../../FormDetailItem";
+import ManageOrderModal from "../../Modals/ManageOrderModal";
+import SaveButton from "../../SaveButton";
 import { useForm } from "@mantine/form";
-import ActiveSwitch from "../Dashboard/components/ActiveSwitch";
+import ActiveSwitch from "../../Dashboard/components/ActiveSwitch";
 import axios from "axios";
 import useGetBaseUrl from "@/hooks/utilities/getUrl";
 
@@ -25,7 +25,7 @@ const DocDetailContainer = ({ switchProps }) => {
   return (
     <Stack>
       <Group>
-        <ManageOrderModal />
+        {/* <ManageOrderModal /> */}
         <CreateNewField />
         <SaveButton />
         <ActiveSwitch element={switchProps} onChange={handleDetailOnChange} />

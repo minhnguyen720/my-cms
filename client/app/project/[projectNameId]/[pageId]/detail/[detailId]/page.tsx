@@ -1,4 +1,4 @@
-import DocDetailContainer from "@/components/DocDetailContainer";
+import DocDetailContainer from "@/components/Doc/DocDetailContainer";
 
 export const revalidate = 10;
 const baseUrl = "http://localhost:4000";

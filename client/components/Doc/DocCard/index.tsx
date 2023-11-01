@@ -12,9 +12,9 @@ import {
 import React, { useState } from "react";
 import CreateNewDocCard from "../CreateNewDocCard";
 import Card from "./Card";
-import FolderCard from "../FolderCard";
-import CreateNewFolder from "../CreateNewFolder";
-import useFolderCardAction from "../CreateNewFolder/hook";
+import FolderCard from "../../Folder/FolderCard";
+import CreateNewFolder from "../../CreateNewFolder";
+import useFolderCardAction from "../../CreateNewFolder/hook";
 import useCardAction from "../CreateNewDocCard/hook";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
@@ -128,9 +128,9 @@ const DocCards: React.FC<Props> = ({ docs, folders }) => {
           </Group>
         </Grid.Col>
         {docList.length > 0 ? (
-          docList.map((doc, i) => {
+          docList.map((doc) => {
             return (
-              <Grid.Col xs={6} md={4} key={i}>
+              <Grid.Col xs={6} md={4} key={doc._id}>
                 <Card
                   doc={doc}
                   handler={handler}

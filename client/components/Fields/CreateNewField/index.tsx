@@ -5,6 +5,7 @@ import {
   Group,
   Modal,
   Select,
+  Switch,
   TextInput,
   Tooltip,
 } from "@mantine/core";
@@ -12,13 +13,27 @@ import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import React from "react";
 import { IconPlus } from "@tabler/icons-react";
+import useFieldAction from "../hooks/useFieldAction";
+import { useParams } from "next/navigation";
+import useLoading from "@/hooks/utilities/useLoading";
+import axios from "axios";
+import useGetBaseUrl from "@/hooks/utilities/getUrl";
+import { errorNotification, successNotification } from "@/hooks/notifications/notificationPreset";
+import { MESSAGES } from "@/constant";
 
 const CreateNewField = () => {
   const [opened, { open, close }] = useDisclosure(false);
+  const params = useParams();
+  const fieldHandler = useFieldAction();
+  const { showLoading, hideLoading } = useLoading();
+  const [baseUrl] = useGetBaseUrl();
+
   const form = useForm({
     initialValues: {
       name: "",
       type: "",
+      required: false,
+      useEditor: false,
     },
     validate: {
       name: (value) =>
@@ -38,6 +53,33 @@ const CreateNewField = () => {
     open();
   };
 
+  const handleCreateField = async (values) => {
+    try {
+      showLoading();
+      const body = {
+        ...values,
+        doc: params.detailId,
+      };
+
+      const res = await axios.post(`${baseUrl}/fields/new`,body);
+
+      if(res.data.isSuccess) {
+        successNotification(MESSAGES.CREATE_ITEM.SUCCESS);
+        console.log(res.data.newList);
+      } else {
+        errorNotification(MESSAGES.CREATE_ITEM.FAIL);
+      }
+
+    } catch (error) {
+      handleOnClose();
+      errorNotification(MESSAGES.CREATE_ITEM.SUCCESS);
+      console.error(error);
+    } finally {
+      hideLoading();
+      handleOnClose();
+    }
+  };
+
   return (
     <>
       <Modal
@@ -48,7 +90,7 @@ const CreateNewField = () => {
         centered
       >
         <form
-          onSubmit={form.onSubmit((values) => console.log(values))}
+          onSubmit={form.onSubmit((values) => handleCreateField(values))}
           className="pt-4"
         >
           <Grid>
@@ -75,15 +117,33 @@ const CreateNewField = () => {
                 searchable
               />
             </Grid.Col>
+            <Grid.Col>
+              <Switch
+                label="Does this field is required"
+                {...form.getInputProps("required")}
+              />
+            </Grid.Col>
+            {form.values.type !== "image" && (
+              <Grid.Col>
+                <Switch
+                  label="Use editor"
+                  {...form.getInputProps("useEditor")}
+                />
+              </Grid.Col>
+            )}
           </Grid>
           <Group position="right" className="mt-8">
-            <Button type="submit">Create</Button>
-            <Button color="red" onClick={handleOnClose}>Cancel</Button>
+            <Button variant="light" type="submit">
+              Create
+            </Button>
+            <Button variant="light" color="red" onClick={handleOnClose}>
+              Cancel
+            </Button>
           </Group>
         </form>
       </Modal>
       <Tooltip label="Create new field">
-        <ActionIcon onClick={handleOnOpen} color="blue">
+        <ActionIcon onClick={handleOnOpen}>
           <IconPlus />
         </ActionIcon>
       </Tooltip>

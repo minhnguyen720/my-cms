@@ -10,11 +10,10 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import { useDisclosure } from "@mantine/hooks";
-import useAlert from "@/components/Alert/hooks";
-import { ALERT_CODES, MESSAGES } from "@/constant";
+import { MESSAGES } from "@/constant";
 import { ProjectTableItem } from "../page";
 import useCurrentProject from "@/hooks/utilities/useCurrentProject";
-import { generalNotification } from "@/hooks/notifications/notificationPreset";
+import { errorNotification, successNotification } from "@/hooks/notifications/notificationPreset";
 
 interface PageFormValues extends StandardSchema {
   project?: string;
@@ -41,7 +40,6 @@ const CreatingPage = ({ params: { projectNameId } }) => {
   const baseUrl = useAtomValue(baseUrlAtom);
   const router = useRouter();
   const [opened, { open, close }] = useDisclosure(false);
-  const { openAlert } = useAlert();
   const setDatasource = useSetAtom(datasourceAtom);
   const { getCurrentId } = useCurrentProject();
 
@@ -60,12 +58,12 @@ const CreatingPage = ({ params: { projectNameId } }) => {
       } = await axios.post(`${baseUrl}/page`, values);
       if (res.data.success) {
         setDatasource(res.data.newProjectData);
-        generalNotification(MESSAGES.CREATE_NEW_PAGE.SUCCESS, "green");
+        successNotification(MESSAGES.CREATE_NEW_PAGE.SUCCESS);
         backToHome();
-      } else generalNotification(MESSAGES.CREATE_NEW_PAGE.FAIL, "red");
+      } else errorNotification(MESSAGES.CREATE_NEW_PAGE.FAIL);
     } catch (error) {
       console.error(error);
-      generalNotification(MESSAGES.CREATE_NEW_PAGE.FAIL, "red");
+      errorNotification(MESSAGES.CREATE_NEW_PAGE.FAIL);
     }
   };
 

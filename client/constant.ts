@@ -39,5 +39,9 @@ export const MESSAGES = {
   REMOVED_ITEM: {
     SUCCESS: "Remove selected item successfully",
     FAIL: "Fail to remove items"
+  },
+  CREATE_ITEM: {
+    SUCCESS: "Create new item successfully",
+    FAIL: "Fail to create new item"
   }
 };

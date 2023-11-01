@@ -18,8 +18,8 @@ import {
 } from "@mantine/core";
 import { useParams } from "next/navigation";
 import { useForm } from "@mantine/form";
-import MoveToFolderModal from "../Modals/MoveToFolderModal";
-import useMoveToFolderModal from "../Modals/MoveToFolderModal/hooks/useMoveToFolderModal";
+import MoveToFolderModal from "../../Modals/MoveToFolderModal";
+import useMoveToFolderModal from "../../Modals/MoveToFolderModal/hooks/useMoveToFolderModal";
 import { BiHomeAlt } from "react-icons/bi";
 
 const FolderCard = ({

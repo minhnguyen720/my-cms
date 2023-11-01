@@ -1,6 +1,9 @@
 import axios from "axios";
 import useGetBaseUrl from "@/hooks/utilities/getUrl";
-import { generalNotification } from "@/hooks/notifications/notificationPreset";
+import {
+  errorNotification,
+  successNotification,
+} from "@/hooks/notifications/notificationPreset";
 import useLoading from "@/hooks/utilities/useLoading";
 import { useSetAtom } from "jotai";
 import { removedItemAtom } from "../atoms";
@@ -18,14 +21,14 @@ const useTrashbin = () => {
       showLoading();
       const res = await axios.put(`${baseUrl}/trash/empty/`);
       if (res.data.isSuccess) {
-        generalNotification(MESSAGES.EMPTY_TRASH.SUCCESS, "green");
+        successNotification(MESSAGES.EMPTY_TRASH.SUCCESS);
         setRemovedItems([]);
       } else {
-        generalNotification(MESSAGES.EMPTY_TRASH.FAIL, "red");
+        errorNotification(MESSAGES.EMPTY_TRASH.FAIL);
       }
     } catch (error) {
       console.error(error);
-      generalNotification(MESSAGES.EMPTY_TRASH.FAIL, "red");
+      errorNotification(MESSAGES.EMPTY_TRASH.FAIL);
     } finally {
       hideLoading();
     }
@@ -41,13 +44,13 @@ const useTrashbin = () => {
         type: type,
       });
       if (res.data.isSuccess) {
-        generalNotification(MESSAGES.RESTORE_REMOVED_ITEM.SUCCESS, "green");
+        successNotification(MESSAGES.RESTORE_REMOVED_ITEM.SUCCESS);
         setRemovedItems(res.data.newList);
       } else {
-        generalNotification(MESSAGES.RESTORE_REMOVED_ITEM.FAIL, "red");
+        errorNotification(MESSAGES.RESTORE_REMOVED_ITEM.FAIL);
       }
     } catch (error) {
-      generalNotification(MESSAGES.RESTORE_REMOVED_ITEM.FAIL, "red");
+      errorNotification(MESSAGES.RESTORE_REMOVED_ITEM.FAIL);
     } finally {
       hideLoading();
     }
@@ -63,15 +66,14 @@ const useTrashbin = () => {
         type,
       });
 
-      if(res.data.isSuccess) {
-        generalNotification(MESSAGES.REMOVED_ITEM.SUCCESS,'green');
+      if (res.data.isSuccess) {
+        successNotification(MESSAGES.REMOVED_ITEM.SUCCESS);
         setRemovedItems(res.data.newList);
       } else {
-        generalNotification(MESSAGES.REMOVED_ITEM.FAIL,'red');
+        errorNotification(MESSAGES.REMOVED_ITEM.FAIL);
       }
-
     } catch (error) {
-      generalNotification(MESSAGES.REMOVED_ITEM.FAIL, "red");
+      errorNotification(MESSAGES.REMOVED_ITEM.FAIL);
     } finally {
       hideLoading();
     }

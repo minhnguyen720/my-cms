@@ -15,7 +15,6 @@ import axios from "axios";
 import { useAtomValue } from "jotai";
 import React from "react";
 import useAlert from "../Alert/hooks";
-import dayjs from "dayjs";
 import { useParams } from "next/navigation";
 import { Folder } from "@/interfaces/Project";
 

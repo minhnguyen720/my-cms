@@ -1,7 +1,7 @@
 import { ActionIcon, Modal, Tooltip } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import React from "react";
-import DetailDraggable from "@/components/DetailDraggable";
+import DetailDraggable from "@/components/Fields/DetailDraggable";
 import { AiOutlineUnorderedList } from "react-icons/ai";
 
 const ManageOrderModal = () => {
@@ -21,7 +21,7 @@ const ManageOrderModal = () => {
         <DetailDraggable />
       </Modal>
       <Tooltip label="Manage field order">
-        <ActionIcon onClick={handleOnOpen} color="blue">
+        <ActionIcon onClick={handleOnOpen} >
           <AiOutlineUnorderedList />
         </ActionIcon>
       </Tooltip>

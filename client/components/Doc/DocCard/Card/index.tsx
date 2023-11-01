@@ -243,8 +243,7 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
             mt="md"
             radius="md"
             onClick={() => {
-              // navigator.push(`${currentPathname}/detail/${doc._id}`);
-              console.log(doc._id)
+              navigator.push(`${currentPathname}/detail/${doc._id}`);
             }}
           >
             Go to document detail

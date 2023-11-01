@@ -1,13 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types, Schema as MongooseSchema } from 'mongoose';
-import { Doc } from './doc.schema';
+import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
 
 export type FieldDocument = HydratedDocument<Field>;
 
 @Schema({ collection: 'fields' })
 export class Field {
   @Prop()
-  id: string;
+  id?: string;
 
   @Prop()
   type: string;
@@ -35,7 +34,7 @@ export class Field {
   icon?: string;
 
   @Prop()
-  required: boolean;
+  required?: boolean;
 
   @Prop()
   isUseEditor?: boolean;
@@ -43,8 +42,14 @@ export class Field {
   @Prop()
   order: number;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Field' })
-  doc: Doc;
+  @Prop()
+  createdDate: string;
+
+  @Prop()
+  updatedDate: string;
+
+  @Prop()
+  doc: string;
 }
 
 export const FieldSchema = SchemaFactory.createForClass(Field);

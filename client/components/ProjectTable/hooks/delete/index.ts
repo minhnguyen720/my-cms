@@ -1,7 +1,9 @@
 import { baseUrlAtom, datasourceAtom } from "@/atoms";
-import useAlert from "@/components/Alert/hooks";
-import { MESSAGES, ALERT_CODES } from "@/constant";
-import { generalNotification } from "@/hooks/notifications/notificationPreset";
+import { MESSAGES } from "@/constant";
+import {
+  errorNotification,
+  successNotification,
+} from "@/hooks/notifications/notificationPreset";
 import { useDisclosure } from "@mantine/hooks";
 import axios from "axios";
 import { useAtomValue, useSetAtom } from "jotai";
@@ -26,11 +28,11 @@ const useDelete = (rowId: string, projectId: string, pageId: string) => {
         pageId,
       });
       setDatasource(res.data.newDatasource);
-      generalNotification(MESSAGES.DELETE_PAGE.SUCCESS, "green");
+      successNotification(MESSAGES.DELETE_PAGE.SUCCESS);
       dzModalHandler.close();
     } catch (error) {
       console.error(error);
-      generalNotification(MESSAGES.DELETE_PAGE.FAIL, "red");
+      errorNotification(MESSAGES.DELETE_PAGE.FAIL);
       dzModalHandler.close();
     }
   };

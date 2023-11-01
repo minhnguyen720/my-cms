@@ -12,7 +12,6 @@ import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { IconFilePlus } from "@tabler/icons-react";
 import axios from "axios";
-import dayjs from "dayjs";
 import { useAtomValue } from "jotai";
 import { useParams } from "next/navigation";
 
@@ -40,31 +39,9 @@ const CreateNewDocCard: React.FC<Props> = ({ addDocItem }) => {
         isRemove:false
       });
 
-      const {
-        _id,
-        name,
-        updatedDate,
-        createdDate,
-        updatedUser,
-        createdUser,
-        fields,
-        active,
-        page,
-        description,
-      } = await res.data;
+      const newDocItem= await res.data;
 
-      addDocItem({
-        id: _id,
-        name,
-        updatedDate,
-        createdDate,
-        updatedUser,
-        createdUser,
-        fields,
-        active,
-        page,
-        description,
-      });
+      addDocItem(newDocItem);
       close();
     } catch (error) {
       console.error(error);

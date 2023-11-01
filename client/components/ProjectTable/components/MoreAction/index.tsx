@@ -21,11 +21,13 @@ import { TbPlugConnected } from "react-icons/tb";
 import axios from "axios";
 import useGetBaseUrl from "@/hooks/utilities/getUrl";
 import useLoading from "@/hooks/utilities/useLoading";
-import useAlert from "@/components/Alert/hooks";
 import { MESSAGES } from "@/constant";
 import { useSetAtom } from "jotai";
 import { datasourceAtom } from "@/atoms";
-import { generalNotification } from "@/hooks/notifications/notificationPreset";
+import {
+  errorNotification,
+  successNotification,
+} from "@/hooks/notifications/notificationPreset";
 
 interface Props {
   rowId: string;
@@ -56,7 +58,6 @@ const MoreActions: React.FC<Props> = ({
   const pathname = usePathname();
   const [baseUrl] = useGetBaseUrl();
   const { showLoading, hideLoading } = useLoading();
-  const { openAlert } = useAlert();
   const setDatasource = useSetAtom(datasourceAtom);
 
   const goToDetail = () => {
@@ -72,13 +73,13 @@ const MoreActions: React.FC<Props> = ({
         projectId: projectId,
       });
       if (res.data.isSuccess) {
-        generalNotification(MESSAGES.UPDATE_STATUS.SUCCESS, "green");
+        successNotification(MESSAGES.UPDATE_STATUS.SUCCESS);
         setDatasource(res.data.latest);
       } else {
-        generalNotification(MESSAGES.UPDATE_STATUS.FAIL, "red");
+        errorNotification(MESSAGES.UPDATE_STATUS.FAIL);
       }
     } catch (error) {
-      generalNotification(MESSAGES.UPDATE_STATUS.FAIL, "red");
+      errorNotification(MESSAGES.UPDATE_STATUS.FAIL);
     } finally {
       hideLoading();
     }

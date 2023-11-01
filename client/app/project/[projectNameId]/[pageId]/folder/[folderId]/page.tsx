@@ -1,4 +1,4 @@
-import DocCards from "@/components/DocCard";
+import DocCards from "@/components/Doc/DocCard";
 import React from "react";
 
 export const revalidate = 10;
