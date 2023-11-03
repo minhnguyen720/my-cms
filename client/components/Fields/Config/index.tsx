@@ -6,6 +6,7 @@ import {
   Box,
   Switch,
   LoadingOverlay,
+  Tooltip,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconSettings2 } from "@tabler/icons-react";
@@ -39,13 +40,13 @@ const Config: React.FC<Props> = ({
     return temp;
   }, [active, required]);
 
-  const handleOnChange = (value) => {
+  const handleOnChange = (values: string[]) => {
     try {
       modalOverlayHanlder.open();
       setConfig((prev) => {
         const newConfig = prev;
         Object.keys(prev).forEach((key) => {
-          if (value.includes(key)) newConfig[key] = true;
+          if (values.includes(key)) newConfig[key] = true;
           else newConfig[key] = false;
         });
         return newConfig;
@@ -84,9 +85,11 @@ const Config: React.FC<Props> = ({
           </Button>
         </Group>
       </Modal>
-      <ActionIcon onClick={open}>
-        <IconSettings2 />
-      </ActionIcon>
+      <Tooltip label="Config">
+        <ActionIcon onClick={open}>
+          <IconSettings2 />
+        </ActionIcon>
+      </Tooltip>
     </div>
   );
 };

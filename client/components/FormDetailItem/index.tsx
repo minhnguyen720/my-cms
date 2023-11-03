@@ -22,7 +22,6 @@ const FormDetailItem: React.FC<Props> = ({ fieldHandler, form }) => {
     <>
       <Stack spacing="lg">
         {fieldHandler.getFields().map((item, index) => {
-          console.log('changed')
           const textFieldProps = {
             form,
             label: item.label,
@@ -46,6 +45,8 @@ const FormDetailItem: React.FC<Props> = ({ fieldHandler, form }) => {
                   label={item.label}
                   fieldId={item._id}
                   fieldHandler={fieldHandler}
+                  required={item.required}
+                  active={item.active}
                 />
               );
             // case "image_text":
