@@ -1,6 +1,6 @@
 import { useAtom } from "jotai";
 import { fieldsAtom } from "../atoms";
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "next/navigation";
 import useGetBaseUrl from "@/hooks/utilities/getUrl";
@@ -20,6 +20,7 @@ export interface FieldHandler {
     },
     fieldId: string,
   ) => Promise<void>;
+  initFieldDetail: () => Promise<void>;
 }
 
 const useFields = () => {
@@ -28,14 +29,15 @@ const useFields = () => {
   const [baseUrl] = useGetBaseUrl();
   const { showLoading, hideLoading } = useLoading();
 
-  useEffect(() => {
-    const initFieldDetail = async () => {
-      const res = await axios.get(`${baseUrl}/fields/${params.detailId}`);
-      if (res.data.isSuccess) setFields(res.data.fieldData);
-    };
-
-    initFieldDetail();
+  const initFieldDetail = useCallback(async () => {
+    const res = await axios.get(`${baseUrl}/fields/${params.detailId}`);
+    if (res.data.isSuccess) setFields(res.data.fieldData);
+    else errorNotification("Fail to get field detail");
   }, [baseUrl, params.detailId, setFields]);
+
+  useEffect(() => {
+    initFieldDetail();
+  }, [baseUrl, initFieldDetail, params.detailId, setFields]);
 
   const getFields = () => {
     return fields;
@@ -74,7 +76,7 @@ const useFields = () => {
     }
   };
 
-  return { getFields, updateFields, updateFieldConfig };
+  return { getFields, updateFields, updateFieldConfig, initFieldDetail };
 };
 
 export default useFields;

@@ -22,6 +22,7 @@ const FormDetailItem: React.FC<Props> = ({ fieldHandler, form }) => {
     <>
       <Stack spacing="lg">
         {fieldHandler.getFields().map((item, index) => {
+          console.log('changed')
           const textFieldProps = {
             form,
             label: item.label,
@@ -33,16 +34,18 @@ const FormDetailItem: React.FC<Props> = ({ fieldHandler, form }) => {
           };
           switch (item.type) {
             case "shortText":
-              return <Text {...textFieldProps} key={index} />;
+              return <Text {...textFieldProps} key={item._id} />;
             case "longText":
-              return <LongText {...textFieldProps} key={index} />;
+              return <LongText {...textFieldProps} key={item._id} />;
             case "image":
               return (
                 <UpdatableImage
-                  key={index}
+                  key={item._id}
                   alt={`attch_${index}`}
                   src={item.value}
                   label={item.label}
+                  fieldId={item._id}
+                  fieldHandler={fieldHandler}
                 />
               );
             // case "image_text":

@@ -9,21 +9,35 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconSettings2 } from "@tabler/icons-react";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
+import { FieldHandler } from "../hooks/useFields";
 
-const Config = ({ required, active, fieldId, fieldHandler }) => {
+interface Props {
+  required: boolean;
+  active: boolean;
+  fieldId: string;
+  fieldHandler: FieldHandler;
+}
+
+const Config: React.FC<Props> = ({
+  required,
+  active,
+  fieldId,
+  fieldHandler,
+}) => {
   const [opened, { open, close }] = useDisclosure(false);
   const [visible, modalOverlayHanlder] = useDisclosure(false);
   const [config, setConfig] = useState({
     required,
     active,
   });
-  const [defaultConfig, setDefaultConfig] = useState<string[]>(() => {
+
+  const defaultConfig = useMemo(() => {
     const temp = [];
     if (required) temp.push("required");
     if (active) temp.push("active");
     return temp;
-  });
+  }, [active, required]);
 
   const handleOnChange = (value) => {
     try {

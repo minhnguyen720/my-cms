@@ -13,14 +13,23 @@ import {
 import { IconMaximize, IconUpload } from "@tabler/icons-react";
 import { useState } from "react";
 import Config from "../Fields/Config";
+import { FieldHandler } from "../Fields/hooks/useFields";
 
 interface Props {
   src: string;
   alt: string;
   label: string;
+  fieldId: string;
+  fieldHandler: FieldHandler;
 }
 
-const UpdatableImage: React.FC<Props> = ({ src, alt, label }) => {
+const UpdatableImage: React.FC<Props> = ({
+  src,
+  alt,
+  label,
+  fieldHandler,
+  fieldId,
+}) => {
   const [image, setImage] = useState<File | null>(null);
   const [viewName, setViewName] = useState<string>("normal");
 
@@ -38,7 +47,12 @@ const UpdatableImage: React.FC<Props> = ({ src, alt, label }) => {
                 </ActionIcon>
               )}
             </FileButton>
-            <Config required={true} active={true} />
+            <Config
+              required={true}
+              active={true}
+              fieldHandler={fieldHandler}
+              fieldId={fieldId}
+            />
             <ActionIcon
               onClick={() => {
                 setViewName("preview");
