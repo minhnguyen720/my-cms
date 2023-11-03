@@ -13,7 +13,6 @@ import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import React from "react";
 import { IconPlus } from "@tabler/icons-react";
-import useFields from "../hooks/useFields";
 import { useParams } from "next/navigation";
 import useLoading from "@/hooks/utilities/useLoading";
 import axios from "axios";
@@ -23,8 +22,13 @@ import {
   successNotification,
 } from "@/hooks/notifications/notificationPreset";
 import { MESSAGES } from "@/constant";
+import { FieldHandler } from "../hooks/useFields";
 
-const CreateNewField = ({ fieldHandler }) => {
+interface Props {
+  fieldHandler: FieldHandler;
+}
+
+const CreateNewField: React.FC<Props> = ({ fieldHandler }) => {
   const [opened, { open, close }] = useDisclosure(false);
   const params = useParams();
   const { showLoading, hideLoading } = useLoading();

@@ -20,4 +20,9 @@ export class FieldsController {
   async updateFieldConfig(@Body() body: UpdateConfigDto) {
     return await this.fieldsService.updateFieldConfig(body);
   }
+
+  @Put('bydoc/:docId')
+  async updateFieldsByDocId(@Param('docId') docId: string, @Body() body: any) {
+    return await this.fieldsService.updateFieldsByDocId(docId, body);
+  }
 }

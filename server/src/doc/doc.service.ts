@@ -18,6 +18,13 @@ export class DocService {
     @InjectModel(Folder.name) private folderModel: Model<Folder>,
   ) {}
 
+  async hasDoc(docId: string) {
+    // if isDocExist -> counter will be 1 else it will be 0
+    const counter = await this.docModel.count({ _id: docId });
+    if (counter === 1) return true;
+    else return false;
+  }
+
   async updateStatus(body: { id: string; value: boolean; parent: string }) {
     try {
       await this.docModel.findByIdAndUpdate(body.id, { active: body.value });

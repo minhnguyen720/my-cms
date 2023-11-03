@@ -19,6 +19,7 @@ interface Props {
   required: boolean;
   active: boolean;
   fieldHandler: any;
+  value?: any;
 }
 
 const LongText: React.FC<Props> = ({
@@ -28,6 +29,7 @@ const LongText: React.FC<Props> = ({
   required,
   active,
   fieldHandler,
+  value,
 }) => {
   const editor = useEditor({
     extensions: [
@@ -39,7 +41,7 @@ const LongText: React.FC<Props> = ({
       Highlight,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
     ],
-    content: form.getInputProps(fieldId).value,
+    content: value,
     onUpdate(props) {
       form.setFieldValue(fieldId, props.editor.getHTML());
     },

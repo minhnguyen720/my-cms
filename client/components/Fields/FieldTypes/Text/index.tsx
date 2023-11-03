@@ -14,6 +14,7 @@ interface Props {
   fieldId: string;
   form: UseFormReturnType<any>;
   fieldHandler: any;
+  value?: any;
 }
 
 const Text: React.FC<Props> = ({
@@ -25,6 +26,7 @@ const Text: React.FC<Props> = ({
   form,
   active,
   fieldHandler,
+  value,
 }) => {
   return (
     <div className="flex">
@@ -35,10 +37,16 @@ const Text: React.FC<Props> = ({
         withAsterisk={required}
         icon={icon && icon}
         disabled={!active}
+        defaultValue={value}
         {...form.getInputProps(fieldId)}
       />
-      <div className="flex items-end ml-2">
-        <Config required={required} active={active} fieldId={fieldId} fieldHandler={fieldHandler}/>
+      <div className="ml-2 flex items-end">
+        <Config
+          required={required}
+          active={active}
+          fieldId={fieldId}
+          fieldHandler={fieldHandler}
+        />
       </div>
     </div>
   );

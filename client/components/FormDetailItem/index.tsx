@@ -8,9 +8,10 @@ import { UseFormReturnType } from "@mantine/form";
 import UpdatableImage from "../UpdatableImage";
 import { IconArrowUp } from "@tabler/icons-react";
 import { useWindowScroll } from "@mantine/hooks";
+import { FieldHandler } from "../Fields/hooks/useFields";
 
 interface Props {
-  fieldHandler: any;
+  fieldHandler: FieldHandler;
   form: UseFormReturnType<any>;
 }
 
@@ -28,6 +29,7 @@ const FormDetailItem: React.FC<Props> = ({ fieldHandler, form }) => {
             required: item.required,
             active: item.active,
             fieldHandler: fieldHandler,
+            value: item.value ? item.value : "",
           };
           switch (item.type) {
             case "shortText":

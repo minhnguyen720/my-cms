@@ -11,11 +11,13 @@ import ActiveSwitch from "../../Dashboard/components/ActiveSwitch";
 import axios from "axios";
 import useGetBaseUrl from "@/hooks/utilities/getUrl";
 import useFields from "@/components/Fields/hooks/useFields";
+import { useParams } from "next/navigation";
 
 const DocDetailContainer = ({ switchProps }) => {
   const form = useForm();
   const [baseUrl] = useGetBaseUrl();
   const fieldHandler = useFields();
+  const params = useParams();
 
   const handleDetailOnChange = async () => {
     await axios.put(`${baseUrl}/doc/status`, {
@@ -29,7 +31,11 @@ const DocDetailContainer = ({ switchProps }) => {
       <Group>
         {/* <ManageOrderModal /> */}
         <CreateNewField fieldHandler={fieldHandler} />
-        <SaveButton />
+        <SaveButton
+          fieldHandler={fieldHandler}
+          docId={params.detailId}
+          form={form}
+        />
         <ActiveSwitch element={switchProps} onChange={handleDetailOnChange} />
       </Group>
 

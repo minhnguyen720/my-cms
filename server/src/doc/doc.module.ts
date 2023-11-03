@@ -23,5 +23,6 @@ import { Folder, FolderSchema } from 'src/schemas/folder.schema';
   ],
   controllers: [DocController],
   providers: [DocService],
+  exports: [DocService],
 })
 export class DocModule {}

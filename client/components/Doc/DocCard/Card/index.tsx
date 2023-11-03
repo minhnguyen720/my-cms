@@ -8,7 +8,6 @@ import {
   Box,
   ActionIcon,
   Modal,
-  Badge,
 } from "@mantine/core";
 import { getFormattedTime } from "@/hooks/utilities/dayjs";
 import {
@@ -28,9 +27,8 @@ import { IconZzz } from "@tabler/icons-react";
 import { TbPlugConnected } from "react-icons/tb";
 import OnlineBadge from "@/components/Badge";
 import useLoading from "@/hooks/utilities/useLoading";
-import useAlert from "@/components/Alert/hooks";
 import useGetBaseUrl from "@/hooks/utilities/getUrl";
-import { ALERT_CODES } from "@/constant";
+import { errorNotification, successNotification } from "@/hooks/notifications/notificationPreset";
 
 interface Props {
   doc: Document;
@@ -60,7 +58,6 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
   const currentPathname = usePathname();
   const navigator = useRouter();
   const { showLoading, hideLoading } = useLoading();
-  const { openAlert } = useAlert();
 
   const handleDeleteDocument = async () => {
     await axios.delete(`${baseUrl}/doc/${doc._id}`);
@@ -87,13 +84,13 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
       });
 
       if (res.data.isSuccess) {
-        openAlert("Update status success", ALERT_CODES.SUCCESS);
+        successNotification("Update status success");
         handler.update(res.data.newDoc);
       } else {
-        openAlert("Update status failed", ALERT_CODES.ERROR);
+        errorNotification("Fail to update status");
       }
     } catch (error) {
-      openAlert("Update status failed", ALERT_CODES.ERROR);
+      errorNotification("Fail to update status");
     } finally {
       hideLoading();
     }

@@ -10,6 +10,18 @@ import {
   successNotification,
 } from "@/hooks/notifications/notificationPreset";
 
+export interface FieldHandler {
+  getFields: () => any[];
+  updateFields: (newValue: any) => void;
+  updateFieldConfig: (
+    config: {
+      active: boolean;
+      required: boolean;
+    },
+    fieldId: string,
+  ) => Promise<void>;
+}
+
 const useFields = () => {
   const [fields, setFields] = useAtom(fieldsAtom);
   const params = useParams();

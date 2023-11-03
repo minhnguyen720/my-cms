@@ -2,31 +2,55 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as dayjs from 'dayjs';
 import { Model } from 'mongoose';
-import { Doc } from 'src/schemas/doc.schema';
 import { Field } from 'src/schemas/field.schema';
 import { UpdateConfigDto } from './dto/update-config.dto';
+import { checkUndefined, checkValidBody } from 'src/utilities/validate';
+import { DocService } from 'src/doc/doc.service';
 
 @Injectable()
 export class FieldsService {
   constructor(
     @InjectModel(Field.name) private fieldModel: Model<Field>,
-    @InjectModel(Doc.name) private docModel: Model<Doc>,
+    private readonly docService: DocService,
   ) {}
   private readonly logger = new Logger(FieldsService.name);
 
+  async updateFieldsByDocId(docId: string, body: any) {
+    try {
+      checkUndefined(docId, 'docId is undefined');
+      checkValidBody(body);
+
+      const isDocExist = await this.docService.hasDoc(docId);
+      if (!isDocExist) throw 'Document is not found';
+
+      for (const [key, value] of Object.entries(body)) {
+        await this.fieldModel.findByIdAndUpdate(key, {
+          value: value,
+        });
+      }
+
+      const newData = await this.fieldModel.find({ doc: docId });
+
+      return {
+        isSuccess: true,
+        newData,
+      };
+    } catch (error) {
+      this.logger.error(error);
+
+      return {
+        isSuccess: false,
+      };
+    }
+  }
+
   async updateFieldConfig(body: UpdateConfigDto) {
     try {
-      if (body.fieldId === undefined) throw 'Field ID is undefined';
+      checkUndefined(body.fieldId, 'Field ID is undefined');
+      checkValidBody(body);
 
-      // count result when find document by provided id, result = 0 mean does not have any data. The result should be 1 and should not larger than 1
-      const count = await this.docModel.count({ _id: body.doc });
-      if (count === 0) throw 'Field does not exist';
-
-      // check config
-      Object.entries(body.config).forEach(([key, value]) => {
-        if (key === undefined) throw 'Some config key are undefined';
-        else if (value === undefined) throw 'Some config value are undefined';
-      });
+      const isDocExist = await this.docService.hasDoc(body.doc);
+      if (!isDocExist) throw 'Field does not exist';
 
       await this.fieldModel.findByIdAndUpdate(body.fieldId, body.config);
       const fieldData = await this.fieldModel.find({ doc: body.doc });
@@ -43,16 +67,15 @@ export class FieldsService {
     }
   }
 
-  async getFieldDataByDetailId(detailId: string) {
+  async getFieldDataByDetailId(docId: string) {
     try {
-      if (detailId === undefined) throw 'Detail ID is undefined';
+      checkUndefined(docId, 'Detail ID is undefined');
 
-      // if document exist -> return 1 else 0
-      const hasDoc = await this.docModel.count({ _id: detailId });
-      if (hasDoc === 0) throw 'Document does not exist';
+      const isDocExist = await this.docService.hasDoc(docId);
+      if (!isDocExist) throw 'Field does not exist';
 
       const fieldData = await this.fieldModel.find({
-        doc: detailId,
+        doc: docId,
       });
 
       return {
