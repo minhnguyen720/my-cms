@@ -1,6 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateDocDto } from './dto/create-doc.dto';
-import { UpdateDocDto } from './dto/update-doc.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Doc } from 'src/schemas/doc.schema';
@@ -17,12 +16,12 @@ export class DocService {
     @InjectModel(Project.name) private projectModel: Model<Project>,
     @InjectModel(Folder.name) private folderModel: Model<Folder>,
   ) {}
+  private readonly logger = new Logger(DocService.name);
 
   async hasDoc(docId: string) {
-    // if isDocExist -> counter will be 1 else it will be 0
-    const counter = await this.docModel.count({ _id: docId });
-    if (counter === 1) return true;
-    else return false;
+    const result = await this.docModel.exists({ _id: docId });
+    if (result === null) return false;
+    else return true;
   }
 
   async updateStatus(body: { id: string; value: boolean; parent: string }) {

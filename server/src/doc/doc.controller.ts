@@ -19,6 +19,11 @@ export class DocController {
     return await this.docService.getDocByPageId(pageId);
   }
 
+  @Get('hasDoc/:docId')
+  async hasDoc(@Param('docId') docId: string) {
+    return await this.docService.hasDoc(docId);
+  }
+
   @Get('/detail/:detailId')
   async getDocDetail(@Param('detailId') detailId: string) {
     return await this.docService.getDocDetail(detailId);

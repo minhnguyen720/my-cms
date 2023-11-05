@@ -11,6 +11,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { TrashbinCronService } from './cron/trashBinCron/trashbin.cron.service';
 import { TrashModule } from './trash/trash.module';
 import { FieldsModule } from './fields/fields.module';
+import { StorageModule } from './storage/storage.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { FieldsModule } from './fields/fields.module';
     FolderModule,
     TrashModule,
     FieldsModule,
+    StorageModule,
   ],
   controllers: [AppController],
   providers: [AppService],

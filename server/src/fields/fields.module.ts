@@ -12,5 +12,6 @@ import { DocModule } from 'src/doc/doc.module';
   ],
   controllers: [FieldsController],
   providers: [FieldsService],
+  exports: [FieldsService],
 })
 export class FieldsModule {}

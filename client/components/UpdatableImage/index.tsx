@@ -8,14 +8,20 @@ import {
   Flex,
   Overlay,
   Center,
-  rem,
   Text,
   Tooltip,
 } from "@mantine/core";
-import { Icon360, IconMaximize, IconUpload } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { IconMaximize, IconUpload } from "@tabler/icons-react";
+import { useEffect, useMemo, useState } from "react";
 import Config from "../Fields/Config";
 import { FieldHandler } from "../Fields/hooks/useFields";
+import useLoading from "@/hooks/utilities/useLoading";
+import useGetBaseUrl from "@/hooks/utilities/getUrl";
+import axios from "axios";
+import {
+  errorNotification,
+  successNotification,
+} from "@/hooks/notifications/notificationPreset";
 
 interface Props {
   src: string;
@@ -25,6 +31,7 @@ interface Props {
   required: boolean;
   active: boolean;
   fieldHandler: FieldHandler;
+  docId?: string;
 }
 
 const UpdatableImage: React.FC<Props> = ({
@@ -35,8 +42,17 @@ const UpdatableImage: React.FC<Props> = ({
   fieldId,
   required,
   active,
+  docId,
 }) => {
-  const [image, setImage] = useState<File | null>(null);
+  const { showLoading, hideLoading } = useLoading();
+  const [baseUrl] = useGetBaseUrl();
+  const [path, setPath] = useState<string | undefined | null>(
+    `${baseUrl}/storage${src}`,
+  );
+  const isInvalidPath = useMemo<boolean>(() => {
+    return src?.trim().length === 0 || src === undefined || src === null;
+  }, [src]);
+
   const [viewName, setViewName] = useState<string>(() => {
     if (active) return "normal";
     else return "deactive";
@@ -49,8 +65,30 @@ const UpdatableImage: React.FC<Props> = ({
     });
   }, [active]);
 
-  const upload = () => {
-    console.log(image);
+  const upload = async (file: File) => {
+    try {
+      showLoading();
+
+      let formData = new FormData();
+      formData.append("bizFolder", `uploadFolder-${fieldId}`); // must be appended first to make sure req.body is fully populated
+      formData.append("fieldId", fieldId);
+      formData.append("type", "field-image");
+      formData.append("docId", docId);
+      formData.append("file", file);
+      const res = await axios.post(`${baseUrl}/storage/store`, formData);
+      if (res.data.isSuccess) {
+        successNotification("Upload successfully");
+        const newPath = res.data.path;
+        setPath(`${baseUrl}/storage${newPath}`);
+      } else {
+        errorNotification("Fail to upload file");
+      }
+    } catch (error) {
+      console.error(error);
+      errorNotification("Fail to upload file");
+    } finally {
+      hideLoading();
+    }
   };
 
   const view = {
@@ -58,9 +96,13 @@ const UpdatableImage: React.FC<Props> = ({
       <Stack spacing={"sm"}>
         <p className="text-[0.875rem] font-medium text-[#C1C2C5]">{label}</p>
         <Group>
-          <Image src={src} width={160} height={160} alt={alt} />
+          {isInvalidPath ? (
+            <Text>No image found</Text>
+          ) : (
+            <Image src={path} width={160} height={160} alt={alt} />
+          )}
           <Stack>
-            <FileButton onChange={setImage} accept="image/png,image/jpeg">
+            <FileButton onChange={upload} accept="image/png,image/jpeg">
               {(props) => (
                 <Tooltip label="Upload">
                   <ActionIcon {...props}>
@@ -77,6 +119,7 @@ const UpdatableImage: React.FC<Props> = ({
             />
             <Tooltip label="Preview">
               <ActionIcon
+                disabled={isInvalidPath}
                 onClick={() => {
                   setViewName("preview");
                 }}
@@ -84,9 +127,6 @@ const UpdatableImage: React.FC<Props> = ({
                 <IconMaximize />
               </ActionIcon>
             </Tooltip>
-            <ActionIcon onClick={upload}>
-              <Icon360 />
-            </ActionIcon>
           </Stack>
         </Group>
       </Stack>
@@ -94,7 +134,7 @@ const UpdatableImage: React.FC<Props> = ({
     preview: (
       <div>
         <Overlay color="#000" opacity={0.85} blur={10}>
-          <Flex justify={"flex-end"} p={16}>
+          <Flex justify={"flex-end"} className="p-2">
             <CloseButton
               size={24}
               className="opacity-70 transition-opacity duration-150 hover:opacity-100"
@@ -106,9 +146,9 @@ const UpdatableImage: React.FC<Props> = ({
           <Center>
             <Image
               fit="contain"
-              width={rem("300px")}
+              width={300}
               height={"auto"}
-              src={src}
+              src={path}
               alt={alt}
             />
           </Center>

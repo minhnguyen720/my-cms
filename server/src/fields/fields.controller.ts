@@ -11,6 +11,11 @@ export class FieldsController {
     return await this.fieldsService.getFieldDataByDetailId(detailId);
   }
 
+  @Get('use-filter/:fieldId')
+  async getDataByFilter(@Param('fieldId') fieldId: string, filter: any) {
+    return await this.fieldsService.getDataByFilter(fieldId, filter);
+  }
+
   @Post('new')
   async createNewFields(@Body() body) {
     return await this.fieldsService.createNewFields(body);
@@ -19,6 +24,11 @@ export class FieldsController {
   @Put('update-config')
   async updateFieldConfig(@Body() body: UpdateConfigDto) {
     return await this.fieldsService.updateFieldConfig(body);
+  }
+
+  @Put('update-field/:fieldId')
+  async updateFieldById(@Param('fieldId') fieldId: string, @Body() body) {
+    return await this.fieldsService.updateFieldByFieldId(fieldId, body);
   }
 
   @Put('bydoc/:docId')

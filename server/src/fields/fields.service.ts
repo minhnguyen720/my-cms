@@ -15,6 +15,20 @@ export class FieldsService {
   ) {}
   private readonly logger = new Logger(FieldsService.name);
 
+  async updateFieldByFieldId(fieldId: string, body: any) {
+    try {
+      checkUndefined(fieldId, 'docId is undefined');
+      checkValidBody(body);
+
+      const isFieldExist = await this.fieldModel.exists({ _id: fieldId });
+      if (isFieldExist === null) throw 'Field is not exist';
+
+      await this.fieldModel.findByIdAndUpdate(fieldId, body);
+    } catch (error) {
+      this.logger.error(error);
+    }
+  }
+
   async updateFieldsByDocId(docId: string, body: any) {
     try {
       checkUndefined(docId, 'docId is undefined');
@@ -90,9 +104,15 @@ export class FieldsService {
     }
   }
 
+  async getDataByFilter(fieldId: string, filter: any) {
+    return filter
+      ? await this.fieldModel.find({ _id: fieldId, ...filter })
+      : await this.fieldModel.find({ _id: fieldId });
+  }
+
   async createNewFields(body: any) {
     try {
-      const order = await this.fieldModel.count({ doc: body.doc });
+      const order = await this.fieldModel.countDocuments({ doc: body.doc });
       await this.fieldModel.create({
         ...body,
         label: body.name,

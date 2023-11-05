@@ -2,7 +2,6 @@
 
 import Text from "@/components/Fields/FieldTypes/Text";
 import LongText from "@/components/Fields/FieldTypes/LongText";
-import ImageText from "@/components/Fields/FieldTypes/ImageText";
 import { Affix, Button, Stack, Transition, rem } from "@mantine/core";
 import { UseFormReturnType } from "@mantine/form";
 import UpdatableImage from "../UpdatableImage";
@@ -21,7 +20,7 @@ const FormDetailItem: React.FC<Props> = ({ fieldHandler, form }) => {
   return (
     <>
       <Stack spacing="lg">
-        {fieldHandler.getFields().map((item, index) => {
+        {fieldHandler.getFields().map((item) => {
           const textFieldProps = {
             form,
             label: item.label,
@@ -40,13 +39,14 @@ const FormDetailItem: React.FC<Props> = ({ fieldHandler, form }) => {
               return (
                 <UpdatableImage
                   key={item._id}
-                  alt={`attch_${index}`}
+                  alt={`atch_${item._id}`}
                   src={item.value}
                   label={item.label}
                   fieldId={item._id}
                   fieldHandler={fieldHandler}
                   required={item.required}
                   active={item.active}
+                  docId={item.doc}
                 />
               );
             // case "image_text":

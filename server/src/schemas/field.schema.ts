@@ -50,6 +50,10 @@ export class Field {
 
   @Prop()
   doc: string;
+
+  //For image type, used to find and delete the current file from the collection
+  @Prop()
+  fileId?: string;
 }
 
 export const FieldSchema = SchemaFactory.createForClass(Field);
