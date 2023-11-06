@@ -15,6 +15,23 @@ export class FieldsService {
   ) {}
   private readonly logger = new Logger(FieldsService.name);
 
+  async deleteFieldByFieldId(fieldId: string) {
+    try {
+      await this.fieldModel.findByIdAndDelete(fieldId);
+      this.logger.log(`Deleted field ${fieldId}`);
+    } catch (error) {
+      this.logger.error(error);
+    }
+  }
+
+  async getFieldById(fieldId: string) {
+    try {
+      return await this.fieldModel.findById(fieldId);
+    } catch (error) {
+      this.logger.error(error);
+    }
+  }
+
   async updateFieldByFieldId(fieldId: string, body: any) {
     try {
       checkUndefined(fieldId, 'docId is undefined');

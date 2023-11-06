@@ -7,11 +7,19 @@ import {
   Switch,
   LoadingOverlay,
   Tooltip,
+  Divider,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconSettings2 } from "@tabler/icons-react";
 import React, { useMemo, useState } from "react";
 import { FieldHandler } from "../hooks/useFields";
+import axios from "axios";
+import useGetBaseUrl from "@/hooks/utilities/getUrl";
+import { useParams } from "next/navigation";
+import {
+  errorNotification,
+  successNotification,
+} from "@/hooks/notifications/notificationPreset";
 
 interface Props {
   required: boolean;
@@ -32,6 +40,8 @@ const Config: React.FC<Props> = ({
     required,
     active,
   });
+  const [baseUrl] = useGetBaseUrl();
+  const params = useParams();
 
   const defaultConfig = useMemo(() => {
     const temp = [];
@@ -58,9 +68,25 @@ const Config: React.FC<Props> = ({
     }
   };
 
+  const handleDeleteField = async () => {
+    try {
+      const res = await axios.put(
+        `${baseUrl}/fields/${params.detailId}/${fieldId}`,
+      );
+      if (res.data.isSuccess) {
+        fieldHandler.updateFields(res.data.fieldData);
+        successNotification("Delete field successfully");
+      } else {
+        errorNotification("Fail to fetch new data");
+      }
+    } catch (error) {
+      errorNotification(error);
+    }
+  };
+
   return (
     <div className="w-fit">
-      <Modal opened={opened} onClose={close} title="Field controller">
+      <Modal centered opened={opened} onClose={close} title="Field controller">
         <LoadingOverlay visible={visible} overlayBlur={2} />
         <Box className="switch_container mt-4">
           <Switch.Group onChange={handleOnChange} defaultValue={defaultConfig}>
@@ -69,6 +95,10 @@ const Config: React.FC<Props> = ({
               <Switch label="Active" name="active" value={"active"} />
             </Group>
           </Switch.Group>
+          <Divider label="Danger zone" color="red" className="py-3"/>
+          <Button color="red" variant="light" onClick={handleDeleteField}>
+            Delete this field
+          </Button>
         </Box>
 
         <Group position="right" className="mt-8">

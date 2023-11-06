@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { StorageService } from './storage.service';
 import { StorageController } from './storage.controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -13,9 +13,10 @@ import { FieldsModule } from 'src/fields/fields.module';
         schema: FilesSchema,
       },
     ]),
-    FieldsModule,
+    forwardRef(() => FieldsModule),
   ],
   controllers: [StorageController],
   providers: [StorageService],
+  exports: [StorageService],
 })
 export class StorageModule {}

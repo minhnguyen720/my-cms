@@ -1,10 +1,14 @@
 import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { FieldsService } from './fields.service';
 import { UpdateConfigDto } from './dto/update-config.dto';
+import { StorageService } from 'src/storage/storage.service';
 
 @Controller('fields')
 export class FieldsController {
-  constructor(private readonly fieldsService: FieldsService) {}
+  constructor(
+    private readonly fieldsService: FieldsService,
+    private readonly storageService: StorageService,
+  ) {}
 
   @Get(':detailId')
   async getFieldDataByDetailId(@Param('detailId') detailId: string) {
@@ -34,5 +38,21 @@ export class FieldsController {
   @Put('bydoc/:docId')
   async updateFieldsByDocId(@Param('docId') docId: string, @Body() body: any) {
     return await this.fieldsService.updateFieldsByDocId(docId, body);
+  }
+
+  @Put(':docId/:fieldId')
+  async deleteFieldByFieldId(
+    @Param('docId') docId: string,
+    @Param('fieldId') fieldId: string,
+  ) {
+    const target = await this.fieldsService.getFieldById(fieldId);
+    if (target.type === 'image') {
+      Promise.all([
+        this.storageService.removeFromCollection(fieldId),
+        this.storageService.removeFileFromDisk(target.fileId),
+      ]);
+    }
+    await this.fieldsService.deleteFieldByFieldId(fieldId);
+    return await this.fieldsService.getFieldDataByDetailId(docId);
   }
 }
