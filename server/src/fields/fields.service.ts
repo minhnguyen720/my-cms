@@ -130,7 +130,7 @@ export class FieldsService {
   async createNewFields(body: any) {
     try {
       const order = await this.fieldModel.countDocuments({ doc: body.doc });
-      await this.fieldModel.create({
+      const newField = await this.fieldModel.create({
         ...body,
         label: body.name,
         order,
@@ -144,6 +144,7 @@ export class FieldsService {
       return {
         isSuccess: true,
         newList,
+        newField,
       };
     } catch (error) {
       console.error(error);

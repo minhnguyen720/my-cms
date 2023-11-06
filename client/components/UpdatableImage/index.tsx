@@ -46,12 +46,14 @@ const UpdatableImage: React.FC<Props> = ({
 }) => {
   const { showLoading, hideLoading } = useLoading();
   const [baseUrl] = useGetBaseUrl();
-  const [path, setPath] = useState<string | undefined | null>(
-    `${baseUrl}/storage${src}`,
-  );
-  const isInvalidPath = useMemo<boolean>(() => {
-    return src?.trim().length === 0 || src === undefined || src === null;
-  }, [src]);
+  const [path, setPath] = useState<string | undefined | null>(() => {
+    if (src) return `${baseUrl}/storage${src}`;
+    else return undefined;
+  });
+
+  const isInvalidPath = useMemo(() => {
+    return path?.trim().length === 0 || path === undefined || path === null;
+  }, [path]);
 
   const [viewName, setViewName] = useState<string>(() => {
     if (active) return "normal";

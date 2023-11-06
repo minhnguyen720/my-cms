@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Files } from 'src/schemas/files.schema';
 import * as fs from 'fs';
 
@@ -36,7 +36,9 @@ export class StorageService {
 
   async removeFromCollection(fileId: string) {
     try {
-      const isExist = await this.fileModel.exists({ _id: fileId });
+      const isExist = await this.fileModel.exists({
+        _id: fileId,
+      });
       if (isExist === null) throw 'File does not exist';
 
       await this.fileModel.findByIdAndDelete(fileId);

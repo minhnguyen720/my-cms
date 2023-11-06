@@ -110,8 +110,8 @@ const CreateNewField: React.FC<Props> = ({ fieldHandler }) => {
                 data={[
                   { label: "Long text", value: "longText" },
                   { label: "Short text", value: "shortText" },
-                  { label: "image", value: "image" },
-                  { label: "imageText", value: "imageText" },
+                  { label: "Image", value: "image" },
+                  // { label: "imageText", value: "imageText" },
                 ]}
                 dropdownPosition="bottom"
                 nothingFound="Nobody here"
