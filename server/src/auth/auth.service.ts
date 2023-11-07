@@ -19,11 +19,14 @@ export class AuthService {
 
       // use bycrypt to decode password later
       if (!bcrypt.compareSync(password, user.password)) {
-        throw new UnauthorizedException();
+        throw 'Wrong password';
       }
+
       const payload = { sub: user.id, username: user.username };
       return {
-        access_token: await this.jwtService.signAsync(payload),
+        access_token: await this.jwtService.signAsync(payload, {
+          secret: process.env.JWT_CONSTANT,
+        }),
       };
     } catch (error) {
       this.logger.error(error);
