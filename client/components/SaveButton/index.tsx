@@ -24,10 +24,13 @@ const SaveButton: React.FC<Props> = ({ form, docId, fieldHandler }) => {
 
   const handleOnSave = async () => {
     try {
-      const res = await axios.put(`${baseUrl}/fields/bydoc/${docId}`, form.values);
+      const res = await axios.put(
+        `${baseUrl}/fields/bydoc/${docId}`,
+        form.values,
+      );
       if (res.data.isSuccess) {
         successNotification("Fields are saved");
-        fieldHandler.updateFields(res.data.newData)
+        fieldHandler.updateFields(res.data.newData);
       } else {
         errorNotification("Fail to save");
       }

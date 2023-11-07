@@ -12,6 +12,8 @@ import { TrashbinCronService } from './cron/trashBinCron/trashbin.cron.service';
 import { TrashModule } from './trash/trash.module';
 import { FieldsModule } from './fields/fields.module';
 import { StorageModule } from './storage/storage.module';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { StorageModule } from './storage/storage.module';
     TrashModule,
     FieldsModule,
     StorageModule,
+    AuthModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
