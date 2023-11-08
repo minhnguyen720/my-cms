@@ -4,6 +4,11 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from '../auth.service';
 import { Request } from 'express';
 
+type JwtPayload = {
+  sub: string;
+  username: string;
+};
+
 @Injectable()
 export class RefreshTokenStrategy extends PassportStrategy(
   Strategy,
@@ -25,7 +30,7 @@ export class RefreshTokenStrategy extends PassportStrategy(
   //     return user;
   //   }
 
-  validate(req: Request, payload: any) {
+  validate(req: Request, payload: JwtPayload) {
     const refreshToken = req.get('authorization').replace('Bearer', '').trim();
     return {
       ...payload,

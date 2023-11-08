@@ -30,6 +30,21 @@ export class UsersService {
     }
   }
 
+  async findUserById(userId: string): Promise<Users> {
+    try {
+      const user = await this.usersModel.findOne({
+        id: userId,
+      });
+      if (user === null || user === undefined) throw 'User not found';
+      else {
+        this.logger.log(`Found user ${user.username}`);
+      }
+      return user;
+    } catch (error) {
+      this.logger.error(error);
+    }
+  }
+
   async findOne(username: string): Promise<Users | undefined> {
     try {
       const user = await this.usersModel.findOne({ username: username });

@@ -18,6 +18,18 @@ export class AuthService {
     await this.usersService.removeRtHash(userId);
   }
 
+  async refresh(userId: string, rt: string) {
+    const user = await this.usersService.findUserById(userId);
+
+    const isRtMatched = await bcrypt.compare(rt, user.hashedRefreshToken);
+    if (!isRtMatched) throw 'Access denied';
+
+    const tokens = await this.generateToken(user.id, user.username);
+    await this.usersService.updateRtHash(user.id, tokens.refresh_token);
+
+    return tokens;
+  }
+
   async authenticate(authDto: AuthenticateDto): Promise<Tokens> {
     try {
       const user = await this.usersService.findOne(authDto.username);

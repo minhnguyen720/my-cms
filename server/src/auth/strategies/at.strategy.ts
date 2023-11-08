@@ -3,6 +3,11 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from '../auth.service';
 
+type JwtPayload = {
+  sub: string;
+  username: string;
+};
+
 @Injectable()
 export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(private authService: AuthService) {
@@ -21,7 +26,7 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
   //   return user;
   // }
 
-  validate(payload: any) {
+  validate(payload: JwtPayload) {
     return payload;
   }
 }

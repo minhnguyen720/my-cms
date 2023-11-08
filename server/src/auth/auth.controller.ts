@@ -6,10 +6,16 @@ import {
   HttpStatus,
   Post,
   Request,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthenticateDto } from './dto/authenticate.dto';
-import { Public } from './auth.decorator';
+import {
+  GetCurrentUser,
+  GetCurrentUserId,
+  Public,
+} from 'src/common/decorators';
+import { RtGuard } from 'src/common/guards';
 
 @Controller('auth')
 export class AuthController {
@@ -34,8 +40,19 @@ export class AuthController {
     return await this.authService.signup(authDto);
   }
 
+  @HttpCode(HttpStatus.OK)
   @Post('signout')
-  signout(@Body() body) {
-    this.authService.signout(body.userId);
+  signout(@GetCurrentUserId() userId: string) {
+    this.authService.signout(userId);
+  }
+
+  @UseGuards(RtGuard)
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  async refreshToken(
+    @GetCurrentUserId() userId: string,
+    @GetCurrentUser('refreshToken') rt: string,
+  ) {
+    return await this.authService.refresh(userId, rt);
   }
 }
