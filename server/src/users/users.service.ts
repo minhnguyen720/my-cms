@@ -13,6 +13,23 @@ export class UsersService {
 
   private readonly logger = new Logger(UsersService.name);
 
+  async removeRtHash(userId: string) {
+    try {
+      await this.usersModel.updateOne(
+        {
+          id: userId,
+          hashedRefreshToken: { $ne: null },
+        },
+        {
+          hashedRefreshToken: null,
+        },
+      );
+      this.logger.log(`User ${userId} signout`);
+    } catch (error) {
+      this.logger.error(error);
+    }
+  }
+
   async findOne(username: string): Promise<Users | undefined> {
     try {
       const user = await this.usersModel.findOne({ username: username });

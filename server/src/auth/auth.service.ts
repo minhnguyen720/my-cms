@@ -14,6 +14,10 @@ export class AuthService {
 
   private readonly logger = new Logger(AuthService.name);
 
+  async signout(userId: string) {
+    await this.usersService.removeRtHash(userId);
+  }
+
   async authenticate(authDto: AuthenticateDto): Promise<Tokens> {
     try {
       const user = await this.usersService.findOne(authDto.username);

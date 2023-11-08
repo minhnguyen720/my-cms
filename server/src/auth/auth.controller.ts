@@ -33,4 +33,9 @@ export class AuthController {
   async signup(@Body() authDto: AuthenticateDto) {
     return await this.authService.signup(authDto);
   }
+
+  @Post('signout')
+  signout(@Body() body) {
+    this.authService.signout(body.userId);
+  }
 }
