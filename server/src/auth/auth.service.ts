@@ -21,6 +21,7 @@ export class AuthService {
   async refresh(userId: string, rt: string) {
     const user = await this.usersService.findUserById(userId);
 
+    if (user.hashedRefreshToken === null) throw 'Token is null';
     const isRtMatched = await bcrypt.compare(rt, user.hashedRefreshToken);
     if (!isRtMatched) throw 'Access denied';
 
