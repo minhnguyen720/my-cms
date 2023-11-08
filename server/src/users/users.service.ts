@@ -26,16 +26,14 @@ export class UsersService {
     }
   }
 
-  async createNewUser(authDto: AuthenticateDto) {
+  async createNewUser(authDto: AuthenticateDto): Promise<Users> {
     try {
       const isDuplicateUserName = await this.usersModel.exists({
         username: authDto.username,
       });
       if (isDuplicateUserName !== null) throw 'This username already exist';
 
-      const saltRounds = 10;
-      const salt = bcrypt.genSaltSync(saltRounds);
-      const hash = bcrypt.hashSync(authDto.password, salt);
+      const hash = this.hashData(authDto.password);
 
       const newUser = await this.usersModel.create({
         id: `USR${uuidv4()}`,
@@ -45,9 +43,34 @@ export class UsersService {
         createdDate: dayjs().toDate(),
         updatedDate: dayjs().toDate(),
       });
-      this.logger.log(`New user created: ${newUser}`);
+
+      return newUser;
     } catch (error) {
       this.logger.error(error);
+      return error;
     }
+  }
+
+  hashData(data: string) {
+    const saltRounds = 10;
+    const salt = bcrypt.genSaltSync(saltRounds);
+    const hash = bcrypt.hashSync(data.toString(), salt);
+
+    return hash;
+  }
+
+  async updateRtHash(userId: string, rt: string) {
+    const hash = this.hashData(rt);
+    await this.usersModel.findOneAndUpdate(
+      {
+        id: userId,
+      },
+      {
+        hashedRefreshToken: hash,
+      },
+      {
+        new: true,
+      },
+    );
   }
 }

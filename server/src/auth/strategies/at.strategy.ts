@@ -4,7 +4,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from '../auth.service';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(private authService: AuthService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -13,11 +13,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(username: string, password: string): Promise<any> {
-    const user = await this.authService.authenticate(username, password);
-    if (!user) {
-      throw new UnauthorizedException();
-    }
-    return user;
+  // async validate(username: string, password: string): Promise<any> {
+  //   const user = await this.authService.authenticate(username, password);
+  //   if (!user) {
+  //     throw new UnauthorizedException();
+  //   }
+  //   return user;
+  // }
+
+  validate(payload: any) {
+    return payload;
   }
 }

@@ -23,11 +23,8 @@ export class AuthController {
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('authenticate')
-  async authenticate(@Body() authenticateDto: AuthenticateDto) {
-    return await this.authService.authenticate(
-      authenticateDto.username,
-      authenticateDto.password,
-    );
+  async authenticate(@Body() authDto: AuthenticateDto) {
+    return await this.authService.authenticate(authDto);
   }
 
   @Public()

@@ -22,6 +22,9 @@ export class Users {
 
   @Prop()
   updatedDate: Date;
+
+  @Prop()
+  hashedRefreshToken: string;
 }
 
 export const UsersSchema = SchemaFactory.createForClass(Users);

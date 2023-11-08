@@ -1,8 +1,9 @@
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthenticateDto } from './dto/authenticate.dto';
 import * as bcrypt from 'bcrypt';
+import { Tokens } from './types';
 
 @Injectable()
 export class AuthService {
@@ -13,27 +14,62 @@ export class AuthService {
 
   private readonly logger = new Logger(AuthService.name);
 
-  async authenticate(username: string, password: string) {
+  async authenticate(authDto: AuthenticateDto): Promise<Tokens> {
     try {
-      const user = await this.usersService.findOne(username);
+      const user = await this.usersService.findOne(authDto.username);
 
-      // use bycrypt to decode password later
-      if (!bcrypt.compareSync(password, user.password)) {
+      if (!bcrypt.compareSync(authDto.password, user.password))
         throw 'Wrong password';
-      }
 
-      const payload = { sub: user.id, username: user.username };
-      return {
-        access_token: await this.jwtService.signAsync(payload, {
-          secret: process.env.JWT_CONSTANT,
-        }),
-      };
+      const tokens = await this.generateToken(user.id, user.username);
+      await this.usersService.updateRtHash(user.id, tokens.refresh_token);
+
+      return tokens;
     } catch (error) {
       this.logger.error(error);
     }
   }
 
-  async signup(authDto: AuthenticateDto) {
-    return await this.usersService.createNewUser(authDto);
+  async signup(authDto: AuthenticateDto): Promise<Tokens> {
+    try {
+      const user = await this.usersService.createNewUser(authDto);
+      const tokens = await this.generateToken(user.id, user.username);
+      await this.usersService.updateRtHash(user.id, tokens.refresh_token);
+
+      return tokens;
+    } catch (error) {
+      this.logger.error(error);
+    }
+  }
+
+  // add role to param when moving to access control part
+  async generateToken(userId: string, username: string): Promise<Tokens> {
+    const [at, rt] = await Promise.all([
+      this.jwtService.signAsync(
+        {
+          sub: userId,
+          username,
+        },
+        {
+          secret: process.env.JWT_CONSTANT,
+          expiresIn: 60 * 15,
+        },
+      ),
+      this.jwtService.signAsync(
+        {
+          sub: userId,
+          username,
+        },
+        {
+          secret: process.env.JWT_CONSTANT,
+          expiresIn: 60 * 60 * 24 * 7, // a week
+        },
+      ),
+    ]);
+
+    return {
+      access_token: at,
+      refresh_token: rt,
+    };
   }
 }
