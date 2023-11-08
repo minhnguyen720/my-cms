@@ -11,7 +11,7 @@ import { LocalStrategy } from './strategies/local.strategy';
     UsersModule,
     JwtModule.register({
       global: true,
-      signOptions: { expiresIn: '600s' },
+      signOptions: { expiresIn: '60000s' },
     }),
     PassportModule,
   ],

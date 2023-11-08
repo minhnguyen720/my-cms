@@ -1,6 +1,5 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
-import AppShell from "@/components/AppShell";
 import JotaiProviders from "@/components/Providers";
 
 const inter = Inter({ subsets: ["latin"] });

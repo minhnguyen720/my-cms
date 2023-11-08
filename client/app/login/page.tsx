@@ -1,5 +1,7 @@
 "use client";
 
+import { errorNotification } from "@/hooks/notifications/notificationPreset";
+import useGetBaseUrl from "@/hooks/utilities/getUrl";
 import {
   Group,
   Anchor,
@@ -8,13 +10,15 @@ import {
   TextInput,
   Button,
   MantineProvider,
-  useMantineTheme,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { useLocalStorage } from "@mantine/hooks";
+import axios from "axios";
+import { redirect } from "next/dist/server/api-utils";
 import React from "react";
 
 const Login = () => {
-  const theme = useMantineTheme();
+  const [baseUrl] = useGetBaseUrl();
   const form = useForm({
     initialValues: {
       username: "",
@@ -22,13 +26,47 @@ const Login = () => {
     },
   });
 
+  const [token, setToken] = useLocalStorage({
+    key: "token",
+    defaultValue: null,
+  });
+
+  const updateToken = (value: string) => {
+    setToken(value);
+  };
+
+  const handleSubmit = async (values) => {
+    try {
+      const res = await axios.post(`${baseUrl}/auth/authenticate`, values);
+      updateToken(res.data.access_token);
+
+      let headersList = {
+        "Accept": "*/*",
+        "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+        "Authorization": `Bearer ${res.data.access_token}` 
+       }
+       
+       let reqOptions = {
+         url: `${baseUrl}/auth/profile`,
+         method: "GET",
+         headers: headersList,
+       }
+       
+       let response = await axios.request(reqOptions);
+       console.log(response.data);
+    } catch (error) {
+      console.error(error);
+      errorNotification(error);
+    }
+  };
+
   return (
     <MantineProvider
       withGlobalStyles
       withNormalizeCSS
       theme={{ colorScheme: "dark" }}
     >
-      <form onSubmit={form.onSubmit((values) => console.log(values))}>
+      <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
         <div
           className="absolute left-1/2 top-1/2 w-[30%]"
           style={{

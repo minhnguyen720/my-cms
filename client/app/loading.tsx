@@ -1,12 +1,12 @@
 "use client";
 
-import { Loader, Center } from "@mantine/core";
+import { Loader } from "@mantine/core";
 
 function Loading() {
   return (
-    <Center h={"100%"}>
+    <div className="flex h-screen w-screen items-center justify-center bg-[#1A1B1E]">
       <Loader variant="bars" />
-    </Center>
+    </div>
   );
 }
 

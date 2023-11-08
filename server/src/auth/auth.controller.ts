@@ -6,12 +6,10 @@ import {
   HttpStatus,
   Post,
   Request,
-  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthenticateDto } from './dto/authenticate.dto';
 import { Public } from './auth.decorator';
-import { LocalAuthGuard } from './guards/local.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -23,13 +21,6 @@ export class AuthController {
   }
 
   @Public()
-  @Get('public')
-  getPublicData() {
-    return 'hello world';
-  }
-
-  // @UseGuards(LocalAuthGuard)
-  @Public()
   @HttpCode(HttpStatus.OK)
   @Post('authenticate')
   async authenticate(@Body() authenticateDto: AuthenticateDto) {
@@ -39,6 +30,7 @@ export class AuthController {
     );
   }
 
+  @Public()
   @HttpCode(HttpStatus.OK)
   @Post('signup')
   async signup(@Body() authDto: AuthenticateDto) {
