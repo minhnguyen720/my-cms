@@ -4,11 +4,14 @@ import { useLocalStorage } from "@mantine/hooks";
 import { atom, useAtom, useSetAtom } from "jotai";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
+import useGetBaseUrl from "../utilities/getUrl";
+import axios from "axios";
 
 const userAtom = atom<
   | {
+      userId: string;
       username: string;
-      role: string;
+      // role: string;
     }
   | boolean
 >(false);
@@ -16,22 +19,40 @@ const userAtom = atom<
 export const useUser = () => {
   const [user, setUser] = useAtom(userAtom);
 
-  const updateUser = (newUser) => {
+  const asignUser = (newUser) => {
     setUser(newUser);
   };
 
   const getUser = () => {
     return user;
-  }
+  };
 
-  return {getUser, updateUser };
+  return { getUser, asignUser };
 };
 
 const AuthenticateUser = ({ children }) => {
+  const [baseUrl] = useGetBaseUrl();
+
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token === null) redirect("/login");
-  }, []);
+    const authenticateUser = async () => {
+      const refreshToken = localStorage.getItem("refreshToken");
+      let headersList = {
+        Accept: "*/*",
+        Authorization: `Bearer ${refreshToken}`,
+      };
+
+      let reqOptions = {
+        url: `${baseUrl}/auth/authenticate`,
+        method: "POST",
+        headers: headersList,
+      };
+
+      const res = await axios.request(reqOptions);
+      if (!res.data.isAuth) redirect("/login");
+    };
+
+    authenticateUser();
+  }, [baseUrl]);
 
   return <>{children}</>;
 };

@@ -18,7 +18,7 @@ import Image from "next/image";
 import useCurrentMenu from "./hooks/useCurrentMenu";
 import Alert from "../Alert";
 import useLoading from "@/hooks/utilities/useLoading";
-import { Notifications } from '@mantine/notifications';
+import { Notifications } from "@mantine/notifications";
 
 interface Props {
   children: any;

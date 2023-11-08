@@ -22,26 +22,37 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
+  async getProfile(@GetCurrentUserId() userId: string) {
+    return await this.authService.getProfile(userId);
   }
 
   @Public()
+  @Post('signin')
   @HttpCode(HttpStatus.OK)
+  async signin(@Body() authDto: AuthenticateDto) {
+    return await this.authService.signin(authDto);
+  }
+
+  @Public()
+  @UseGuards(RtGuard)
   @Post('authenticate')
-  async authenticate(@Body() authDto: AuthenticateDto) {
-    return await this.authService.authenticate(authDto);
+  @HttpCode(HttpStatus.OK)
+  async authenticate(
+    @GetCurrentUserId() userId: string,
+    @GetCurrentUser('refreshToken') rt: string,
+  ): Promise<{ isAuth: boolean }> {
+    return await this.authService.authenticate(userId, rt);
   }
 
   @Public()
-  @HttpCode(HttpStatus.OK)
   @Post('signup')
+  @HttpCode(HttpStatus.OK)
   async signup(@Body() authDto: AuthenticateDto) {
     return await this.authService.signup(authDto);
   }
 
-  @HttpCode(HttpStatus.OK)
   @Post('signout')
+  @HttpCode(HttpStatus.OK)
   signout(@GetCurrentUserId() userId: string) {
     this.authService.signout(userId);
   }

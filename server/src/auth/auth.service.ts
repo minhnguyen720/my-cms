@@ -14,6 +14,40 @@ export class AuthService {
 
   private readonly logger = new Logger(AuthService.name);
 
+  async getProfile(userId: string) {
+    try {
+      const user = await this.usersService.findUserById(userId);
+      return {
+        username: user.username,
+        userId: user.id,
+      };
+    } catch (error) {
+      return {
+        isFalse: true,
+        message: 'Authenticate user fail. Please try again',
+      };
+    }
+  }
+
+  async authenticate(userId: string, rt: string): Promise<{ isAuth: boolean }> {
+    try {
+      if (rt === undefined || rt === null) throw 'Refresh token is invalid';
+
+      const user = await this.usersService.findUserById(userId);
+      const isRtMatched = await bcrypt.compare(rt, user.hashedRefreshToken);
+      if (!isRtMatched) throw 'Access denied';
+
+      return {
+        isAuth: true,
+      };
+    } catch (error) {
+      this.logger.error(error);
+      return {
+        isAuth: false,
+      };
+    }
+  }
+
   async signout(userId: string) {
     await this.usersService.removeRtHash(userId);
   }
@@ -31,7 +65,9 @@ export class AuthService {
     return tokens;
   }
 
-  async authenticate(authDto: AuthenticateDto): Promise<Tokens> {
+  async signin(
+    authDto: AuthenticateDto,
+  ): Promise<Tokens | { isFalse: boolean; message: string }> {
     try {
       const user = await this.usersService.findOne(authDto.username);
 
@@ -44,6 +80,10 @@ export class AuthService {
       return tokens;
     } catch (error) {
       this.logger.error(error);
+      return {
+        isFalse: true,
+        message: 'Wrong username or password. Please try again',
+      };
     }
   }
 
