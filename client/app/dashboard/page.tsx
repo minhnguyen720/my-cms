@@ -1,17 +1,19 @@
 import { Dashboard } from "@/components/Dashboard";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 
 export const revalidate = 10;
 
 const getActiveProjectLength = async () => {
+  const cookieJar = cookies();
   try {
-    console.log(localStorage.getItem("at"));
+    const at = cookieJar.get("at")?.value;
     const res = await fetch("http://localhost:4000/project/dashboard-stat", {
       cache: "no-store",
       method: "GET",
       headers: {
         Accept: "*/*",
-        Authorization: `Bearer ${localStorage.getItem("at")}`,
+        Authorization: `Bearer ${at}`,
       },
     });
     if (!res.ok) {
@@ -19,7 +21,7 @@ const getActiveProjectLength = async () => {
     }
     return res.json();
   } catch (error) {
-    console.error(error);
+    cookieJar.delete("at");
     redirect("/authenticate");
   }
 };

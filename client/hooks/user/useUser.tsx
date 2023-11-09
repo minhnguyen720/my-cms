@@ -56,10 +56,11 @@ const AuthenticateUser = ({ children }) => {
         };
 
         await axios.request(reqOptions);
+        router.push("/dashboard");
       } catch (error) {
         errorNotification("Unauthorized");
         setTimeout(() => {
-          router.push("/login");
+          router.push("/authenticate");
         }, 2100);
       }
     };
