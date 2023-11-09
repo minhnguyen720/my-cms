@@ -16,6 +16,7 @@ import {
   Public,
 } from 'src/common/decorators';
 import { RtGuard } from 'src/common/guards';
+import { Users } from 'src/schemas/users.schema';
 
 @Controller('auth')
 export class AuthController {
@@ -33,15 +34,12 @@ export class AuthController {
     return await this.authService.signin(authDto);
   }
 
-  @Public()
-  @UseGuards(RtGuard)
   @Post('authenticate')
   @HttpCode(HttpStatus.OK)
   async authenticate(
     @GetCurrentUserId() userId: string,
-    @GetCurrentUser('refreshToken') rt: string,
-  ): Promise<{ isAuth: boolean }> {
-    return await this.authService.authenticate(userId, rt);
+  ): Promise<{ user: Users | undefined; isAuth: boolean }> {
+    return await this.authService.authenticate(userId);
   }
 
   @Public()

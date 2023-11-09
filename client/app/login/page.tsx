@@ -20,7 +20,6 @@ import React from "react";
 const Login = () => {
   const [baseUrl] = useGetBaseUrl();
   const userHanlder = useUser();
-  const tokenHandler = useTokens();
   const router = useRouter();
   const form = useForm({
     initialValues: {
@@ -32,8 +31,6 @@ const Login = () => {
   const handleSubmit = async (values) => {
     try {
       const res = await axios.post(`${baseUrl}/auth/signin`, values);
-      tokenHandler.assignAt(res.data.access_token);
-      tokenHandler.assignRt(res.data.refresh_token);
 
       if (res.data.isFalse) throw res.data.message;
 
@@ -51,7 +48,12 @@ const Login = () => {
       const user = await axios.request(reqOptions);
       if (user.data.isFalse) throw user.data.message;
 
-      userHanlder.asignUser(user.data);
+      userHanlder.assignUser({
+        ...user.data,
+        at: res.data.access_token,
+        rt: res.data.refresh_token,
+      });
+
       router.push("/dashboard");
     } catch (error: any) {
       console.error(error);

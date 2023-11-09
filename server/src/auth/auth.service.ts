@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthenticateDto } from './dto/authenticate.dto';
 import * as bcrypt from 'bcrypt';
 import { Tokens } from './types';
+import { Users } from 'src/schemas/users.schema';
 
 @Injectable()
 export class AuthService {
@@ -29,20 +30,20 @@ export class AuthService {
     }
   }
 
-  async authenticate(userId: string, rt: string): Promise<{ isAuth: boolean }> {
+  async authenticate(
+    userId: string,
+  ): Promise<{ user: Users | undefined; isAuth: boolean }> {
     try {
-      if (rt === undefined || rt === null) throw 'Refresh token is invalid';
-
       const user = await this.usersService.findUserById(userId);
-      const isRtMatched = await bcrypt.compare(rt, user.hashedRefreshToken);
-      if (!isRtMatched) throw 'Access denied';
 
       return {
+        user: user,
         isAuth: true,
       };
     } catch (error) {
       this.logger.error(error);
       return {
+        user: undefined,
         isAuth: false,
       };
     }
@@ -109,7 +110,7 @@ export class AuthService {
         },
         {
           secret: process.env.JWT_CONSTANT,
-          expiresIn: 60 * 15,
+          expiresIn: 60 * 60 * 6,
         },
       ),
       this.jwtService.signAsync(
