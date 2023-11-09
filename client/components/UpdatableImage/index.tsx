@@ -75,7 +75,7 @@ const UpdatableImage: React.FC<Props> = ({
       formData.append("bizFolder", `uploadFolder-${fieldId}`); // must be appended first to make sure req.body is fully populated
       formData.append("fieldId", fieldId);
       formData.append("type", "field-image");
-      formData.append("docId", docId);
+      formData.append("docId", docId ? docId : "");
       formData.append("file", file);
       const res = await axios.post(`${baseUrl}/storage/store`, formData);
       if (res.data.isSuccess) {

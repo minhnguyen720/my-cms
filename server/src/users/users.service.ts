@@ -58,7 +58,9 @@ export class UsersService {
     }
   }
 
-  async createNewUser(authDto: AuthenticateDto): Promise<Users> {
+  async createNewUser(
+    authDto: AuthenticateDto,
+  ): Promise<{ isSuccess: boolean; user?: Users; message?: string }> {
     try {
       const isDuplicateUserName = await this.usersModel.exists({
         username: authDto.username,
@@ -76,10 +78,16 @@ export class UsersService {
         updatedDate: dayjs().toDate(),
       });
 
-      return newUser;
+      return {
+        isSuccess: true,
+        user: newUser,
+      };
     } catch (error) {
       this.logger.error(error);
-      return error;
+      return {
+        isSuccess: false,
+        message: error,
+      };
     }
   }
 

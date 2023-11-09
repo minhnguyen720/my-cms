@@ -88,13 +88,30 @@ export class AuthService {
     }
   }
 
-  async signup(authDto: AuthenticateDto): Promise<Tokens> {
+  async signup(authDto: AuthenticateDto): Promise<
+    | {
+        isSuccess: boolean;
+        tokens: Tokens;
+      }
+    | { isSuccess: boolean; message: string }
+  > {
     try {
-      const user = await this.usersService.createNewUser(authDto);
-      const tokens = await this.generateToken(user.id, user.username);
-      await this.usersService.updateRtHash(user.id, tokens.refresh_token);
+      const res = await this.usersService.createNewUser(authDto);
+      if (res.isSuccess) {
+        const user = res.user;
+        const tokens = await this.generateToken(user.id, user.username);
+        await this.usersService.updateRtHash(user.id, tokens.refresh_token);
 
-      return tokens;
+        return {
+          isSuccess: true,
+          tokens: tokens, // for auto login after signup
+        };
+      } else {
+        return {
+          isSuccess: false,
+          message: res.message,
+        };
+      }
     } catch (error) {
       this.logger.error(error);
     }
