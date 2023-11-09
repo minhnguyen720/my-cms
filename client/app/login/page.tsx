@@ -1,6 +1,7 @@
 "use client";
 
 import { errorNotification } from "@/hooks/notifications/notificationPreset";
+import useTokens from "@/hooks/tokens/useTokens";
 import { useUser } from "@/hooks/user/useUser";
 import useGetBaseUrl from "@/hooks/utilities/getUrl";
 import {
@@ -12,7 +13,6 @@ import {
   Button,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useLocalStorage } from "@mantine/hooks";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -20,6 +20,7 @@ import React from "react";
 const Login = () => {
   const [baseUrl] = useGetBaseUrl();
   const userHanlder = useUser();
+  const tokenHandler = useTokens();
   const router = useRouter();
   const form = useForm({
     initialValues: {
@@ -28,24 +29,13 @@ const Login = () => {
     },
   });
 
-  const [accessToken, setAccessToken] = useLocalStorage({
-    key: "accessToken",
-    defaultValue: null,
-  });
-
-  const [refreshToken, setRefreshToken] = useLocalStorage({
-    key: "refreshToken",
-    defaultValue: null,
-  });
-
   const handleSubmit = async (values) => {
     try {
       const res = await axios.post(`${baseUrl}/auth/signin`, values);
+      tokenHandler.assignAt(res.data.access_token);
+      tokenHandler.assignRt(res.data.refresh_token);
 
       if (res.data.isFalse) throw res.data.message;
-
-      setAccessToken(res.data.access_token);
-      setRefreshToken(res.data.refresh_token);
 
       let headersList = {
         Accept: "*/*",
@@ -63,7 +53,7 @@ const Login = () => {
 
       userHanlder.asignUser(user.data);
       router.push("/dashboard");
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       errorNotification(error);
     }

@@ -1,11 +1,12 @@
 "use client";
 
-import { useLocalStorage } from "@mantine/hooks";
-import { atom, useAtom, useSetAtom } from "jotai";
-import { redirect } from "next/navigation";
-import { useEffect } from "react";
+import { atom, useAtom } from "jotai";
+import { redirect, useRouter } from "next/navigation";
+import { useEffect, useLayoutEffect } from "react";
 import useGetBaseUrl from "../utilities/getUrl";
+import useTokens from "../tokens/useTokens";
 import axios from "axios";
+import { errorNotification } from "../notifications/notificationPreset";
 
 const userAtom = atom<
   | {
@@ -32,27 +33,39 @@ export const useUser = () => {
 
 const AuthenticateUser = ({ children }) => {
   const [baseUrl] = useGetBaseUrl();
+  const tokenHandler = useTokens();
+  const router = useRouter();
 
   useEffect(() => {
     const authenticateUser = async () => {
-      const refreshToken = localStorage.getItem("refreshToken");
-      let headersList = {
-        Accept: "*/*",
-        Authorization: `Bearer ${refreshToken}`,
-      };
+      try {
+        const refreshToken = tokenHandler.getRt();
+        if (refreshToken === null || refreshToken === undefined) {
+          router.push("/login");
+        }
 
-      let reqOptions = {
-        url: `${baseUrl}/auth/authenticate`,
-        method: "POST",
-        headers: headersList,
-      };
+        const headersList = {
+          Accept: "*/*",
+          Authorization: `Bearer ${refreshToken}`,
+        };
 
-      const res = await axios.request(reqOptions);
-      if (!res.data.isAuth) redirect("/login");
+        const reqOptions = {
+          url: `${baseUrl}/auth/authenticate`,
+          method: "POST",
+          headers: headersList,
+        };
+
+        await axios.request(reqOptions);
+      } catch (error) {
+        errorNotification("Unauthorized");
+        setTimeout(() => {
+          router.push("/login");
+        }, 2100);
+      }
     };
 
     authenticateUser();
-  }, [baseUrl]);
+  }, [baseUrl, tokenHandler]);
 
   return <>{children}</>;
 };

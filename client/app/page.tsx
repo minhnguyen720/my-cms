@@ -1,5 +1,4 @@
 import AuthenticateUser from "@/hooks/user/useUser";
-import useUser from "@/hooks/user/useUser";
 import { Open_Sans } from "next/font/google";
 import React from "react";
 
