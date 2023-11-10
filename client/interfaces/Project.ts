@@ -24,7 +24,7 @@ export interface Field {
 }
 
 export interface Document {
-  _id?: string;
+  _id: string;
 
   id?: string;
 
@@ -52,7 +52,7 @@ export interface Document {
   // List of user ids
   assignedUsers?: string[];
 
-  page?: string;
+  page: string;
 
   description?: string;
 
@@ -86,7 +86,7 @@ export interface Page extends StandardSchema {
   name?: string;
   active?: boolean;
   project?: string;
-  isRemove?:boolean;
+  isRemove?: boolean;
 }
 
 export interface Folder extends StandardSchema {
@@ -98,5 +98,5 @@ export interface Folder extends StandardSchema {
 
   parent: string;
 
-  isRemove?:boolean;
+  isRemove?: boolean;
 }

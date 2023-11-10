@@ -28,7 +28,12 @@ export const useUser = () => {
     return user;
   };
 
-  return { getUser, assignUser };
+  const getUserAt = () => {
+    if (user === null) return undefined;
+    return user?.at;
+  };
+
+  return { getUser, assignUser, getUserAt };
 };
 
 const AuthenticateUser = ({ children }) => {
@@ -41,7 +46,7 @@ const AuthenticateUser = ({ children }) => {
       try {
         const user = userHandler.getUser();
         if (user === null || user === undefined) {
-          router.push("/login");
+          router.push("/authenticate");
         }
 
         const headersList = {

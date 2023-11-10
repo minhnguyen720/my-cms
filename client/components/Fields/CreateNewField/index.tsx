@@ -23,6 +23,7 @@ import {
 } from "@/hooks/notifications/notificationPreset";
 import { MESSAGES } from "@/constant";
 import { FieldHandler } from "../hooks/useFields";
+import { getCookie } from "cookies-next";
 
 interface Props {
   fieldHandler: FieldHandler;
@@ -33,6 +34,7 @@ const CreateNewField: React.FC<Props> = ({ fieldHandler }) => {
   const params = useParams();
   const { showLoading, hideLoading } = useLoading();
   const [baseUrl] = useGetBaseUrl();
+  const at = getCookie("at");
 
   const form = useForm({
     initialValues: {
@@ -67,7 +69,11 @@ const CreateNewField: React.FC<Props> = ({ fieldHandler }) => {
         doc: params.detailId,
       };
 
-      const res = await axios.post(`${baseUrl}/fields/new`, body);
+      const res = await axios.post(`${baseUrl}/fields/new`, body, {
+        headers: {
+          Authorization: `Bearer ${at}`,
+        },
+      });
 
       if (res.data.isSuccess) {
         successNotification(MESSAGES.CREATE_ITEM.SUCCESS);

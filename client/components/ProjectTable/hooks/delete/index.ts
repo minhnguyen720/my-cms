@@ -6,6 +6,7 @@ import {
 } from "@/hooks/notifications/notificationPreset";
 import { useDisclosure } from "@mantine/hooks";
 import axios from "axios";
+import { getCookie } from "cookies-next";
 import { useAtomValue, useSetAtom } from "jotai";
 import { ChangeEvent, useEffect, useState } from "react";
 
@@ -15,6 +16,7 @@ const useDelete = (rowId: string, projectId: string, pageId: string) => {
   const [allowToDelete, setAllowToDelete] = useState<boolean>(false);
   const baseUrl = useAtomValue(baseUrlAtom);
   const setDatasource = useSetAtom(datasourceAtom);
+  const at = getCookie("at");
 
   useEffect(() => {
     if (deleteConfirm === rowId) setAllowToDelete(true);
@@ -23,10 +25,18 @@ const useDelete = (rowId: string, projectId: string, pageId: string) => {
 
   const handleDelete = async () => {
     try {
-      const res = await axios.put(`${baseUrl}/page/movetotrash/`, {
-        projectId,
-        pageId,
-      });
+      const res = await axios.put(
+        `${baseUrl}/page/movetotrash/`,
+        {
+          projectId,
+          pageId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${at}`,
+          },
+        },
+      );
       setDatasource(res.data.newDatasource);
       successNotification(MESSAGES.DELETE_PAGE.SUCCESS);
       dzModalHandler.close();

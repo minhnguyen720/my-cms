@@ -12,6 +12,7 @@ import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { IconFilePlus } from "@tabler/icons-react";
 import axios from "axios";
+import { getCookie } from "cookies-next";
 import { useAtomValue } from "jotai";
 import { useParams } from "next/navigation";
 
@@ -28,18 +29,27 @@ const CreateNewDocCard: React.FC<Props> = ({ addDocItem }) => {
   const [opened, { open, close }] = useDisclosure();
   const baseUrl = useAtomValue(baseUrlAtom);
   const { pageId } = useParams();
+  const at = getCookie("at");
 
   const handleCreateNewDoc = async (values: createNewDocDto) => {
     try {
-      const res = await axios.post(`${baseUrl}/doc`, {
-        ...values,
-        pageId,
-        parent: pageId,
-        active: true,
-        isRemove:false
-      });
+      const res = await axios.post(
+        `${baseUrl}/doc`,
+        {
+          ...values,
+          pageId,
+          parent: pageId,
+          active: true,
+          isRemove: false,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${at}`,
+          },
+        },
+      );
 
-      const newDocItem= await res.data;
+      const newDocItem = await res.data;
 
       addDocItem(newDocItem);
       close();

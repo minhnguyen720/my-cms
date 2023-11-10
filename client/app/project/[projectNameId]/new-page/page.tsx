@@ -8,12 +8,16 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { baseUrlAtom, datasourceAtom } from "@/atoms";
 import axios from "axios";
 import dayjs from "dayjs";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useDisclosure } from "@mantine/hooks";
 import { MESSAGES } from "@/constant";
 import { ProjectTableItem } from "../page";
 import useCurrentProject from "@/hooks/utilities/useCurrentProject";
-import { errorNotification, successNotification } from "@/hooks/notifications/notificationPreset";
+import {
+  errorNotification,
+  successNotification,
+} from "@/hooks/notifications/notificationPreset";
+import { getCookie } from "cookies-next";
 
 interface PageFormValues extends StandardSchema {
   project?: string;
@@ -25,10 +29,6 @@ interface PageFormValues extends StandardSchema {
 
 const CreatingPage = ({ params: { projectNameId } }) => {
   const initialValues: PageFormValues = {
-    createdDate: dayjs().toString(),
-    updatedDate: dayjs().toString(),
-    createdUser: "admin",
-    updatedUser: "admin",
     docs: [],
     project: projectNameId,
     name: "",
@@ -41,10 +41,10 @@ const CreatingPage = ({ params: { projectNameId } }) => {
   const router = useRouter();
   const [opened, { open, close }] = useDisclosure(false);
   const setDatasource = useSetAtom(datasourceAtom);
-  const { getCurrentId } = useCurrentProject();
+  const params = useParams();
 
   const backToHome = () => {
-    router.push(`/project/${getCurrentId()}`);
+    router.push(`/project/${params.projectNameId}`);
   };
 
   const handleSubmit = async (values: PageFormValues) => {
@@ -55,7 +55,11 @@ const CreatingPage = ({ params: { projectNameId } }) => {
           message: string;
           newProjectData: ProjectTableItem[];
         };
-      } = await axios.post(`${baseUrl}/page`, values);
+      } = await axios.post(`${baseUrl}/page`, values, {
+        headers: {
+          Authorization: `Bearer ${getCookie("at")}`,
+        },
+      });
       if (res.data.success) {
         setDatasource(res.data.newProjectData);
         successNotification(MESSAGES.CREATE_NEW_PAGE.SUCCESS);
@@ -87,16 +91,6 @@ const CreatingPage = ({ params: { projectNameId } }) => {
           <TextInput
             label="Project ID"
             {...form.getInputProps("project")}
-            disabled
-          />
-          <TextInput
-            label="Created by"
-            {...form.getInputProps("createdUser")}
-            disabled
-          />
-          <TextInput
-            label="Created date"
-            {...form.getInputProps("createdDate")}
             disabled
           />
           <TextInput label="Page name" {...form.getInputProps("name")} />

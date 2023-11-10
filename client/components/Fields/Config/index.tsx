@@ -20,6 +20,7 @@ import {
   errorNotification,
   successNotification,
 } from "@/hooks/notifications/notificationPreset";
+import { getCookie } from "cookies-next";
 
 interface Props {
   required: boolean;
@@ -42,6 +43,7 @@ const Config: React.FC<Props> = ({
   });
   const [baseUrl] = useGetBaseUrl();
   const params = useParams();
+  const at = getCookie("at");
 
   const defaultConfig = useMemo(() => {
     const temp = [];
@@ -72,6 +74,12 @@ const Config: React.FC<Props> = ({
     try {
       const res = await axios.put(
         `${baseUrl}/fields/${params.detailId}/${fieldId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${at}`,
+          },
+        },
       );
       if (res.data.isSuccess) {
         fieldHandler.updateFields(res.data.fieldData);
@@ -95,7 +103,7 @@ const Config: React.FC<Props> = ({
               <Switch label="Active" name="active" value={"active"} />
             </Group>
           </Switch.Group>
-          <Divider label="Danger zone" color="red" className="py-3"/>
+          <Divider label="Danger zone" color="red" className="py-3" />
           <Button color="red" variant="light" onClick={handleDeleteField}>
             Delete this field
           </Button>

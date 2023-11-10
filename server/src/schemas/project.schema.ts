@@ -34,6 +34,12 @@ export class Project {
 
   @Prop()
   isRemove: boolean;
+
+  @Prop()
+  users: string[];
+
+  @Prop()
+  owner: string;
 }
 
 export const ProjectSchema = SchemaFactory.createForClass(Project);

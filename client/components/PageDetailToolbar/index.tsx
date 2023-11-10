@@ -19,6 +19,7 @@ import { ALERT_CODES } from "@/constant";
 import axios from "axios";
 import useGetBaseUrl from "@/hooks/utilities/getUrl";
 import { useDisclosure } from "@mantine/hooks";
+import { getCookie } from "cookies-next";
 
 interface Props {
   page: Page;
@@ -27,19 +28,30 @@ interface Props {
 const PageDetailToolbar: React.FC<Props> = ({ page }) => {
   const { showLoading, hideLoading } = useLoading();
   const { openAlert } = useAlert();
-  const [pageStatus, setPageStatus] = useState<boolean>(page.active);
+  const [pageStatus, setPageStatus] = useState<boolean>(
+    page.active ? page.active : false,
+  );
   const [baseUrl] = useGetBaseUrl();
   const [updateOpened, updateHandler] = useDisclosure(false);
   const [deleteOpened, deleteHandler] = useDisclosure(false);
+  const at = getCookie("at");
 
   const handleUpdateStatus = async () => {
     try {
       showLoading();
-      const res = await axios.put(`${baseUrl}/page/status`, {
-        id: page._id,
-        value: !page.active,
-        projectId: page.project,
-      });
+      const res = await axios.put(
+        `${baseUrl}/page/status`,
+        {
+          id: page._id,
+          value: !page.active,
+          projectId: page.project,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${at}`,
+          },
+        },
+      );
       if (res.data.isSuccess) {
         setPageStatus((prev) => {
           return !prev;
@@ -60,7 +72,11 @@ const PageDetailToolbar: React.FC<Props> = ({ page }) => {
     try {
       showLoading();
 
-      const res = await axios.put(`${baseUrl}/page/movetotrash`);
+      const res = await axios.put(`${baseUrl}/page/movetotrash`, {
+        headers: {
+          Authorization: `Bearer ${at}`,
+        },
+      });
 
       if (res.data.isSuccess) {
         openAlert("Delete page successfully", ALERT_CODES.SUCCESS);

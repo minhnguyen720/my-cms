@@ -1,10 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Schema as MongooseSchema, Types } from 'mongoose';
+import { Users } from './users.schema';
 
 export type PageDocument = HydratedDocument<Page>;
 
 @Schema({ collection: 'page' })
 export class Page {
+  // @Prop({ type: Types.ObjectId })
+  // _id?: Types.ObjectId;
+
   // use id as an param to fetch data
   @Prop()
   id?: string;
@@ -20,11 +24,11 @@ export class Page {
   updatedDate: string;
 
   // user id
-  @Prop()
-  createdUser: string;
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Users' })
+  createdUser: Users;
 
-  @Prop()
-  updatedUser: string;
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Users' })
+  updatedUser: Users;
 
   // _id of Project
   @Prop()
@@ -35,6 +39,9 @@ export class Page {
 
   @Prop()
   isRemove: boolean;
+
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Users' })
+  users: Users[];
 }
 
 export const PageSchema = SchemaFactory.createForClass(Page);

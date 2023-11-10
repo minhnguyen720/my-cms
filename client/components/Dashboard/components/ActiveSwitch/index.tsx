@@ -5,7 +5,7 @@ import { IconCheck, IconX } from "@tabler/icons-react";
 import React, { useState } from "react";
 
 interface Props {
-  element?: Navlink | { id: string; active: boolean };
+  element: Navlink | { id: string; active: boolean };
   onChange?: (any?: any) => Promise<any>;
 }
 
@@ -19,7 +19,7 @@ const ActiveSwitch: React.FC<Props> = ({ element, onChange }) => {
       showLoading();
       setChecked(event.currentTarget.checked);
 
-      if (onChange) await onChange();
+      if (onChange) await onChange(event);
     } catch (error) {
       console.error(error);
     } finally {

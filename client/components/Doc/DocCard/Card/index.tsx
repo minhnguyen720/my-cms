@@ -28,7 +28,11 @@ import { TbPlugConnected } from "react-icons/tb";
 import OnlineBadge from "@/components/Badge";
 import useLoading from "@/hooks/utilities/useLoading";
 import useGetBaseUrl from "@/hooks/utilities/getUrl";
-import { errorNotification, successNotification } from "@/hooks/notifications/notificationPreset";
+import {
+  errorNotification,
+  successNotification,
+} from "@/hooks/notifications/notificationPreset";
+import { getCookie } from "cookies-next";
 
 interface Props {
   doc: Document;
@@ -58,9 +62,14 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
   const currentPathname = usePathname();
   const navigator = useRouter();
   const { showLoading, hideLoading } = useLoading();
+  const at = getCookie("at");
 
   const handleDeleteDocument = async () => {
-    await axios.delete(`${baseUrl}/doc/${doc._id}`);
+    await axios.delete(`${baseUrl}/doc/${doc._id}`, {
+      headers: {
+        Authorization: `Bearer ${at}`,
+      },
+    });
     handler.remove(doc._id);
   };
 
@@ -77,11 +86,19 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
     try {
       showLoading();
 
-      const res = await axios.put(`${baseUrl}/doc/status`, {
-        id: doc._id,
-        value: !doc.active,
-        parent: doc.parent,
-      });
+      const res = await axios.put(
+        `${baseUrl}/doc/status`,
+        {
+          id: doc._id,
+          value: !doc.active,
+          parent: doc.parent,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${at}`,
+          },
+        },
+      );
 
       if (res.data.isSuccess) {
         successNotification("Update status success");

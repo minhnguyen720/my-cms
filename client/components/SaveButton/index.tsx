@@ -9,6 +9,7 @@ import {
   errorNotification,
   successNotification,
 } from "@/hooks/notifications/notificationPreset";
+import { getCookie } from "cookies-next";
 
 interface Props {
   form: UseFormReturnType<
@@ -21,12 +22,18 @@ interface Props {
 
 const SaveButton: React.FC<Props> = ({ form, docId, fieldHandler }) => {
   const [baseUrl] = useGetBaseUrl();
+  const at = getCookie("at");
 
   const handleOnSave = async () => {
     try {
       const res = await axios.put(
         `${baseUrl}/fields/bydoc/${docId}`,
         form.values,
+        {
+          headers: {
+            Authorization: `Bearer ${at}`,
+          },
+        },
       );
       if (res.data.isSuccess) {
         successNotification("Fields are saved");

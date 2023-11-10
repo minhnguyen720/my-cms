@@ -5,6 +5,11 @@ import { useState } from "react";
 import useAlert from "@/components/Alert/hooks";
 import { ALERT_CODES } from "@/constant";
 import { useLocalStorage } from "@mantine/hooks";
+import { getCookie } from "cookies-next";
+import {
+  errorNotification,
+  successNotification,
+} from "@/hooks/notifications/notificationPreset";
 
 const useMoveToFolderModal = (pageId: string) => {
   const [searchValue, setSearchValue] = useState<string>("");
@@ -21,6 +26,7 @@ const useMoveToFolderModal = (pageId: string) => {
     key: "localSelection",
   });
   const [loadingOverlayVisible, loadingOverlayHanlder] = useDisclosure(false);
+  const at = getCookie("at");
 
   const toggleRow = (id: string) => {
     setSelection((current) => {
@@ -31,11 +37,19 @@ const useMoveToFolderModal = (pageId: string) => {
   };
 
   const backToRoot = (targetId: string, type: string) => {
-    axios.put(`${baseUrl}/folder/move`, {
-      movingId: pageId,
-      targetId: targetId,
-      type: type,
-    });
+    axios.put(
+      `${baseUrl}/folder/move`,
+      {
+        movingId: pageId,
+        targetId: targetId,
+        type: type,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${at}`,
+        },
+      },
+    );
   };
 
   const handleCloseModal = () => {
@@ -54,6 +68,11 @@ const useMoveToFolderModal = (pageId: string) => {
       const param = `${targetId}&&${pageId}&&${type}`;
       const res = await axios.get(
         `${baseUrl}/folder/getMoveToFolderData/${param}`,
+        {
+          headers: {
+            Authorization: `Bearer ${at}`,
+          },
+        },
       );
       if (res === undefined) return;
 
@@ -82,18 +101,26 @@ const useMoveToFolderModal = (pageId: string) => {
   };
 
   const handleMove = async (targetId: string, type: string) => {
-    const res = await axios.put(`${baseUrl}/folder/move`, {
-      movingId: selection[0],
-      type,
-      targetId,
-    });
+    const res = await axios.put(
+      `${baseUrl}/folder/move`,
+      {
+        movingId: selection[0],
+        type,
+        targetId,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${at}`,
+        },
+      },
+    );
     if (res.data.success) {
-      openAlert("Move files successfully", ALERT_CODES.SUCCESS);
+      successNotification("Move files successfully");
       if (type === "folder") {
         // update folder list
       }
     } else {
-      openAlert("Move files failed", ALERT_CODES.ERROR);
+      errorNotification("Move files failed");
     }
     handleCloseModal();
   };
@@ -129,7 +156,7 @@ const useMoveToFolderModal = (pageId: string) => {
     toggleRow,
     loadingOverlayVisible,
     loadingOverlayHanlder,
-    backToRoot
+    backToRoot,
   };
 };
 

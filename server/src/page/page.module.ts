@@ -5,6 +5,7 @@ import { Doc, DocSchema } from 'src/schemas/doc.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Project, ProjectSchema } from 'src/schemas/project.schema';
 import { Page, PageSchema } from 'src/schemas/page.schema';
+import { Users, UsersSchema } from 'src/schemas/users.schema';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { Page, PageSchema } from 'src/schemas/page.schema';
       { name: Doc.name, schema: DocSchema },
       { name: Project.name, schema: ProjectSchema },
       { name: Page.name, schema: PageSchema },
+      { name: Users.name, schema: UsersSchema },
     ]),
   ],
   controllers: [PageController],

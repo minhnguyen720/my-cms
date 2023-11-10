@@ -12,36 +12,42 @@ export class ProjectService {
     @InjectModel(Project.name) private projectModel: Model<Project>,
   ) {}
 
-  async create(createProjectDto: CreateProjectDto) {
+  async create(userId: string, createProjectDto: CreateProjectDto) {
     await this.projectModel.create({
+      owner: userId,
+      users: [userId],
+      createdUser: userId,
+      updatedUser: userId,
       createdDate: dayjs().toString(),
       updatedDate: dayjs().toString(),
       ...createProjectDto,
     });
   }
 
-  async getDashboardStat() {
+  async getDashboardStat(userId: string) {
     return Promise.all([
-      this.projectModel.find({ active: true }).count().exec(),
-      this.projectModel.find({ active: false }).count().exec(),
-      this.getProjectsByUserId(),
+      this.projectModel.find({ active: true, users: userId }).count().exec(),
+      this.projectModel.find({ active: false, users: userId }).count().exec(),
+      this.getProjectsByUserId(userId),
     ]).then((values) => {
       const [activeLength, deactiveLength, projects] = values;
       return { activeLength, deactiveLength, projects };
     });
   }
 
-  async getProjectsByUserId() {
-    const result = await this.projectModel.find();
+  async getProjectsByUserId(userId: string) {
+    const result = await this.projectModel.find({ users: userId });
     return this.formatProjectData(result);
   }
 
-  async toggleActive(body: { id: string; value: boolean }) {
+  async toggleActive(userId: string, body: { id: string; value: boolean }) {
     try {
       await this.projectModel.findByIdAndUpdate(body.id, {
         active: body.value,
       });
-      const { activeLength, deactiveLength } = await this.getDashboardStat();
+      const { activeLength, deactiveLength } = await this.getDashboardStat(
+        userId,
+      );
       return {
         success: true,
         activeLength,
@@ -52,21 +58,20 @@ export class ProjectService {
     }
   }
 
-  async findAll() {
-    const result = await this.getProjectsByUserId();
+  async findAll(userId: string) {
+    const result = await this.getProjectsByUserId(userId);
     return { projects: result };
   }
 
-  async removeSelection(ids: string[]) {
+  async removeSelection(userId: string, ids: string[]) {
     try {
-      // await this.projectModel.deleteMany({ _id: { $in: ids } });
       await this.projectModel.updateMany(
         { _id: { $in: ids } },
         { isRemove: true },
       );
-      return await this.getProjectsByUserId();
+      return await this.getProjectsByUserId(userId);
     } catch (error) {
-      return await this.getProjectsByUserId();
+      return await this.getProjectsByUserId(userId);
     }
   }
 

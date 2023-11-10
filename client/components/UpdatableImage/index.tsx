@@ -22,6 +22,7 @@ import {
   errorNotification,
   successNotification,
 } from "@/hooks/notifications/notificationPreset";
+import { getCookie } from "cookies-next";
 
 interface Props {
   src: string;
@@ -46,6 +47,7 @@ const UpdatableImage: React.FC<Props> = ({
 }) => {
   const { showLoading, hideLoading } = useLoading();
   const [baseUrl] = useGetBaseUrl();
+  const at = getCookie("at");
   const [path, setPath] = useState<string | undefined | null>(() => {
     if (src) return `${baseUrl}/storage${src}`;
     else return undefined;
@@ -77,7 +79,11 @@ const UpdatableImage: React.FC<Props> = ({
       formData.append("type", "field-image");
       formData.append("docId", docId ? docId : "");
       formData.append("file", file);
-      const res = await axios.post(`${baseUrl}/storage/store`, formData);
+      const res = await axios.post(`${baseUrl}/storage/store`, formData, {
+        headers: {
+          Authorization: `Bearer ${at}`,
+        },
+      });
       if (res.data.isSuccess) {
         successNotification("Upload successfully");
         const newPath = res.data.path;

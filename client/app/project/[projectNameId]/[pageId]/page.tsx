@@ -1,12 +1,17 @@
 import DocCards from "@/components/Doc/DocCard";
 import PageDetailToolbar from "@/components/PageDetailToolbar";
+import { cookies } from "next/headers";
 
 export const revalidate = 10;
 
 async function getDocData(id: string) {
   try {
+    const at = cookies().get("at")?.value;
     const res = await fetch(`http://localhost:4000/doc/${id}`, {
       cache: "no-store",
+      headers: {
+        Authorization: `Bearer ${at}`,
+      },
     });
     if (!res.ok) throw new Error("Failed to fetch data");
 
@@ -18,8 +23,12 @@ async function getDocData(id: string) {
 
 async function getPageData(id: string) {
   try {
+    const at = cookies().get("at")?.value;
     const res = await fetch(`http://localhost:4000/page/key/${id}`, {
       cache: "no-store",
+      headers: {
+        Authorization: `Bearer ${at}`,
+      },
     });
     if (!res.ok) throw new Error("Failed to fetch data");
 
@@ -35,7 +44,7 @@ const ProjectDetail: React.FC<any> = async ({ params }) => {
 
   return (
     <div className="px-5">
-      <PageDetailToolbar page={page}/>
+      <PageDetailToolbar page={page} />
       <DocCards docs={res.docData} folders={res.folderData} />
     </div>
   );

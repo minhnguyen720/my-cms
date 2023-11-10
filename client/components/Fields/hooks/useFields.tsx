@@ -9,6 +9,7 @@ import {
   errorNotification,
   successNotification,
 } from "@/hooks/notifications/notificationPreset";
+import { getCookie } from "cookies-next";
 
 export interface FieldHandler {
   getFields: () => any[];
@@ -28,12 +29,17 @@ const useFields = () => {
   const params = useParams();
   const [baseUrl] = useGetBaseUrl();
   const { showLoading, hideLoading } = useLoading();
+  const at = getCookie("at");
 
   const initFieldDetail = useCallback(async () => {
-    const res = await axios.get(`${baseUrl}/fields/${params.detailId}`);
+    const res = await axios.get(`${baseUrl}/fields/${params.detailId}`, {
+      headers: {
+        Authorization: `Bearer ${at}`,
+      },
+    });
     if (res.data.isSuccess) setFields(res.data.fieldData);
     else errorNotification("Fail to get field detail");
-  }, [baseUrl, params.detailId, setFields]);
+  }, [at, baseUrl, params.detailId, setFields]);
 
   useEffect(() => {
     initFieldDetail();
@@ -57,11 +63,19 @@ const useFields = () => {
     try {
       showLoading();
 
-      const res = await axios.put(`${baseUrl}/fields/update-config`, {
-        config,
-        fieldId,
-        doc: params.detailId,
-      });
+      const res = await axios.put(
+        `${baseUrl}/fields/update-config`,
+        {
+          config,
+          fieldId,
+          doc: params.detailId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${at}`,
+          },
+        },
+      );
       if (res.data.isSuccess) {
         successNotification("Update config successully");
         setFields(res.data.fieldData);

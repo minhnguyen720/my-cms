@@ -17,6 +17,7 @@ import React from "react";
 import useAlert from "../Alert/hooks";
 import { useParams } from "next/navigation";
 import { Folder } from "@/interfaces/Project";
+import { getCookie } from "cookies-next";
 
 const CreateNewFolder = ({ updateFolderList }) => {
   const [opened, { open, close }] = useDisclosure(false);
@@ -24,6 +25,7 @@ const CreateNewFolder = ({ updateFolderList }) => {
   const { openAlert } = useAlert();
   const currentUser = useAtomValue(currentUserAtom);
   const { pageId, projectNameId } = useParams();
+  const at = getCookie("at");
 
   const initialValues: {
     folderName: string;
@@ -42,10 +44,14 @@ const CreateNewFolder = ({ updateFolderList }) => {
         name: values.folderName,
         page: pageId,
         project: projectNameId,
-        parent: pageId
+        parent: pageId,
       };
       const res: { data: { isSuccess: boolean; latestFolderList: Folder[] } } =
-        await axios.post(`${baseUrl}/folder`, newFolderBody);
+        await axios.post(`${baseUrl}/folder`, newFolderBody, {
+          headers: {
+            Authorization: `Bearer ${at}`,
+          },
+        });
 
       if (res.data.isSuccess) {
         updateFolderList(res.data.latestFolderList);
@@ -55,7 +61,7 @@ const CreateNewFolder = ({ updateFolderList }) => {
         close();
         openAlert("Fail to create new folder", ALERT_CODES.ERROR);
       }
-    } catch (error) {
+    } catch (error: any) {
       close();
       openAlert(error, ALERT_CODES.ERROR);
     }

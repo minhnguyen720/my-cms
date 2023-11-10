@@ -28,6 +28,7 @@ import {
   errorNotification,
   successNotification,
 } from "@/hooks/notifications/notificationPreset";
+import { getCookie } from "cookies-next";
 
 interface Props {
   rowId: string;
@@ -66,12 +67,21 @@ const MoreActions: React.FC<Props> = ({
 
   const toggleStatus = async () => {
     try {
+      const at = getCookie("at");
       showLoading();
-      const res = await axios.put(`${baseUrl}/page/status`, {
-        id: pageId,
-        value: !pageStatus,
-        projectId: projectId,
-      });
+      const res = await axios.put(
+        `${baseUrl}/page/status`,
+        {
+          id: pageId,
+          value: !pageStatus,
+          projectId: projectId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${at}`,
+          },
+        },
+      );
       if (res.data.isSuccess) {
         successNotification(MESSAGES.UPDATE_STATUS.SUCCESS);
         setDatasource(res.data.latest);

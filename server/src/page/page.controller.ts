@@ -10,14 +10,18 @@ import {
 import { PageService } from './page.service';
 import { CreatePageDto } from './dto/create-page.dto';
 import { MoveToTrashDto } from './dto/movetotrash.dto';
+import { GetCurrentUserId } from 'src/common/decorators';
 
 @Controller('page')
 export class PageController {
   constructor(private readonly pageService: PageService) {}
 
   @Post()
-  async create(@Body() createPageDto: CreatePageDto) {
-    return await this.pageService.create(createPageDto);
+  async create(
+    @GetCurrentUserId() userId,
+    @Body() createPageDto: CreatePageDto,
+  ) {
+    return await this.pageService.create(userId, createPageDto);
   }
 
   @Put('status')

@@ -4,13 +4,14 @@ import { useForm } from "@mantine/form";
 import { IconPlus } from "@tabler/icons-react";
 import { ActionIcon, Button, Group, Modal, TextInput } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import dayjs from "dayjs";
-import useUserData from "@/hooks/utilities/useUser";
 import useGetBaseUrl from "@/hooks/utilities/getUrl";
 import axios from "axios";
 import useLoading from "@/hooks/utilities/useLoading";
-import { ALERT_CODES } from "@/constant";
-import useAlert from "@/components/Alert/hooks";
+import { getCookie } from "cookies-next";
+import {
+  errorNotification,
+  successNotification,
+} from "@/hooks/notifications/notificationPreset";
 
 interface Props {
   updateNewList: () => Promise<void>;
@@ -21,10 +22,8 @@ type Ref = HTMLDivElement;
 const CreateNewProjectModal = forwardRef<Ref, Props>((props, ref) => {
   const { updateNewList } = props;
   const [opened, handler] = useDisclosure(false);
-  const { getCurrentUser } = useUserData();
   const [baseUrl] = useGetBaseUrl();
   const { showLoading, hideLoading } = useLoading();
-  const { openAlert } = useAlert();
 
   const form = useForm({
     initialValues: {
@@ -35,22 +34,25 @@ const CreateNewProjectModal = forwardRef<Ref, Props>((props, ref) => {
   const handleCreateNewProject = async () => {
     try {
       showLoading();
+      const headers = {
+        Accept: "*/*",
+        Authorization: `Bearer ${getCookie("at")}`,
+      };
       const body = {
         name: form.values.name,
-        createdUser: getCurrentUser().id,
-        updatedUser: getCurrentUser().id,
         active: true,
-        superAdminId: "super admin",
       };
-      await axios.post(`${baseUrl}/project`, body);
+      await axios.post(`${baseUrl}/project`, body, {
+        headers: headers,
+      });
       await updateNewList();
       handler.close();
       form.reset();
-      openAlert("Create new project success", ALERT_CODES.SUCCESS);
+      successNotification("Create new project success");
     } catch (error) {
       handler.close();
       form.reset();
-      openAlert("Create new project failed", ALERT_CODES.ERROR);
+      errorNotification("Create new project failed");
     } finally {
       hideLoading();
     }

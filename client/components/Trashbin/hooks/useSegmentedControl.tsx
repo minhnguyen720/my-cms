@@ -6,6 +6,7 @@ import { useAtom, useSetAtom } from "jotai";
 import useCurrentProject from "@/hooks/utilities/useCurrentProject";
 import { useParams } from "next/navigation";
 import useLoading from "@/hooks/utilities/useLoading";
+import { getCookie } from "cookies-next";
 
 export const segmentedData = [
   // { label: "All", value: "all" },
@@ -21,10 +22,15 @@ export const useSegmentedControl = () => {
 
   const { projectId } = useParams();
   const { showLoading, hideLoading } = useLoading();
+  const at = getCookie("at");
 
   useEffect(() => {
     const getData = async () => {
-      const res = await axios.get(`${baseUrl}/trash/${projectId}/${value}`);
+      const res = await axios.get(`${baseUrl}/trash/${projectId}/${value}`, {
+        headers: {
+          Authorization: `Bearer ${at}`,
+        },
+      });
       setRemovedItems(res.data);
     };
 
@@ -37,7 +43,15 @@ export const useSegmentedControl = () => {
     } finally {
       hideLoading();
     }
-  }, [baseUrl, hideLoading, projectId, setRemovedItems, showLoading, value]);
+  }, [
+    at,
+    baseUrl,
+    hideLoading,
+    projectId,
+    setRemovedItems,
+    showLoading,
+    value,
+  ]);
 
   const handleSegmentChanged = (newValue: string) => {
     setValue(newValue);

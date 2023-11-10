@@ -1,12 +1,14 @@
 import { baseUrlAtom } from "@/atoms";
 import { Document } from "@/interfaces/Project";
 import axios from "axios";
+import { getCookie } from "cookies-next";
 import { useAtomValue } from "jotai";
 import { useState } from "react";
 
 const useCardAction = (docs) => {
   const [docList, setDocList] = useState<Document[]>(docs);
   const baseUrl = useAtomValue(baseUrlAtom);
+  const at = getCookie("at");
 
   const add = (doc) => {
     setDocList((prev) => [...prev, doc]);
@@ -29,7 +31,15 @@ const useCardAction = (docs) => {
   };
 
   const rename = async (targetData: any, value: string) => {
-    const res = await axios.put(`${baseUrl}/doc/rename`, { targetData, value });
+    const res = await axios.put(
+      `${baseUrl}/doc/rename`,
+      { targetData, value },
+      {
+        headers: {
+          Authorization: `Bearer ${at}`,
+        },
+      },
+    );
     if (typeof res.data !== "string" && res.data?.length > 0)
       setDocList(res.data);
   };
@@ -39,7 +49,7 @@ const useCardAction = (docs) => {
     add,
     rename,
     update,
-    getDocList
+    getDocList,
   };
 
   return { docList, handler };

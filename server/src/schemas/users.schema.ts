@@ -1,10 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
 export type UsersDocument = HydratedDocument<Users>;
 
 @Schema({ collection: 'users' })
 export class Users {
+  // @Prop({ type: Types.ObjectId })
+  // _id: Types.ObjectId;
+
   @Prop()
   id: string;
 
@@ -22,6 +25,9 @@ export class Users {
 
   @Prop()
   updatedDate: Date;
+
+  @Prop()
+  avatar?: string;
 
   @Prop()
   hashedRefreshToken: string | null;

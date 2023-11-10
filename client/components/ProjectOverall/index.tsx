@@ -15,7 +15,7 @@ interface Props {
 
 const ProjectOverall: React.FC<Props> = ({ id, data }) => {
   const { notfound, datasource } = useProjectOverall(data);
-  const {updateCurrentId} = useCurrentProject();
+  const { updateCurrentId } = useCurrentProject();
 
   useEffect(() => {
     updateCurrentId(id);

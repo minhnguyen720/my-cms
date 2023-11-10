@@ -2,25 +2,30 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreatePageDto } from './dto/create-page.dto';
 import { Page } from 'src/schemas/page.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types, Schema } from 'mongoose';
 import { Project } from 'src/schemas/project.schema';
 import * as dayjs from 'dayjs';
 import { MoveToTrashDto } from './dto/movetotrash.dto';
+import { Users } from 'src/schemas/users.schema';
 
 @Injectable()
 export class PageService {
   constructor(
     @InjectModel(Page.name) private pageModel: Model<Page>,
     @InjectModel(Project.name) private projectModel: Model<Project>,
+    @InjectModel(Users.name) private userModel: Model<Users>,
   ) {}
 
   async findPageBelongToProject(projectId: string) {
     try {
-      // const project = await this.projectModel.findById(projectId);
-      const pages = await this.pageModel.find({
-        project: projectId,
-        isRemove: false,
-      });
+      const pages = await this.pageModel
+        .find({
+          project: projectId,
+          isRemove: false,
+        })
+        .populate('createdUser', null, Users.name)
+        .populate('updatedUser', null, Users.name)
+        .exec();
       return pages;
     } catch (error) {
       console.error(error);
@@ -44,15 +49,20 @@ export class PageService {
     }
   }
 
-  async create(createPageDto: CreatePageDto) {
+  async create(userId: string, createPageDto: CreatePageDto) {
     try {
+      const user = await this.userModel.findOne({
+        id: userId,
+      });
       await this.pageModel.create({
         ...createPageDto,
         isRemove: false,
-        createdDate: dayjs().toString(), // use date of server not user local date
-        updatedDate: dayjs().toString(), // use date of server not user local date
+        createdUser: user._id,
+        updatedUser: user._id,
+        createdDate: dayjs().toString(),
+        updatedDate: dayjs().toString(),
       });
-      const projectRes = await this.projectModel.findById(
+      const projectRes = await this.findPageBelongToProject(
         createPageDto.project,
       );
 

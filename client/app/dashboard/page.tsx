@@ -16,12 +16,12 @@ const getActiveProjectLength = async () => {
         Authorization: `Bearer ${at}`,
       },
     });
-    if (!res.ok) {
+    if (res.status === 401) redirect("/authenticate");
+    else if (!res.ok && res.status !== 401)
       throw new Error("Failed to fetch data");
-    }
+
     return res.json();
   } catch (error) {
-    cookieJar.delete("at");
     redirect("/authenticate");
   }
 };

@@ -5,6 +5,7 @@ import { Folder } from "@/interfaces/Project";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
+import { getCookie } from "cookies-next";
 
 const useFolderCardAction = (folders: Folder[]) => {
   const [folderList, setFolderList] = useState<Folder[]>([]);
@@ -12,6 +13,7 @@ const useFolderCardAction = (folders: Folder[]) => {
   const [baseUrl] = useGetBaseUrl();
   const [renameOpened, renameHandler] = useDisclosure(false);
   const [opened, handler] = useDisclosure(false);
+  const at = getCookie("at");
 
   useEffect(() => {
     setTimeout(() => {
@@ -32,8 +34,12 @@ const useFolderCardAction = (folders: Folder[]) => {
     try {
       const res: {
         data: { isSuccess: boolean; latestFolderList: Folder[] | undefined };
-      } = await axios.delete(`${baseUrl}/folder/${folderId}/${docId}`);
-      if (res.data.isSuccess) {
+      } = await axios.delete(`${baseUrl}/folder/${folderId}/${docId}`, {
+        headers: {
+          Authorization: `Bearer ${at}`,
+        },
+      });
+      if (res.data.isSuccess && res.data.latestFolderList !== undefined) {
         openAlert("Delete folder success", ALERT_CODES.SUCCESS);
         update(res.data.latestFolderList);
         handler.close();
@@ -57,8 +63,12 @@ const useFolderCardAction = (folders: Folder[]) => {
       };
       const res: {
         data: { isSuccess: boolean; latestFolderList: Folder[] | undefined };
-      } = await axios.put(`${baseUrl}/folder/rename`, body);
-      if (res.data.isSuccess) {
+      } = await axios.put(`${baseUrl}/folder/rename`, body, {
+        headers: {
+          Authorization: `Bearer ${at}`,
+        },
+      });
+      if (res.data.isSuccess && res.data.latestFolderList !== undefined) {
         openAlert("Rename folder success", ALERT_CODES.SUCCESS);
         update(res.data.latestFolderList);
         renameHandler.close();
@@ -75,27 +85,27 @@ const useFolderCardAction = (folders: Folder[]) => {
 
   const getFolderList = () => {
     return folderList;
-  }
+  };
 
   const folderHandler = {
     add,
     update,
     remove,
     rename,
-    getFolderList
+    getFolderList,
   };
 
   return {
     folderList,
     folderHandler,
     confirmModal: {
-      opened:opened,
-      handler:handler
+      opened: opened,
+      handler: handler,
     },
-    renameModal:{
-      opened:renameOpened,
-      handler:renameHandler
-    }
+    renameModal: {
+      opened: renameOpened,
+      handler: renameHandler,
+    },
   };
 };
 

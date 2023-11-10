@@ -9,17 +9,27 @@ import { useSetAtom } from "jotai";
 import { removedItemAtom } from "../atoms";
 import { MESSAGES } from "@/constant";
 import { useParams } from "next/navigation";
+import { getCookie } from "cookies-next";
 
 const useTrashbin = () => {
   const [baseUrl] = useGetBaseUrl();
   const { showLoading, hideLoading } = useLoading();
   const setRemovedItems = useSetAtom(removedItemAtom);
   const params = useParams();
+  const at = getCookie("at");
 
   const emptyTrashbin = async () => {
     try {
       showLoading();
-      const res = await axios.put(`${baseUrl}/trash/empty/`);
+      const res = await axios.put(
+        `${baseUrl}/trash/empty/`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${at}`,
+          },
+        },
+      );
       if (res.data.isSuccess) {
         successNotification(MESSAGES.EMPTY_TRASH.SUCCESS);
         setRemovedItems([]);
@@ -38,11 +48,19 @@ const useTrashbin = () => {
     try {
       showLoading();
 
-      const res = await axios.put(`${baseUrl}/trash/restore`, {
-        projectId: params.projectId,
-        ids: ids,
-        type: type,
-      });
+      const res = await axios.put(
+        `${baseUrl}/trash/restore`,
+        {
+          projectId: params.projectId,
+          ids: ids,
+          type: type,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${at}`,
+          },
+        },
+      );
       if (res.data.isSuccess) {
         successNotification(MESSAGES.RESTORE_REMOVED_ITEM.SUCCESS);
         setRemovedItems(res.data.newList);
@@ -60,11 +78,19 @@ const useTrashbin = () => {
     try {
       showLoading();
 
-      const res = await axios.put(`${baseUrl}/trash/rmselected`, {
-        projectId: params.projectId,
-        ids,
-        type,
-      });
+      const res = await axios.put(
+        `${baseUrl}/trash/rmselected`,
+        {
+          projectId: params.projectId,
+          ids,
+          type,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${at}`,
+          },
+        },
+      );
 
       if (res.data.isSuccess) {
         successNotification(MESSAGES.REMOVED_ITEM.SUCCESS);

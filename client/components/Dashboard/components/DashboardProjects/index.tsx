@@ -12,7 +12,12 @@ import DashboardToolbar from "../DashboardToolbar";
 import { useSetAtom } from "jotai";
 import { statAtom } from "../../atoms";
 import useAlert from "@/components/Alert/hooks";
-import { ALERT_CODES } from "@/constant";
+import { useUser } from "@/hooks/user/useUser";
+import { getCookie } from "cookies-next";
+import {
+  errorNotification,
+  successNotification,
+} from "@/hooks/notifications/notificationPreset";
 
 interface Props {
   projects: Navlink[];
@@ -23,6 +28,7 @@ const DashboardProjects: React.FC<Props> = ({ projects }) => {
   const [baseUrl] = useGetBaseUrl();
   const setStatData = useSetAtom(statAtom);
   const { openAlert } = useAlert();
+  const userHandler = useUser();
 
   const [searchValue, setSearchValue] = useState("");
   const [searchResult, setSearchResult] = useState<Navlink[]>(() => {
@@ -33,7 +39,11 @@ const DashboardProjects: React.FC<Props> = ({ projects }) => {
   const { toggleAll, toggleRow, selection } = useProjectSelection();
 
   const updateResult = async () => {
-    const res = await axios.get(`${baseUrl}/project`);
+    const res = await axios.get(`${baseUrl}/project`, {
+      headers: {
+        Authorization: `Bearer ${getCookie("at")}`,
+      },
+    });
     setSearchResult(res.data.projects);
   };
 
@@ -56,22 +66,34 @@ const DashboardProjects: React.FC<Props> = ({ projects }) => {
   };
 
   const onChangeActiveSwitch = async (event) => {
-    const res = await axios.put(`${baseUrl}/project/active/toggle`, {
-      id: event.currentTarget.id,
-      value: event.currentTarget.checked,
-    });
-    const newStat = [
-      { title: "Active project", value: res.data.activeLength.toString() },
-      {
-        title: "Deactive project",
-        value: res.data.deactiveLength.toString(),
-      },
-    ];
-    setStatData(newStat);
-    if (res.data.success) {
-      openAlert("Deactive successful", ALERT_CODES.SUCCESS);
-    } else {
-      openAlert("Deactive failed", ALERT_CODES.ERROR);
+    try {
+      const res = await axios.put(
+        `${baseUrl}/project/active/toggle`,
+        {
+          id: event.currentTarget.id,
+          value: event.currentTarget.checked,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${getCookie("at")}`,
+          },
+        },
+      );
+      setStatData([
+        { title: "Active project", value: res.data.activeLength.toString() },
+        {
+          title: "Deactive project",
+          value: res.data.deactiveLength.toString(),
+        },
+      ]);
+      if (res.data.success) {
+        successNotification("Deactive successful");
+      } else {
+        errorNotification("Deactive failed");
+      }
+    } catch (error) {
+      errorNotification("Deactive failed");
+      console.error(error);
     }
   };
 
@@ -116,29 +138,35 @@ const DashboardProjects: React.FC<Props> = ({ projects }) => {
           <tbody>
             {searchResult.length > 0 &&
               searchResult.map((element) => {
-                return (
-                  <tr
-                    key={element.id}
-                    onDoubleClick={() => {
-                      router.push(element.href);
-                    }}
-                  >
-                    <td>
-                      <Checkbox
-                        onChange={() => {
-                          toggleRow(element.id);
-                        }}
-                        checked={selection.includes(element.id)}
-                      />
-                    </td>
-                    <td>{element.label}</td>
-                    <td>{dayjs(element.createdDate).format("DD/MM/YYYY")}</td>
-                    <td>{dayjs(element.updatedDate).format("DD/MM/YYYY")}</td>
-                    <td>
-                      <ActiveSwitch element={element} onChange={onChangeActiveSwitch}/>
-                    </td>
-                  </tr>
-                );
+                if (element)
+                  return (
+                    <tr
+                      key={element.id}
+                      onDoubleClick={() => {
+                        router.push(element.href ? element.href : "");
+                      }}
+                    >
+                      <td>
+                        <Checkbox
+                          onChange={() => {
+                            toggleRow(element.id ? element.id : "");
+                          }}
+                          checked={
+                            element.id ? selection.includes(element.id) : false
+                          }
+                        />
+                      </td>
+                      <td>{element.label}</td>
+                      <td>{dayjs(element.createdDate).format("DD/MM/YYYY")}</td>
+                      <td>{dayjs(element.updatedDate).format("DD/MM/YYYY")}</td>
+                      <td>
+                        <ActiveSwitch
+                          element={element}
+                          onChange={onChangeActiveSwitch}
+                        />
+                      </td>
+                    </tr>
+                  );
               })}
           </tbody>
         </Table>
