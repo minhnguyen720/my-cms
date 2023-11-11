@@ -26,6 +26,9 @@ export class ConfirmationService {
         code,
         email,
       });
+      await this.confirmModel.deleteMany({
+        email,
+      });
     }
     return result.length > 0;
   }
