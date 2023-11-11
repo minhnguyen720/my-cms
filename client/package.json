@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "preview-email": "email dev"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -38,7 +39,7 @@
     "@types/react-dom": "18.2.6",
     "autoprefixer": "10.4.14",
     "axios": "^1.6.0",
-    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "cookies-next": "^4.0.0",
     "dayjs": "^1.11.9",
     "embla-carousel-react": "^7.1.0",

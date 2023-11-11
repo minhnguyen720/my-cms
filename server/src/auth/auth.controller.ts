@@ -4,8 +4,9 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
-  Request,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -17,10 +18,17 @@ import {
 } from 'src/common/decorators';
 import { RtGuard } from 'src/common/guards';
 import { Users } from 'src/schemas/users.schema';
+import { MailService } from 'src/mail/mail.service';
+import { Tokens } from './types';
+import { ConfirmationService } from 'src/confirmation/confirmation.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly mailService: MailService,
+    private readonly confirmService: ConfirmationService,
+  ) {}
 
   @Get('profile')
   async getProfile(@GetCurrentUserId() userId: string) {
@@ -43,10 +51,52 @@ export class AuthController {
   }
 
   @Public()
+  @Post('user-exist')
+  async checkUserExistence(@Body() body) {
+    const { isSuccess, message } = await this.authService.isUserExist(body);
+    return {
+      isSuccess,
+      message,
+    };
+  }
+
+  @Public()
+  @Post('request-code')
+  async getConfirmCode(@Body() user) {
+    const code = this.authService.getConfirmCode();
+    await Promise.all([
+      this.mailService.sendUserConfirmationCode(user, code),
+      this.confirmService.createNewRecord(code, user.email),
+    ]);
+  }
+
+  @Public()
+  @Post('submit-code')
+  async compareCode(@Body() body: { code: string; email: string }) {
+    const result: boolean = await this.confirmService.compareCode(
+      body.code,
+      body.email,
+    );
+    return { isSuccess: result };
+  }
+
+  @Public()
   @Post('signup')
   @HttpCode(HttpStatus.OK)
   async signup(@Body() authDto: AuthenticateDto) {
-    return await this.authService.signup(authDto);
+    const res: {
+      user: Users;
+      isSuccess: boolean;
+      tokens: Tokens;
+    } = await this.authService.signup(authDto);
+    if (res.isSuccess) {
+      await this.mailService.sendUserConfirmationCode(
+        res.user,
+        res.tokens.access_token,
+      );
+    }
+
+    return res;
   }
 
   @Post('signout')

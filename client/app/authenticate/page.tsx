@@ -2,15 +2,23 @@
 
 import { Signin } from "@/components/Authenticate/Signin";
 import { Signup } from "@/components/Authenticate/Signup";
-import { Box, SegmentedControl, Title } from "@mantine/core";
+import SignupConfirm from "@/components/Authenticate/SignupConfirm";
+import { Box, Center, Loader, SegmentedControl, Title } from "@mantine/core";
 import React, { useState } from "react";
 
 const Authenticate = () => {
-  const [value, setValue] = useState("signin");
+  const [value, setValue] = useState("signup");
+  const [signupData, setSignupData] = useState();
 
   const view = {
     signin: <Signin />,
-    signup: <Signup />,
+    signup: <Signup setView={setValue} setSignupData={setSignupData} />,
+    confirm: <SignupConfirm signupData={signupData} setView={setValue} />,
+    loading: (
+      <Center className="h-screen">
+        <Loader variant="bars" />
+      </Center>
+    ),
   };
 
   return (
@@ -20,16 +28,20 @@ const Authenticate = () => {
         transform: "translate(-50%, -50%)",
       }}
     >
-      <Title className="animate-textFadeIn mb-5">Welcome to myCMS</Title>
-      <SegmentedControl
-        value={value}
-        className="mb-2 w-full"
-        onChange={setValue}
-        data={[
-          { label: "Sign in", value: "signin" },
-          { label: "Sign up", value: "signup" },
-        ]}
-      />
+      {value !== "confirm" && value !== "loading" && (
+        <>
+          <Title className="mb-5 animate-textFadeIn">Welcome to myCMS</Title>
+          <SegmentedControl
+            value={value}
+            className="mb-2 w-full"
+            onChange={setValue}
+            data={[
+              { label: "Sign in", value: "signin" },
+              { label: "Sign up", value: "signup" },
+            ]}
+          />
+        </>
+      )}
       {view[value]}
     </Box>
   );

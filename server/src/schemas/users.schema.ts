@@ -8,6 +8,9 @@ export class Users {
   // @Prop({ type: Types.ObjectId })
   // _id: Types.ObjectId;
 
+  @Prop({ default: false })
+  emailConfirm: boolean;
+
   @Prop()
   id: string;
 
