@@ -12,6 +12,15 @@ export class Users {
   id: string;
 
   @Prop({ required: true })
+  name: string;
+
+  @Prop({ required: true })
+  gender: string;
+
+  @Prop({ required: true })
+  email: string;
+
+  @Prop({ required: true })
   username: string;
 
   @Prop({ required: true })

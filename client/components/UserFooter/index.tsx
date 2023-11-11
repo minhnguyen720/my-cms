@@ -1,6 +1,7 @@
 import { User } from "@/interfaces/User";
 import { Avatar, Box, NavLink, Menu } from "@mantine/core";
 import { IconChevronRight, IconUser, IconLogout } from "@tabler/icons-react";
+import { getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 
 interface Props {
@@ -10,11 +11,9 @@ interface Props {
 
 const { Target, Dropdown, Label, Item } = Menu;
 
-const UserFooter: React.FC<Props> = ({
-  userData,
-  setIsMenuFocus,
-}) => {
+const UserFooter: React.FC<Props> = ({ userData, setIsMenuFocus }) => {
   const router = useRouter();
+  const at = getCookie("at");
   const ACCOUNT_URL = `/user/${userData.id}`;
   const SIGNOUT_URL = `/signout`;
 
