@@ -58,9 +58,52 @@ export class UsersService {
     }
   }
 
+  async isUserExist(body: { username: string; email: string }) {
+    const [usernameCheck, emailCheck] = await Promise.all([
+      this.usersModel.find({
+        username: body.username,
+      }),
+      this.usersModel.find({
+        email: body.email,
+      }),
+    ]);
+    if (usernameCheck.length > 0 && emailCheck.length > 0) {
+      return {
+        isSuccess: false,
+        message: 'This username and email are already used',
+      };
+    } else if (usernameCheck.length > 0) {
+      return {
+        isSuccess: false,
+        message: 'This username is already used',
+      };
+    } else if (emailCheck.length > 0) {
+      return {
+        isSuccess: false,
+        message: 'This username is already used',
+      };
+    } else {
+      return {
+        isSuccess: true,
+        message: '',
+      };
+    }
+  }
+
+  async updateEmailStatus(userId: string) {
+    await this.usersModel.findOneAndUpdate(
+      {
+        id: userId,
+      },
+      {
+        emailConfirm: true,
+      },
+    );
+  }
+
   async createNewUser(
     authDto: AuthenticateDto,
-  ): Promise<{ isSuccess: boolean; user?: Users; message?: string }> {
+  ): Promise<{ isSuccess: boolean; user: Users; message: string }> {
     try {
       const isDuplicateUserName = await this.usersModel.exists({
         username: authDto.username,
@@ -76,15 +119,20 @@ export class UsersService {
         role: 'admin',
         createdDate: dayjs().toDate(),
         updatedDate: dayjs().toDate(),
+        gender: authDto.gender,
+        email: authDto.email,
+        name: authDto.name,
       });
 
       return {
         isSuccess: true,
         user: newUser,
+        message: '',
       };
     } catch (error) {
       this.logger.error(error);
       return {
+        user: undefined,
         isSuccess: false,
         message: error,
       };

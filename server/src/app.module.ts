@@ -16,6 +16,8 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AtGuard } from './common/guards';
+import { MailModule } from './mail/mail.module';
+import { ConfirmationModule } from './confirmation/confirmation.module';
 
 @Module({
   imports: [
@@ -37,6 +39,8 @@ import { AtGuard } from './common/guards';
     StorageModule,
     AuthModule,
     UsersModule,
+    MailModule,
+    ConfirmationModule,
   ],
   controllers: [AppController],
   providers: [

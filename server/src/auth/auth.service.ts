@@ -15,6 +15,10 @@ export class AuthService {
 
   private readonly logger = new Logger(AuthService.name);
 
+  async isUserExist(body) {
+    return await this.usersService.isUserExist(body);
+  }
+
   async getProfile(userId: string) {
     try {
       const user = await this.usersService.findUserById(userId);
@@ -60,7 +64,12 @@ export class AuthService {
     const isRtMatched = await bcrypt.compare(rt, user.hashedRefreshToken);
     if (!isRtMatched) throw 'Access denied';
 
-    const tokens = await this.generateToken(user.id, user.username);
+    const tokens = await this.generateToken(
+      user.id,
+      user.username,
+      user.email,
+      user.name,
+    );
     await this.usersService.updateRtHash(user.id, tokens.refresh_token);
 
     return tokens;
@@ -75,7 +84,12 @@ export class AuthService {
       if (!bcrypt.compareSync(authDto.password, user.password))
         throw 'Wrong password';
 
-      const tokens = await this.generateToken(user.id, user.username);
+      const tokens = await this.generateToken(
+        user.id,
+        user.username,
+        user.email,
+        user.name,
+      );
       await this.usersService.updateRtHash(user.id, tokens.refresh_token);
 
       return tokens;
@@ -88,26 +102,40 @@ export class AuthService {
     }
   }
 
-  async signup(authDto: AuthenticateDto): Promise<
-    | {
-        isSuccess: boolean;
-        tokens: Tokens;
-      }
-    | { isSuccess: boolean; message: string }
-  > {
+  getConfirmCode() {
+    return Math.floor(Math.random() * 100000).toString();
+  }
+
+  async signup(authDto: AuthenticateDto): Promise<{
+    user: Users | undefined;
+    isSuccess: boolean;
+    tokens: Tokens | undefined;
+    message: string;
+  }> {
     try {
-      const res = await this.usersService.createNewUser(authDto);
+      const res: { isSuccess: boolean; user: Users; message: string } =
+        await this.usersService.createNewUser(authDto);
+
       if (res.isSuccess) {
         const user = res.user;
-        const tokens = await this.generateToken(user.id, user.username);
+        const tokens = await this.generateToken(
+          user.id,
+          user.username,
+          user.email,
+          user.name,
+        );
         await this.usersService.updateRtHash(user.id, tokens.refresh_token);
 
         return {
+          user: user,
+          message: '',
           isSuccess: true,
           tokens: tokens, // for auto login after signup
         };
       } else {
         return {
+          user: undefined,
+          tokens: undefined,
           isSuccess: false,
           message: res.message,
         };
@@ -118,12 +146,19 @@ export class AuthService {
   }
 
   // add role to param when moving to access control part
-  async generateToken(userId: string, username: string): Promise<Tokens> {
+  async generateToken(
+    userId: string,
+    username: string,
+    userEmail: string,
+    name: string,
+  ): Promise<Tokens> {
     const [at, rt] = await Promise.all([
       this.jwtService.signAsync(
         {
           sub: userId,
           username,
+          userEmail,
+          name,
         },
         {
           secret: process.env.JWT_CONSTANT,
@@ -134,6 +169,8 @@ export class AuthService {
         {
           sub: userId,
           username,
+          userEmail,
+          name,
         },
         {
           secret: process.env.JWT_CONSTANT,

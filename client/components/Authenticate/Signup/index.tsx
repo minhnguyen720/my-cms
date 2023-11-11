@@ -1,15 +1,12 @@
 "use client";
 
-import {
-  errorNotification,
-  successNotification,
-} from "@/hooks/notifications/notificationPreset";
+import { errorNotification } from "@/hooks/notifications/notificationPreset";
 import useGetBaseUrl from "@/hooks/utilities/getUrl";
 import { TextInput, PasswordInput, Button, Select } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import axios from "axios";
 
-export const Signup = () => {
+export const Signup = ({ setView, setSignupData }) => {
   const [baseUrl] = useGetBaseUrl();
   const form = useForm({
     initialValues: {
@@ -43,17 +40,24 @@ export const Signup = () => {
 
   const handleSubmit = async (values) => {
     try {
-      const res = await axios.post(`${baseUrl}/auth/signup`, values);
-
-      if (!res.data.isSuccess) throw res.data.message;
-
-      successNotification(
-        "Sign up successfully. Please move to the sign in tab to continue.",
-        3000,
-      );
+      setView("loading");
+      setSignupData(values);
+      const res = await axios.post(`${baseUrl}/auth/user-exist`, {
+        username: values.username,
+        email: values.email,
+      });
+      if (res.data.isSuccess) {
+        await axios.post(`${baseUrl}/auth/request-code`, {
+          name: values.name,
+          email: values.email,
+        });
+        setView("confirm");
+      } else {
+        setView("signup");
+        errorNotification(res.data.message);
+      }
     } catch (error: any) {
       console.error(error);
-      errorNotification(error);
     } finally {
       form.reset();
     }
