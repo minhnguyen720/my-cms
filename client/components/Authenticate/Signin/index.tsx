@@ -14,9 +14,9 @@ import {
 import { useForm } from "@mantine/form";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { setCookie, deleteCookie, getCookie } from "cookies-next";
+import { setCookie, deleteCookie } from "cookies-next";
 
-export const Signin = () => {
+export const Signin = ({ setView }) => {
   const [baseUrl] = useGetBaseUrl();
   const userHanlder = useUser();
   const router = useRouter();
@@ -35,6 +35,7 @@ export const Signin = () => {
 
   const handleSubmit = async (values) => {
     try {
+      setView("loading");
       const res = await axios.post(`${baseUrl}/auth/signin`, values);
 
       if (res.data.isFalse) throw res.data.message;
@@ -64,7 +65,8 @@ export const Signin = () => {
     } catch (error: any) {
       console.error(error);
       deleteCookie("at");
-      errorNotification(error);
+      setView("signin");
+      errorNotification("Something went wrong. Please try again");
     }
   };
 
