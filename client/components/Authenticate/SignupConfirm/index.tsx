@@ -56,6 +56,8 @@ const SignupConfirm = ({ signupData, setView }) => {
           successNotification("Sign up successfully", 3000);
           form.reset();
           setView("signin");
+        } else {
+          errorNotification("Something went wrong. Please try again");
         }
       } else {
         errorNotification("Wrong code");
