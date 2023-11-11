@@ -15,7 +15,7 @@ const Authenticate = () => {
 
   return (
     <Box
-      className="absolute left-1/2 top-1/2 w-[40%]"
+      className="absolute left-1/2 top-1/2 w-[80%] md:w-[60%] lg:w-[40%]"
       style={{
         transform: "translate(-50%, -50%)",
       }}
