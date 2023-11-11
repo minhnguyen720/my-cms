@@ -60,27 +60,28 @@ export class UsersService {
 
   async isUserExist(body: { username: string; email: string }) {
     const [usernameCheck, emailCheck] = await Promise.all([
-      this.usersModel.find({
+      this.usersModel.exists({
         username: body.username,
       }),
-      this.usersModel.find({
+      this.usersModel.exists({
         email: body.email,
       }),
     ]);
-    if (usernameCheck.length > 0 && emailCheck.length > 0) {
+
+    if (usernameCheck !== null && emailCheck !== null) {
       return {
         isSuccess: false,
         message: 'This username and email are already used',
       };
-    } else if (usernameCheck.length > 0) {
+    } else if (usernameCheck !== null) {
       return {
         isSuccess: false,
         message: 'This username is already used',
       };
-    } else if (emailCheck.length > 0) {
+    } else if (emailCheck !== null) {
       return {
         isSuccess: false,
-        message: 'This username is already used',
+        message: 'This email is already used',
       };
     } else {
       return {

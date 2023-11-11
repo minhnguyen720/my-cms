@@ -10,6 +10,9 @@ export class Confirmation {
 
   @Prop({ required: true })
   code: string;
+
+  @Prop()
+  createdDate: Date;
 }
 
 export const ConfirmationSchema = SchemaFactory.createForClass(Confirmation);

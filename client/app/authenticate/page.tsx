@@ -7,11 +7,11 @@ import { Box, Center, Loader, SegmentedControl, Title } from "@mantine/core";
 import React, { useState } from "react";
 
 const Authenticate = () => {
-  const [value, setValue] = useState("signup");
+  const [value, setValue] = useState("signin");
   const [signupData, setSignupData] = useState();
 
   const view = {
-    signin: <Signin />,
+    signin: <Signin setView={setValue} />,
     signup: <Signup setView={setValue} setSignupData={setSignupData} />,
     confirm: <SignupConfirm signupData={signupData} setView={setValue} />,
     loading: (

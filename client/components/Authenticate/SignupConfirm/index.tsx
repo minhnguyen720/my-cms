@@ -9,18 +9,27 @@ import {
   Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import Link from "next/link";
 import axios from "axios";
 import useGetBaseUrl from "@/hooks/utilities/getUrl";
 import {
   errorNotification,
   successNotification,
 } from "@/hooks/notifications/notificationPreset";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const SignupConfirm = ({ signupData, setView }) => {
   const [baseUrl] = useGetBaseUrl();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [resendWait, setResendWait] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (resendWait) {
+      setTimeout(() => {
+        setResendWait(false);
+      }, 30 * 1000);
+    }
+  }, [resendWait]);
+
   const form = useForm({
     initialValues: {
       code: "",
@@ -47,6 +56,8 @@ const SignupConfirm = ({ signupData, setView }) => {
           successNotification("Sign up successfully", 3000);
           form.reset();
           setView("signin");
+        } else {
+          errorNotification("Something went wrong. Please try again");
         }
       } else {
         errorNotification("Wrong code");
@@ -58,6 +69,14 @@ const SignupConfirm = ({ signupData, setView }) => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const resend = async () => {
+    setResendWait(true);
+    await axios.post(`${baseUrl}/auth/request-code`, {
+      name: signupData.name,
+      email: signupData.email,
+    });
   };
 
   const view = {
@@ -76,12 +95,20 @@ const SignupConfirm = ({ signupData, setView }) => {
             <Button type="submit" className="w-[40%]">
               Submit code
             </Button>
-            <Text>
-              Haven&apos;t receive the code yet?
-              <Link href="#" className="mx-2 text-blue-600 no-underline">
-                Resend now
-              </Link>
-            </Text>
+            {resendWait ? (
+              <Text>You can resend try again in 30 seconds</Text>
+            ) : (
+              <Text>
+                Haven&apos;t receive the code yet?
+                <a
+                  type="button"
+                  className="mx-2 text-blue-600 no-underline"
+                  onClick={resend}
+                >
+                  Resend now
+                </a>
+              </Text>
+            )}
           </Stack>
         </form>
       </Stack>

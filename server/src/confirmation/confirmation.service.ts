@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Confirmation } from 'src/schemas/confirmation.schema';
+import * as dayjs from 'dayjs';
 
 @Injectable()
 export class ConfirmationService {
@@ -13,20 +14,26 @@ export class ConfirmationService {
     await this.confirmModel.create({
       code,
       email,
+      createdDate: dayjs().toDate(),
     });
   }
 
   async compareCode(code: string, email: string) {
-    const result = await this.confirmModel.find({
-      code,
-      email,
-    });
-    if (result.length > 0) {
-      await this.confirmModel.findOneAndDelete({
-        code,
+    const result = await this.confirmModel
+      .find({
         email,
-      });
+      })
+      .sort({ createdDate: -1 })
+      .limit(1);
+
+    if (result.length > 0) {
+      if (result[0].code === code.trim()) {
+        await this.confirmModel.deleteMany({
+          email,
+        });
+        return true;
+      }
     }
-    return result.length > 0;
+    return false;
   }
 }
