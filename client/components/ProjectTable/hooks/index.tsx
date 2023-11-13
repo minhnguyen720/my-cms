@@ -3,11 +3,10 @@
 import React, { useMemo } from "react";
 import { List, Accordion, Stack, Text, Title } from "@mantine/core";
 import dayjs from "dayjs";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useAtomValue } from "jotai";
 import { datasourceAtom } from "@/atoms";
 import MoreActions from "../components/MoreAction";
-import useCurrentProject from "@/hooks/utilities/useCurrentProject";
 import OnlineBadge from "@/components/Badge";
 
 const { Item, Panel, Control } = Accordion;
@@ -15,8 +14,8 @@ const { Item, Panel, Control } = Accordion;
 const useProjectTable = () => {
   const DATE_FORMAT = "DD/MM/YYYY";
   const router = useRouter();
-  const { getCurrentId } = useCurrentProject();
   const datasource = useAtomValue(datasourceAtom);
+  const params = useParams();
 
   const rows = useMemo(() => {
     try {
@@ -32,7 +31,9 @@ const useProjectTable = () => {
               <tr
                 key={element._id}
                 onDoubleClick={() => {
-                  router.push(`/project/${getCurrentId()}/${element._id}`);
+                  router.push(
+                    `/application/project/${params.projectNameId}/${element._id}`,
+                  );
                 }}
               >
                 <td>
@@ -67,7 +68,7 @@ const useProjectTable = () => {
     } catch (error) {
       return <></>;
     }
-  }, [datasource, getCurrentId, router]);
+  }, [datasource, params.projectNameId, router]);
 
   const items = useMemo(() => {
     try {

@@ -6,27 +6,16 @@ interface Props {
   href: string;
   label: string;
   children?: any;
-  active?: boolean;
-  handleActive?: () => void;
 }
 
-const NavLink: React.FC<Props> = ({
-  active,
-  icon,
-  href,
-  label,
-  children,
-  handleActive,
-}) => {
+const NavLink: React.FC<Props> = ({ icon, href, label, children }) => {
   const router = useRouter();
 
   return (
     <MantineNavLink
-      active={active}
       label={label}
       icon={icon}
       onClick={() => {
-        if (handleActive) handleActive();
         router.push(href);
       }}
     >

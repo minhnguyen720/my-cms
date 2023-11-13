@@ -11,8 +11,6 @@ import { Navlink } from "@/interfaces/NavLink";
 import DashboardToolbar from "../DashboardToolbar";
 import { useSetAtom } from "jotai";
 import { statAtom } from "../../atoms";
-import useAlert from "@/components/Alert/hooks";
-import { useUser } from "@/hooks/user/useUser";
 import { getCookie } from "cookies-next";
 import {
   errorNotification,
@@ -27,8 +25,6 @@ const DashboardProjects: React.FC<Props> = ({ projects }) => {
   const router = useRouter();
   const [baseUrl] = useGetBaseUrl();
   const setStatData = useSetAtom(statAtom);
-  const { openAlert } = useAlert();
-  const userHandler = useUser();
 
   const [searchValue, setSearchValue] = useState("");
   const [searchResult, setSearchResult] = useState<Navlink[]>(() => {

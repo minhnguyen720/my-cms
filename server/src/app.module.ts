@@ -18,6 +18,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AtGuard } from './common/guards';
 import { MailModule } from './mail/mail.module';
 import { ConfirmationModule } from './confirmation/confirmation.module';
+import { DataModule } from './data/data.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { ConfirmationModule } from './confirmation/confirmation.module';
     UsersModule,
     MailModule,
     ConfirmationModule,
+    DataModule,
   ],
   controllers: [AppController],
   providers: [

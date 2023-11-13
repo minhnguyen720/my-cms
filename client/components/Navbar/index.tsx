@@ -1,7 +1,7 @@
 import { SetStateAction, useEffect, useState } from "react";
 import { Divider, Navbar as MantineNavbar } from "@mantine/core";
 import NavLink from "@/components/NavLink";
-import { IconHome2, IconTrash } from "@tabler/icons-react";
+import { IconHome2, IconKey } from "@tabler/icons-react";
 import UserFooter from "../UserFooter";
 import { Navlink } from "@/interfaces/NavLink";
 import { userData } from "@/static/dummyUser";
@@ -16,30 +16,11 @@ interface Props {
 }
 
 const navbarData: Navlink[] = [
-  { icon: IconHome2, href: "/", label: "Home" }
+  { icon: IconHome2, href: "/application/dashboard", label: "Dashboard" },
+  { icon: IconKey, href: "/application/key", label: "Key Management" },
 ];
 
-const Navbar: React.FC<Props> = ({
-  hidden,
-  hiddenBreakpoint,
-  handleCurrentMenu,
-  currentMenu,
-  setOpened,
-}) => {
-  const [active, setActive] = useState<number | undefined>(0);
-  const [isMenuFocus, setIsMenuFocus] = useLocalStorage({
-    key: "isMenuFocus",
-    defaultValue: true,
-  });
-
-  useEffect(() => {
-    setActive(currentMenu);
-  }, [currentMenu]);
-
-  useEffect(() => {
-    if (!isMenuFocus) setActive(undefined);
-  }, [isMenuFocus]);
-
+const Navbar: React.FC<Props> = ({ hidden, hiddenBreakpoint }) => {
   return (
     <MantineNavbar
       width={{ sm: 200, lg: 250 }}
@@ -51,29 +32,16 @@ const Navbar: React.FC<Props> = ({
         {navbarData.map((item, index) => {
           return (
             <NavLink
-              active={index === active}
               icon={<item.icon />}
               href={item.href ? item.href : ""}
               label={item.label}
               key={index}
-              handleActive={() => {
-                if (!item.children) handleCurrentMenu(Number(index));
-
-                if (item.children === undefined) setOpened(false);
-
-                setActive(index);
-                setIsMenuFocus(true);
-              }}
             >
               {item.children &&
                 item.children?.length > 0 &&
                 item.children.map((el) => {
                   return (
                     <NavLink
-                      handleActive={() => {
-                        handleCurrentMenu(Number(index));
-                        setOpened(false);
-                      }}
                       key={el.href}
                       label={el.label}
                       href={el.href ? el.href : ""}
@@ -86,7 +54,7 @@ const Navbar: React.FC<Props> = ({
       </MantineNavbar.Section>
       <Divider />
       <MantineNavbar.Section>
-        <UserFooter userData={userData} setIsMenuFocus={setIsMenuFocus} />
+        <UserFooter userData={userData} />
       </MantineNavbar.Section>
     </MantineNavbar>
   );

@@ -5,7 +5,7 @@ import {
   IconRefresh,
   IconInfoCircleFilled,
 } from "@tabler/icons-react";
-import {useStyles} from "./style";
+import { useStyles } from "./style";
 import { useEffect, useRef } from "react";
 import { Tips } from "./components/Tips";
 import { useMediaQuery } from "@mantine/hooks";
