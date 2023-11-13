@@ -4,12 +4,18 @@ import { Model } from 'mongoose';
 import { Folder } from 'src/schemas/folder.schema';
 import { Page } from 'src/schemas/page.schema';
 import { RestoreDto } from './dto/restore.dto';
+import { Project } from 'src/schemas/project.schema';
+import { Field } from 'src/schemas/field.schema';
+import { Doc } from 'src/schemas/doc.schema';
 
 @Injectable()
 export class TrashService {
   constructor(
     @InjectModel(Folder.name) private folderModel: Model<Folder>,
     @InjectModel(Page.name) private pageModel: Model<Page>,
+    @InjectModel(Project.name) private projectModel: Model<Project>,
+    @InjectModel(Field.name) private fieldModel: Model<Field>,
+    @InjectModel(Doc.name) private docModel: Model<Doc>,
   ) {}
 
   async removeSelected(body: RestoreDto) {
@@ -36,6 +42,11 @@ export class TrashService {
         }
       case 'page':
         try {
+          body.ids.forEach(async (item) => {
+            const page = await this.pageModel.findById(item);
+            const project = await this.projectModel.findById(body.projectId);
+            await project.updateOne({ $pull: { pages: page._id } });
+          });
           await this.pageModel.deleteMany({
             _id: { $in: body.ids },
             isRemove: true,

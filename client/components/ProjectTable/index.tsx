@@ -61,7 +61,7 @@ const ProjectTable: React.FC = () => {
           <Tooltip label="Go to trash bin">
             <ActionIcon
               onClick={() => {
-                navigator.push(`/trashbin/${getCurrentId()}`);
+                navigator.push(`/application/trashbin/${params.projectNameId}`);
               }}
             >
               <MdOutlineDeleteSweep size={24} />

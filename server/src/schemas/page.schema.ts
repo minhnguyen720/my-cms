@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Schema as MongooseSchema, Types } from 'mongoose';
+import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
 import { Users } from './users.schema';
 import { Doc } from './doc.schema';
 
@@ -7,8 +7,7 @@ export type PageDocument = HydratedDocument<Page>;
 
 @Schema({ collection: 'page' })
 export class Page {
-  // @Prop({ type: Types.ObjectId })
-  // _id?: Types.ObjectId;
+  _id: MongooseSchema.Types.ObjectId;
 
   // use id as an param to fetch data
   @Prop()

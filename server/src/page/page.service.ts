@@ -54,14 +54,22 @@ export class PageService {
       const user = await this.userModel.findOne({
         id: userId,
       });
-      await this.pageModel.create({
-        ...createPageDto,
-        isRemove: false,
-        createdUser: user._id,
-        updatedUser: user._id,
-        createdDate: dayjs().toString(),
-        updatedDate: dayjs().toString(),
-      });
+      await this.pageModel
+        .create({
+          ...createPageDto,
+          isRemove: false,
+          createdUser: user._id,
+          updatedUser: user._id,
+          createdDate: dayjs().toString(),
+          updatedDate: dayjs().toString(),
+        })
+        .then(async (result: any) => {
+          const project = await this.projectModel.findById(
+            createPageDto.project,
+          );
+          project.pages.push(result._id);
+          project.save();
+        });
       const projectRes = await this.findPageBelongToProject(
         createPageDto.project,
       );

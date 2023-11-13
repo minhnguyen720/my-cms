@@ -1,5 +1,6 @@
 import DocCards from "@/components/Doc/DocCard";
 import PageDetailToolbar from "@/components/PageDetailToolbar";
+import { errorNotification } from "@/hooks/notifications/notificationPreset";
 import { cookies } from "next/headers";
 
 export const revalidate = 10;

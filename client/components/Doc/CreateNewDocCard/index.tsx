@@ -52,6 +52,7 @@ const CreateNewDocCard: React.FC<Props> = ({ addDocItem }) => {
       const newDocItem = await res.data;
 
       addDocItem(newDocItem);
+      form.reset();
       close();
     } catch (error) {
       console.error(error);

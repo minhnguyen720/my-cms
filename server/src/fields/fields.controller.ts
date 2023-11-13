@@ -52,7 +52,7 @@ export class FieldsController {
         this.storageService.removeFileFromDisk(target.fileId),
       ]);
     }
-    await this.fieldsService.deleteFieldByFieldId(fieldId);
+    await this.fieldsService.deleteFieldByFieldId(docId, fieldId);
     return await this.fieldsService.getFieldDataByDetailId(docId);
   }
 }

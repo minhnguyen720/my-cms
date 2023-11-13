@@ -7,6 +7,7 @@ import { Field, FieldSchema } from 'src/schemas/field.schema';
 import { Page, PageSchema } from 'src/schemas/page.schema';
 import { Project, ProjectSchema } from 'src/schemas/project.schema';
 import { Folder, FolderSchema } from 'src/schemas/folder.schema';
+import { DocRefManagementService } from './doc_ref.service';
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { Folder, FolderSchema } from 'src/schemas/folder.schema';
     ]),
   ],
   controllers: [DocController],
-  providers: [DocService],
-  exports: [DocService],
+  providers: [DocService, DocRefManagementService],
+  exports: [DocService, DocRefManagementService],
 })
 export class DocModule {}
