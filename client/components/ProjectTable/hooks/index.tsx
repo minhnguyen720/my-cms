@@ -1,13 +1,24 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { List, Accordion, Stack, Text, Title } from "@mantine/core";
+import {
+  List,
+  Accordion,
+  Stack,
+  Text,
+  Title,
+  Group,
+  ActionIcon,
+  CopyButton,
+  Tooltip,
+} from "@mantine/core";
 import dayjs from "dayjs";
 import { useParams, useRouter } from "next/navigation";
 import { useAtomValue } from "jotai";
 import { datasourceAtom } from "@/atoms";
 import MoreActions from "../components/MoreAction";
 import OnlineBadge from "@/components/Badge";
+import { IconCheck, IconCopy } from "@tabler/icons-react";
 
 const { Item, Panel, Control } = Accordion;
 
@@ -38,6 +49,31 @@ const useProjectTable = () => {
               >
                 <td>
                   <strong>{element.name}</strong>
+                </td>
+                <td>
+                  <Group>
+                    {element._id}
+                    <CopyButton value={element._id} timeout={2000}>
+                      {({ copied, copy }) => (
+                        <Tooltip
+                          label={copied ? "Copied" : "Copy"}
+                          withArrow
+                          position="right"
+                        >
+                          <ActionIcon
+                            color={copied ? "teal" : "gray"}
+                            onClick={copy}
+                          >
+                            {copied ? (
+                              <IconCheck size="1rem" />
+                            ) : (
+                              <IconCopy size="1rem" />
+                            )}
+                          </ActionIcon>
+                        </Tooltip>
+                      )}
+                    </CopyButton>
+                  </Group>
                 </td>
                 <td>
                   {dayjs(element.createdDate).format(DATE_FORMAT).toString()}
@@ -96,6 +132,30 @@ const useProjectTable = () => {
                     <List.Item>
                       <strong>Name: </strong>
                       {element.name}
+                    </List.Item>
+                    <List.Item>
+                      <strong>ID: </strong>
+                      {element._id}
+                      <CopyButton value={element._id} timeout={2000}>
+                        {({ copied, copy }) => (
+                          <Tooltip
+                            label={copied ? "Copied" : "Copy"}
+                            withArrow
+                            position="right"
+                          >
+                            <ActionIcon
+                              color={copied ? "teal" : "gray"}
+                              onClick={copy}
+                            >
+                              {copied ? (
+                                <IconCheck size="1rem" />
+                              ) : (
+                                <IconCopy size="1rem" />
+                              )}
+                            </ActionIcon>
+                          </Tooltip>
+                        )}
+                      </CopyButton>
                     </List.Item>
                     <List.Item>
                       <strong>Created date: </strong>
