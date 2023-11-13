@@ -18,47 +18,32 @@ import { getCookie } from "cookies-next";
 import React, { useEffect, useState } from "react";
 import { Prism } from "@mantine/prism";
 
-const dummyCode = `http://localhost:4000/data?projectId={projectId}&pageId={pageId}&appid={API_KEY}`;
+const getPageDataApiStructure = `http://localhost:4000/data?pg={pageId}&key={API_KEY}`;
 
-const exampleApiRes = `
-{
-   "lat":33.44,
-   "lon":-94.04,
-   "timezone":"America/Chicago",
-   "timezone_offset":-18000,
-   "current":{
-      "dt":1684929490,
-      "sunrise":1684926645,
-      "sunset":1684977332,
-      "temp":292.55,
-      "feels_like":292.87,
-      "pressure":1014,
-      "humidity":89,
-      "dew_point":290.69,
-      "uvi":0.16,
-      "clouds":53,
-      "visibility":10000,
-      "wind_speed":3.13,
-      "wind_deg":93,
-      "wind_gust":6.71,
-      "weather":[
-         {
-            "id":803,
-            "main":"Clouds",
-            "description":"broken clouds",
-            "icon":"04d"
-         }
-      ]
-   },
-   "minutely":[
+const getPageDataApiRes = `[
+  {
+    "_id": "6551d8319346901c602662dd",
+    "name": "world",
+    "project": "6551d7bc9346901c602662c5",
+    "docs": [
       {
-         "dt":1684929540,
-         "precipitation":0
+        "_id": "6551dd9f9346901c6026647f",
+        "name": "foobar",
+        "fields": [
+          {
+            "_id": "65520b3ee4902286cafd7097",
+            "value": "<p>Welcome to my CMS</p>"
+          },
+          ...
+        ],
+        "description": "123"
       },
       ...
-   ],
-  ]
-}`;
+    ]
+  },
+  ...
+]
+`;
 
 const Key = () => {
   const [key, setKey] = useState<string | undefined>(undefined);
@@ -107,15 +92,23 @@ const Key = () => {
       <Title order={2} className="my-4">
         How to make an API call
       </Title>
+      <Title order={3} className="my-4">
+        Get page data
+      </Title>
       <Group>
         <Code className="w-[80%] text-base" block>
-          {dummyCode}
+          {getPageDataApiStructure}
         </Code>
-        <CopyButton value={dummyCode !== undefined ? dummyCode : ""}>
+        <CopyButton
+          value={
+            getPageDataApiStructure !== undefined ? getPageDataApiStructure : ""
+          }
+        >
           {({ copied, copy }) => (
             <Button
               disabled={
-                dummyCode === undefined || dummyCode.trim().length === 0
+                getPageDataApiStructure === undefined ||
+                getPageDataApiStructure.trim().length === 0
               }
               color={copied ? "teal" : "blue"}
               onClick={copy}
@@ -127,12 +120,12 @@ const Key = () => {
       </Group>
       <Box>{/* explain api param goes here */}</Box>
 
-      <Title order={2} className="my-4">
+      <Title order={3} className="my-4">
         Example of API response
       </Title>
       <Spoiler maxHeight={200} showLabel="Show more" hideLabel="Hide">
         <Prism language="json" className="w-fit min-w-[35rem] text-base">
-          {exampleApiRes}
+          {getPageDataApiRes}
         </Prism>
       </Spoiler>
     </Box>

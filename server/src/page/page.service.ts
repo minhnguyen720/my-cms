@@ -2,7 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreatePageDto } from './dto/create-page.dto';
 import { Page } from 'src/schemas/page.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types, Schema } from 'mongoose';
+import { Model } from 'mongoose';
 import { Project } from 'src/schemas/project.schema';
 import * as dayjs from 'dayjs';
 import { MoveToTrashDto } from './dto/movetotrash.dto';
