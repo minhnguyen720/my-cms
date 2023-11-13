@@ -4,13 +4,11 @@ import {
   MantineProvider,
   AppShell as MantineAppShell,
   Header,
-  MediaQuery,
-  Burger,
-  useMantineTheme,
   Text,
   Group,
   LoadingOverlay,
   Box,
+  ActionIcon,
 } from "@mantine/core";
 import Navbar from "@/components/Navbar";
 import { useState } from "react";
@@ -19,6 +17,7 @@ import useCurrentMenu from "./hooks/useCurrentMenu";
 import Alert from "../Alert";
 import useLoading from "@/hooks/utilities/useLoading";
 import { Notifications } from "@mantine/notifications";
+import { IconBurger } from "@tabler/icons-react";
 
 interface Props {
   children: any;
@@ -26,12 +25,11 @@ interface Props {
 
 const AppShell: React.FC<Props> = ({ children }) => {
   const [opened, setOpened] = useState(false);
-  const theme = useMantineTheme();
   const { currentMenu, handleCurrentMenu } = useCurrentMenu();
   const { getLoadingFlag } = useLoading();
 
   return (
-    <Box className="z-10 h-full w-full" pos="relative">
+    <Box className="z-10 h-screen w-full" pos="relative">
       <LoadingOverlay
         visible={getLoadingFlag()}
         loaderProps={{ variant: "bars" }}
@@ -44,11 +42,46 @@ const AppShell: React.FC<Props> = ({ children }) => {
         theme={{ colorScheme: "dark" }}
       >
         <Notifications />
-        <MantineAppShell
+        <Header height={{ base: 50, md: 70 }} p="md">
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              height: "100%",
+            }}
+          >
+            <ActionIcon
+              size="xl"
+              variant="transparent"
+              className="mr-8"
+              onClick={() => setOpened((o) => !o)}
+            >
+              <IconBurger size="2.125rem" />
+            </ActionIcon>
+            <Group>
+              <Image
+                src={"/images/icon/android-chrome-192x192.png"}
+                alt="my cms logo"
+                width={40}
+                height={40}
+              />
+              <Text>MyCMS</Text>
+            </Group>
+          </div>
+        </Header>
+        <Navbar
+          hidden={!opened}
+          hiddenBreakpoint="100000rem"
+          currentMenu={currentMenu}
+          handleCurrentMenu={handleCurrentMenu}
+          setOpened={setOpened}
+        />
+        <div className="p-10">{children}</div>
+        {/* <MantineAppShell
           navbar={
             <Navbar
               hidden={!opened}
-              hiddenBreakpoint="sm"
+              hiddenBreakpoint="100000rem"
               currentMenu={currentMenu}
               handleCurrentMenu={handleCurrentMenu}
               setOpened={setOpened}
@@ -63,16 +96,14 @@ const AppShell: React.FC<Props> = ({ children }) => {
                   height: "100%",
                 }}
               >
-                <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-                  <Burger
-                    opened={opened}
-                    onClick={() => setOpened((o) => !o)}
-                    size="sm"
-                    color={theme.colors.gray[6]}
-                    mr="xl"
-                  />
-                </MediaQuery>
-
+                <ActionIcon
+                  size="xl"
+                  variant="transparent"
+                  className="mr-8"
+                  onClick={() => setOpened((o) => !o)}
+                >
+                  <IconBurger size="2.125rem" />
+                </ActionIcon>
                 <Group>
                   <Image
                     src={"/images/icon/android-chrome-192x192.png"}
@@ -96,7 +127,7 @@ const AppShell: React.FC<Props> = ({ children }) => {
         >
           <Alert />
           {children}
-        </MantineAppShell>
+        </MantineAppShell> */}
       </MantineProvider>
     </Box>
   );

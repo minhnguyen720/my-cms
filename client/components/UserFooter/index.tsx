@@ -43,7 +43,7 @@ const UserFooter: React.FC<Props> = ({ userData }) => {
 
   return (
     <Box py={"sm"}>
-      <Menu width={200} position="right-end">
+      <Menu width={200} position="right-start">
         <Target>
           <NavLink
             icon={

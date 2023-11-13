@@ -6,9 +6,16 @@ interface Props {
   href: string;
   label: string;
   children?: any;
+  setOpened: any;
 }
 
-const NavLink: React.FC<Props> = ({ icon, href, label, children }) => {
+const NavLink: React.FC<Props> = ({
+  icon,
+  href,
+  label,
+  children,
+  setOpened,
+}) => {
   const router = useRouter();
 
   return (
@@ -17,6 +24,7 @@ const NavLink: React.FC<Props> = ({ icon, href, label, children }) => {
       icon={icon}
       onClick={() => {
         router.push(href);
+        setOpened(false);
       }}
     >
       {children}

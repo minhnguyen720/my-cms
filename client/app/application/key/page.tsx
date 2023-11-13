@@ -79,11 +79,11 @@ const Key = () => {
   }, [at, baseUrl]);
 
   return (
-    <Box>
+    <Box className="pb-2">
       <Title order={2} className="mb-4">
         API Key
       </Title>
-      <Paper className="p-5">
+      <Paper className="w-[80%] p-5">
         <Text>Copy this key with the param to get your data.</Text>
         <Text>
           For security purpose, we suggest you have a proxy server to call myCMS
@@ -131,7 +131,7 @@ const Key = () => {
         Example of API response
       </Title>
       <Spoiler maxHeight={200} showLabel="Show more" hideLabel="Hide">
-        <Prism language="json" className="text-base">
+        <Prism language="json" className="w-fit min-w-[35rem] text-base">
           {exampleApiRes}
         </Prism>
       </Spoiler>
