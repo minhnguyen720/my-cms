@@ -24,5 +24,6 @@ import { DocModule } from 'src/doc/doc.module';
   ],
   controllers: [TrashController],
   providers: [TrashService],
+  exports: [TrashService],
 })
 export class TrashModule {}

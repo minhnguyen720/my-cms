@@ -215,4 +215,53 @@ export class TrashService {
       };
     }
   }
+
+  async handleDeleteProjects(projects: Project[]) {
+    try {
+      for (const item of projects) {
+        const [project, pages] = await Promise.all([
+          this.projectModel.findById(item._id),
+          this.pageModel.find({ project: item._id }),
+        ]);
+
+        for (const page of pages) {
+          const docs = await this.docModel.find({
+            page: page._id,
+            project: project._id,
+          });
+          // Remove field and files relate to this page'
+          for (const doc of docs) {
+            const imageFields = await this.fieldModel.find({
+              type: 'image',
+              page: page._id,
+              project: project._id,
+              doc: doc._id,
+            });
+            for (const imageField of imageFields) {
+              await Promise.all([
+                this.storageService.removeFromCollection(imageField.fileId),
+                this.storageService.removeFileFromDisk(imageField.fileId),
+              ]);
+            }
+            await this.fieldModel.deleteMany({
+              page: page._id,
+              project: project._id,
+              doc: doc._id,
+            });
+          }
+          await this.docModel.deleteMany({
+            page: page._id,
+            project: project._id,
+          });
+        }
+
+        await this.pageModel.deleteMany({
+          project: item._id,
+        });
+        await this.projectModel.findByIdAndDelete(item._id);
+      }
+    } catch (error) {
+      this.logger.error(error);
+    }
+  }
 }
