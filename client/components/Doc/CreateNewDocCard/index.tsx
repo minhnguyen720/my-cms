@@ -28,7 +28,7 @@ interface createNewDocDto {
 const CreateNewDocCard: React.FC<Props> = ({ addDocItem }) => {
   const [opened, { open, close }] = useDisclosure();
   const baseUrl = useAtomValue(baseUrlAtom);
-  const { pageId } = useParams();
+  const { pageId, projectNameId } = useParams();
   const at = getCookie("at");
 
   const handleCreateNewDoc = async (values: createNewDocDto) => {
@@ -38,6 +38,7 @@ const CreateNewDocCard: React.FC<Props> = ({ addDocItem }) => {
         {
           ...values,
           pageId,
+          project: projectNameId,
           parent: pageId,
           active: true,
           isRemove: false,
