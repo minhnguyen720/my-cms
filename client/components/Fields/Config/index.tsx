@@ -88,7 +88,8 @@ const Config: React.FC<Props> = ({
         errorNotification("Fail to fetch new data");
       }
     } catch (error) {
-      errorNotification(error);
+      errorNotification("Fail to fetch new data");
+      console.error(error);
     }
   };
 

@@ -10,6 +10,7 @@ interface Props {
 const ProjectTableDesktop: React.FC<Props> = ({ rows }) => {
   const [columns, setColumns] = useState([
     "Name",
+    "Page ID",
     "Created date",
     "Updated date",
     "Created user",

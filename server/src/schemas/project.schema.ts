@@ -1,12 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
+import { Page } from './page.schema';
 
 export type ProjectDocument = HydratedDocument<Project>;
 
 @Schema({ collection: 'projects' })
 export class Project {
-  // @Transform(({ value }) => value.toString())
-  // _id: string;
+  _id: MongooseSchema.Types.ObjectId;
 
   @Prop()
   id?: string;
@@ -40,6 +40,9 @@ export class Project {
 
   @Prop()
   owner: string;
+
+  @Prop({ type: MongooseSchema.Types.Array, ref: 'Page' })
+  pages: Page[];
 }
 
 export const ProjectSchema = SchemaFactory.createForClass(Project);

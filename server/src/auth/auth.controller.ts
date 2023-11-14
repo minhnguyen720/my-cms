@@ -50,6 +50,11 @@ export class AuthController {
     return await this.authService.authenticate(userId);
   }
 
+  @Get('key')
+  async getApiKey() {
+    return await this.authService.getApiKey();
+  }
+
   @Public()
   @Post('user-exist')
   async checkUserExistence(@Body() body) {

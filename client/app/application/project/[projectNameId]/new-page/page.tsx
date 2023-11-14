@@ -44,7 +44,7 @@ const CreatingPage = ({ params: { projectNameId } }) => {
   const params = useParams();
 
   const backToHome = () => {
-    router.push(`/project/${params.projectNameId}`);
+    router.push(`/application/project/${params.projectNameId}`);
   };
 
   const handleSubmit = async (values: PageFormValues) => {

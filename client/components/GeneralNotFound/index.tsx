@@ -79,7 +79,7 @@ export function GeneralNotFound() {
               mt="xl"
               className={classes.control}
               onClick={() => {
-                router.push("/dashboard");
+                router.push("/application/dashboard");
               }}
             >
               Get back to home page

@@ -1,11 +1,12 @@
 "use client";
 
 import { atom, useAtom } from "jotai";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import useGetBaseUrl from "../utilities/getUrl";
 import axios from "axios";
 import { errorNotification } from "../notifications/notificationPreset";
+import { getCookie } from "cookies-next";
 
 export type User = {
   userId: string;
@@ -40,18 +41,20 @@ const AuthenticateUser = ({ children }) => {
   const [baseUrl] = useGetBaseUrl();
   const userHandler = useUser();
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const authenticateUser = async () => {
       try {
-        const user = userHandler.getUser();
-        if (user === null || user === undefined) {
+        localStorage.setItem("currentPage", pathname);
+        const at = getCookie("at");
+        if (at?.trim().length === 0 || at === null || at === undefined) {
           router.push("/authenticate");
         }
 
         const headersList = {
           Accept: "*/*",
-          Authorization: `Bearer ${user?.at}`,
+          Authorization: `Bearer ${at}`,
         };
 
         const reqOptions = {
@@ -60,8 +63,15 @@ const AuthenticateUser = ({ children }) => {
           headers: headersList,
         };
 
-        await axios.request(reqOptions);
-        router.push("/dashboard");
+        const res = await axios.request(reqOptions);
+        if (res.data.isAuth) {
+          const currentPath = localStorage.getItem("currentPage");
+          router.push(
+            currentPath !== null ? currentPath : "/application/dashboard",
+          );
+        } else {
+          errorNotification("Unauthorized");
+        }
       } catch (error) {
         errorNotification("Unauthorized");
         setTimeout(() => {
@@ -71,7 +81,7 @@ const AuthenticateUser = ({ children }) => {
     };
 
     authenticateUser();
-  }, [baseUrl, router, userHandler]);
+  }, [baseUrl, pathname, router, userHandler]);
 
   return <>{children}</>;
 };

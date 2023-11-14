@@ -85,7 +85,7 @@ export class ProjectService {
       return {
         id: project._id,
         label: project.name,
-        href: `/project/${project._id}`,
+        href: `/application/project/${project._id}`,
         createdDate: project.createdDate,
         updatedDate: project.updatedDate,
         active: project.active,

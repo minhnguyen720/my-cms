@@ -73,7 +73,7 @@ export default function NotFoundTitle() {
           variant="subtle"
           size="md"
           onClick={() => {
-            router.push("/");
+            router.push("/application/dashboard");
           }}
         >
           Take me back to home page

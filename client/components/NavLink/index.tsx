@@ -6,28 +6,25 @@ interface Props {
   href: string;
   label: string;
   children?: any;
-  active?: boolean;
-  handleActive?: () => void;
+  setOpened: any;
 }
 
 const NavLink: React.FC<Props> = ({
-  active,
   icon,
   href,
   label,
   children,
-  handleActive,
+  setOpened,
 }) => {
   const router = useRouter();
 
   return (
     <MantineNavLink
-      active={active}
       label={label}
       icon={icon}
       onClick={() => {
-        if (handleActive) handleActive();
         router.push(href);
+        setOpened(false);
       }}
     >
       {children}

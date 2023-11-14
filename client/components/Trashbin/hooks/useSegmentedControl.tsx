@@ -26,32 +26,25 @@ export const useSegmentedControl = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const res = await axios.get(`${baseUrl}/trash/${projectId}/${value}`, {
-        headers: {
-          Authorization: `Bearer ${at}`,
-        },
-      });
-      setRemovedItems(res.data);
+      try {
+        showLoading();
+        const res = await axios.get(`${baseUrl}/trash/${projectId}/${value}`, {
+          headers: {
+            Authorization: `Bearer ${at}`,
+          },
+        });
+        setRemovedItems(res.data);
+      } catch (error) {
+        console.error(error);
+        setRemovedItems([]);
+      } finally {
+        hideLoading();
+      }
     };
 
-    try {
-      showLoading();
-      getData();
-    } catch (error) {
-      console.error(error);
-      setRemovedItems([]);
-    } finally {
-      hideLoading();
-    }
-  }, [
-    at,
-    baseUrl,
-    hideLoading,
-    projectId,
-    setRemovedItems,
-    showLoading,
-    value,
-  ]);
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [baseUrl, projectId, at, value]);
 
   const handleSegmentChanged = (newValue: string) => {
     setValue(newValue);

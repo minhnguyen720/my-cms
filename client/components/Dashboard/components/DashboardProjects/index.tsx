@@ -1,5 +1,13 @@
 import SearchBar from "@/components/SearchBar";
-import { Title, Table, Checkbox } from "@mantine/core";
+import {
+  Title,
+  Table,
+  Checkbox,
+  CopyButton,
+  ActionIcon,
+  Tooltip,
+  Group,
+} from "@mantine/core";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
@@ -11,13 +19,12 @@ import { Navlink } from "@/interfaces/NavLink";
 import DashboardToolbar from "../DashboardToolbar";
 import { useSetAtom } from "jotai";
 import { statAtom } from "../../atoms";
-import useAlert from "@/components/Alert/hooks";
-import { useUser } from "@/hooks/user/useUser";
 import { getCookie } from "cookies-next";
 import {
   errorNotification,
   successNotification,
 } from "@/hooks/notifications/notificationPreset";
+import { IconCheck, IconCopy } from "@tabler/icons-react";
 
 interface Props {
   projects: Navlink[];
@@ -27,8 +34,6 @@ const DashboardProjects: React.FC<Props> = ({ projects }) => {
   const router = useRouter();
   const [baseUrl] = useGetBaseUrl();
   const setStatData = useSetAtom(statAtom);
-  const { openAlert } = useAlert();
-  const userHandler = useUser();
 
   const [searchValue, setSearchValue] = useState("");
   const [searchResult, setSearchResult] = useState<Navlink[]>(() => {
@@ -130,6 +135,7 @@ const DashboardProjects: React.FC<Props> = ({ projects }) => {
                 />
               </th>
               <th>Project</th>
+              <th>Project ID</th>
               <th>Created date</th>
               <th>Updated date</th>
               <th>Active</th>
@@ -157,6 +163,34 @@ const DashboardProjects: React.FC<Props> = ({ projects }) => {
                         />
                       </td>
                       <td>{element.label}</td>
+                      <td>
+                        <Group>
+                          {element.id}
+                          <CopyButton
+                            value={element.id ? element.id : ""}
+                            timeout={2000}
+                          >
+                            {({ copied, copy }) => (
+                              <Tooltip
+                                label={copied ? "Copied" : "Copy"}
+                                withArrow
+                                position="right"
+                              >
+                                <ActionIcon
+                                  color={copied ? "teal" : "gray"}
+                                  onClick={copy}
+                                >
+                                  {copied ? (
+                                    <IconCheck size="1rem" />
+                                  ) : (
+                                    <IconCopy size="1rem" />
+                                  )}
+                                </ActionIcon>
+                              </Tooltip>
+                            )}
+                          </CopyButton>
+                        </Group>
+                      </td>
                       <td>{dayjs(element.createdDate).format("DD/MM/YYYY")}</td>
                       <td>{dayjs(element.updatedDate).format("DD/MM/YYYY")}</td>
                       <td>
