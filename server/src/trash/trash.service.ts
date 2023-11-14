@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Folder } from 'src/schemas/folder.schema';
@@ -8,6 +8,7 @@ import { Project } from 'src/schemas/project.schema';
 import { Field } from 'src/schemas/field.schema';
 import { Doc } from 'src/schemas/doc.schema';
 import { StorageService } from 'src/storage/storage.service';
+import { DocRefManagementService } from 'src/doc/doc_ref.service';
 
 @Injectable()
 export class TrashService {
@@ -18,7 +19,10 @@ export class TrashService {
     @InjectModel(Field.name) private fieldModel: Model<Field>,
     @InjectModel(Doc.name) private docModel: Model<Doc>,
     private readonly storageService: StorageService,
+    private readonly docRefManagement: DocRefManagementService,
   ) {}
+
+  private readonly logger = new Logger(TrashService.name);
 
   async removeSelected(body: RestoreDto) {
     switch (body.type) {
@@ -68,6 +72,7 @@ export class TrashService {
             newList: [],
           };
         }
+      case 'project':
       default:
         return {
           isSuccess: false,
@@ -177,42 +182,55 @@ export class TrashService {
 
   // utilities
   async removeDocByPageId(pageId: string) {
-    const docs = await this.docModel.find({ page: new Types.ObjectId(pageId) });
-
-    if (docs !== null && docs !== undefined) {
-      docs.forEach(async (doc) => {
-        const fields = await this.fieldModel.find({ doc: doc._id.toString() });
-
-        // image fields handler
-        const imageFields = [];
-        const otherFields = [];
-        fields.forEach((field) => {
-          if (field.type === 'image') {
-            imageFields.push(field);
-          } else {
-            otherFields.push(field);
-          }
-        });
-        // remove file from disk and collection
-        if (imageFields.length > 0) {
-          imageFields.forEach((imgField) => {
-            Promise.all([
-              this.storageService.removeFromCollection(imgField._id.toString()),
-              this.storageService.removeFileFromDisk(imgField._id.toString()),
-            ]);
-          });
-        }
-
-        // handle other field type
-        if (otherFields.length > 0) {
-          const otherFieldIds = otherFields.map((field) => {
-            return field._id.toString();
-          });
-          await this.fieldModel.deleteMany({
-            _id: { $in: { otherFieldIds } },
-          });
-        }
+    try {
+      const docs = await this.docModel.find({
+        page: new Types.ObjectId(pageId),
       });
+
+      if (docs !== null && docs !== undefined) {
+        docs.forEach(async (doc) => {
+          const fields = await this.fieldModel.find({
+            doc: doc._id.toString(),
+          });
+
+          const imageFields = [];
+          const otherFields = [];
+          fields.forEach((field) => {
+            if (field.type === 'image') {
+              imageFields.push(field);
+            } else {
+              otherFields.push(field);
+            }
+          });
+
+          // remove file from disk and collection
+          if (imageFields.length > 0) {
+            imageFields.forEach(async (imgField) => {
+              Promise.all([
+                this.docRefManagement.removeNewFieldRef(doc._id, imgField._id),
+                this.fieldModel.deleteOne({ _id: imgField._id }),
+                this.storageService.removeFromCollection(imgField.fileId),
+                this.storageService.removeFileFromDisk(imgField.fileId),
+              ]);
+            });
+          }
+
+          // handle other field type
+          if (otherFields.length > 0) {
+            otherFields.forEach(async (field) => {
+              await this.docRefManagement.removeNewFieldRef(doc._id, field._id);
+              await this.fieldModel.deleteOne({ _id: field._id });
+            });
+          }
+
+          await this.docModel.deleteOne({
+            _id: doc._id,
+          });
+        });
+      }
+    } catch (error) {
+      this.logger.error(error);
+      return;
     }
   }
 }

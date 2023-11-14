@@ -8,6 +8,7 @@ import { Project, ProjectSchema } from 'src/schemas/project.schema';
 import { Doc, DocSchema } from 'src/schemas/doc.schema';
 import { Field, FieldSchema } from 'src/schemas/field.schema';
 import { StorageModule } from 'src/storage/storage.module';
+import { DocModule } from 'src/doc/doc.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { StorageModule } from 'src/storage/storage.module';
       { name: Field.name, schema: FieldSchema },
     ]),
     StorageModule,
+    DocModule,
   ],
   controllers: [TrashController],
   providers: [TrashService],
