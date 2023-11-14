@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Folder } from 'src/schemas/folder.schema';
 import { Page } from 'src/schemas/page.schema';
 import { RestoreDto } from './dto/restore.dto';
 import { Project } from 'src/schemas/project.schema';
 import { Field } from 'src/schemas/field.schema';
 import { Doc } from 'src/schemas/doc.schema';
+import { StorageService } from 'src/storage/storage.service';
 
 @Injectable()
 export class TrashService {
@@ -16,6 +17,7 @@ export class TrashService {
     @InjectModel(Project.name) private projectModel: Model<Project>,
     @InjectModel(Field.name) private fieldModel: Model<Field>,
     @InjectModel(Doc.name) private docModel: Model<Doc>,
+    private readonly storageService: StorageService,
   ) {}
 
   async removeSelected(body: RestoreDto) {
@@ -44,6 +46,7 @@ export class TrashService {
         try {
           body.ids.forEach(async (item) => {
             const page = await this.pageModel.findById(item);
+            await this.removeDocByPageId(page._id.toString());
             const project = await this.projectModel.findById(body.projectId);
             await project.updateOne({ $pull: { pages: page._id } });
           });
@@ -169,6 +172,47 @@ export class TrashService {
       return {
         isSuccess: false,
       };
+    }
+  }
+
+  // utilities
+  async removeDocByPageId(pageId: string) {
+    const docs = await this.docModel.find({ page: new Types.ObjectId(pageId) });
+
+    if (docs !== null && docs !== undefined) {
+      docs.forEach(async (doc) => {
+        const fields = await this.fieldModel.find({ doc: doc._id.toString() });
+
+        // image fields handler
+        const imageFields = [];
+        const otherFields = [];
+        fields.forEach((field) => {
+          if (field.type === 'image') {
+            imageFields.push(field);
+          } else {
+            otherFields.push(field);
+          }
+        });
+        // remove file from disk and collection
+        if (imageFields.length > 0) {
+          imageFields.forEach((imgField) => {
+            Promise.all([
+              this.storageService.removeFromCollection(imgField._id.toString()),
+              this.storageService.removeFileFromDisk(imgField._id.toString()),
+            ]);
+          });
+        }
+
+        // handle other field type
+        if (otherFields.length > 0) {
+          const otherFieldIds = otherFields.map((field) => {
+            return field._id.toString();
+          });
+          await this.fieldModel.deleteMany({
+            _id: { $in: { otherFieldIds } },
+          });
+        }
+      });
     }
   }
 }
