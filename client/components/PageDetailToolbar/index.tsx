@@ -9,6 +9,8 @@ import {
   Modal,
   Text,
   Button,
+  Stack,
+  Box,
 } from "@mantine/core";
 import { IconZzz, IconTrash } from "@tabler/icons-react";
 import { TbPlugConnected } from "react-icons/tb";
@@ -20,6 +22,7 @@ import axios from "axios";
 import useGetBaseUrl from "@/hooks/utilities/getUrl";
 import { useDisclosure } from "@mantine/hooks";
 import { getCookie } from "cookies-next";
+import OnlineBadge from "../Badge";
 
 interface Props {
   page: Page;
@@ -138,7 +141,12 @@ const PageDetailToolbar: React.FC<Props> = ({ page }) => {
           </Button>
         </Group>
       </Modal>
-      <Title order={1}>Page detail</Title>
+      <Stack className="w-fit">
+        <Box>
+          <OnlineBadge flag={page.active} />
+        </Box>
+        <Title order={1}>Page detail</Title>
+      </Stack>
       <Group className="py-8">
         {pageStatus ? (
           <Tooltip label="Deactive this page">
