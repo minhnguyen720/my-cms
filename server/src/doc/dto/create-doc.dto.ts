@@ -3,6 +3,7 @@ export class CreateDocDto {
   description: string;
   id: string;
   pageId: string;
+  project: string;
   parent: string;
   active: boolean;
   isRemove: boolean;

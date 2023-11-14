@@ -41,7 +41,7 @@ const CreateNewField: React.FC<Props> = ({ fieldHandler }) => {
       name: "",
       type: "",
       required: false,
-      useEditor: false,
+      // useEditor: false,
     },
     validate: {
       name: (value) =>
@@ -67,6 +67,8 @@ const CreateNewField: React.FC<Props> = ({ fieldHandler }) => {
       const body = {
         ...values,
         doc: params.detailId,
+        project: params.projectNameId,
+        page: params.pageId,
       };
 
       const res = await axios.post(`${baseUrl}/fields/new`, body, {
@@ -120,7 +122,7 @@ const CreateNewField: React.FC<Props> = ({ fieldHandler }) => {
                   // { label: "imageText", value: "imageText" },
                 ]}
                 dropdownPosition="bottom"
-                nothingFound="Nobody here"
+                nothingFound="Nothing here"
                 filter={(value, item) =>
                   item.label.toLowerCase().includes(value.toLowerCase().trim())
                 }
@@ -134,14 +136,14 @@ const CreateNewField: React.FC<Props> = ({ fieldHandler }) => {
                 {...form.getInputProps("required")}
               />
             </Grid.Col>
-            {form.values.type !== "image" && (
+            {/* {form.values.type !== "image" && (
               <Grid.Col>
                 <Switch
                   label="Use editor"
                   {...form.getInputProps("useEditor")}
                 />
               </Grid.Col>
-            )}
+            )} */}
           </Grid>
           <Group position="right" className="mt-8">
             <Button variant="light" type="submit">

@@ -20,11 +20,13 @@ export class StorageService {
     }
   }
 
-  async removeFileFromDisk(path: string) {
+  async removeFileFromDisk(fileId: string) {
     try {
+      const { path } = await this.getFileDocumentById(fileId);
       if (path === null || path === undefined) throw 'Path directory is null';
       fs.unlink(path, (err) => {
-        if (err) this.logger.error(`File not exist at : ${path}`);
+        if (err)
+          this.logger.error(`[RemoveFileFromDisk] File not exist at : ${path}`);
         else this.logger.log(`Deleted file: ${path}`);
       });
     } catch (error) {
@@ -58,7 +60,7 @@ export class StorageService {
       const isExist = await this.fileModel.exists({
         _id: fileId,
       });
-      if (isExist === null) throw 'File does not exist';
+      if (isExist === null) throw '[RemoveFromCollection] File does not exist';
 
       await this.fileModel.findByIdAndDelete(fileId);
       this.logger.log(`File ${fileId} had been removed`);

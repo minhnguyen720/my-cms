@@ -1,5 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
+import { Page } from './page.schema';
+import { Project } from './project.schema';
+import { Doc } from './doc.schema';
 
 export type FieldDocument = HydratedDocument<Field>;
 
@@ -50,8 +53,14 @@ export class Field {
   @Prop()
   updatedDate: string;
 
-  @Prop()
-  doc: string;
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Doc' })
+  doc: Doc;
+
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Page' })
+  page: Page;
+
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Project' })
+  project: Project;
 
   //For image type, used to find and delete the current file from the collection
   @Prop()

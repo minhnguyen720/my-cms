@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
-import { Page } from './page.schema';
 
 export type ProjectDocument = HydratedDocument<Project>;
 
@@ -41,8 +40,8 @@ export class Project {
   @Prop()
   owner: string;
 
-  @Prop({ type: MongooseSchema.Types.Array, ref: 'Page' })
-  pages: Page[];
+  // @Prop({ type: MongooseSchema.Types.Array, ref: 'Page' })
+  // pages: Page[];
 }
 
 export const ProjectSchema = SchemaFactory.createForClass(Project);

@@ -28,7 +28,7 @@ const useToolbar = () => {
         },
       );
       openAlert("Remove the selected projects succesful", ALERT_CODES.SUCCESS);
-      return res.data;
+      return res.data.projects;
     } catch (error) {
       openAlert("Remove the selected projects failed", ALERT_CODES.ERROR);
       const res = await axios.get(`${baseUrl}/project`, {
