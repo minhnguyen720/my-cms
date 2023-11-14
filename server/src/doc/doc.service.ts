@@ -72,7 +72,7 @@ export class DocService {
   }
 
   async create(createDocDto: CreateDocDto) {
-    const { name, description, pageId, parent, active, isRemove, projectId } =
+    const { name, description, pageId, parent, active, isRemove, project } =
       createDocDto;
     const newDoc = await this.docModel.create({
       createdDate: dayjs().toString(),
@@ -80,7 +80,7 @@ export class DocService {
       createdUser: 'admin',
       updatedUser: 'admin',
       page: new Types.ObjectId(pageId),
-      project: new Types.ObjectId(projectId),
+      project: new Types.ObjectId(project),
       name,
       description,
       parent,

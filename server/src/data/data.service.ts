@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Doc } from 'src/schemas/doc.schema';
 import { Field } from 'src/schemas/field.schema';
 import { Page } from 'src/schemas/page.schema';
@@ -43,5 +43,31 @@ export class DataService {
           select: 'value',
         },
       });
+  }
+
+  async test(body) {
+    try {
+      const pageObjectId = new Types.ObjectId(body.pageId);
+      const projectObjectId = new Types.ObjectId(body.projectId);
+      const docs = await this.docModel.find({
+        page: pageObjectId,
+        project: projectObjectId,
+      });
+
+      const imageFields = [];
+      for (const doc of docs) {
+        const result = await this.fieldModel.findOne({
+          type: 'image',
+          page: pageObjectId,
+          project: projectObjectId,
+          doc: doc._id,
+        });
+        imageFields.push(result);
+      }
+
+      return imageFields;
+    } catch (error) {
+      return error;
+    }
   }
 }

@@ -8,7 +8,6 @@ import { Project } from 'src/schemas/project.schema';
 import { Field } from 'src/schemas/field.schema';
 import { Doc } from 'src/schemas/doc.schema';
 import { StorageService } from 'src/storage/storage.service';
-import { DocRefManagementService } from 'src/doc/doc_ref.service';
 
 @Injectable()
 export class TrashService {
@@ -19,7 +18,6 @@ export class TrashService {
     @InjectModel(Field.name) private fieldModel: Model<Field>,
     @InjectModel(Doc.name) private docModel: Model<Doc>,
     private readonly storageService: StorageService,
-    private readonly docRefManagement: DocRefManagementService,
   ) {}
 
   private readonly logger = new Logger(TrashService.name);
@@ -27,52 +25,9 @@ export class TrashService {
   async removeSelected(body: RestoreDto) {
     switch (body.type) {
       case 'folder':
-        try {
-          await this.folderModel.deleteMany({
-            _id: { $in: body.ids },
-            isRemove: true,
-          });
-          const newList = await this.folderModel.find({
-            project: body.projectId,
-          });
-          return {
-            isSuccess: true,
-            newList,
-          };
-        } catch (error) {
-          console.error(error);
-          return {
-            isSuccess: false,
-            newList: [],
-          };
-        }
+        this.handleDeleteFolders(body);
       case 'page':
-        try {
-          body.ids.forEach(async (item) => {
-            const page = await this.pageModel.findById(item);
-            await this.removeDocByPageId(page._id.toString());
-            const project = await this.projectModel.findById(body.projectId);
-            await project.updateOne({ $pull: { pages: page._id } });
-          });
-          await this.pageModel.deleteMany({
-            _id: { $in: body.ids },
-            isRemove: true,
-          });
-          const newList = await this.pageModel.find({
-            project: body.projectId,
-          });
-          return {
-            isSuccess: true,
-            newList,
-          };
-        } catch (error) {
-          console.error(error);
-          return {
-            isSuccess: false,
-            newList: [],
-          };
-        }
-      case 'project':
+        this.handleDeletePages(body);
       default:
         return {
           isSuccess: false,
@@ -180,57 +135,84 @@ export class TrashService {
     }
   }
 
-  // utilities
-  async removeDocByPageId(pageId: string) {
+  async handleDeletePages(body: RestoreDto) {
     try {
-      const docs = await this.docModel.find({
-        page: new Types.ObjectId(pageId),
-      });
+      for (const item of body.ids) {
+        const project = await this.projectModel.findById(body.projectId);
+        const pageObjectId = new Types.ObjectId(item);
+        const docs = await this.docModel.find({
+          page: pageObjectId,
+          project: project._id,
+        });
 
-      if (docs !== null && docs !== undefined) {
-        docs.forEach(async (doc) => {
-          const fields = await this.fieldModel.find({
-            doc: doc._id.toString(),
+        // Remove field and files relate to this page'
+        for (const doc of docs) {
+          const imageFields = await this.fieldModel.find({
+            type: 'image',
+            page: pageObjectId,
+            project: project._id,
+            doc: doc._id,
           });
-
-          const imageFields = [];
-          const otherFields = [];
-          fields.forEach((field) => {
-            if (field.type === 'image') {
-              imageFields.push(field);
-            } else {
-              otherFields.push(field);
-            }
-          });
-
-          // remove file from disk and collection
-          if (imageFields.length > 0) {
-            imageFields.forEach(async (imgField) => {
-              Promise.all([
-                this.docRefManagement.removeNewFieldRef(doc._id, imgField._id),
-                this.fieldModel.deleteOne({ _id: imgField._id }),
-                this.storageService.removeFromCollection(imgField.fileId),
-                this.storageService.removeFileFromDisk(imgField.fileId),
-              ]);
-            });
+          for (const imageField of imageFields) {
+            await Promise.all([
+              this.storageService.removeFromCollection(imageField.fileId),
+              this.storageService.removeFileFromDisk(imageField.fileId),
+            ]);
           }
-
-          // handle other field type
-          if (otherFields.length > 0) {
-            otherFields.forEach(async (field) => {
-              await this.docRefManagement.removeNewFieldRef(doc._id, field._id);
-              await this.fieldModel.deleteOne({ _id: field._id });
-            });
-          }
-
-          await this.docModel.deleteOne({
-            _id: doc._id,
+          await this.fieldModel.deleteMany({
+            page: pageObjectId,
+            project: project._id,
+            doc: doc._id,
           });
+        }
+
+        await this.docModel.deleteMany({
+          page: pageObjectId,
+          project: project._id,
         });
       }
+
+      await this.pageModel.deleteMany({
+        _id: { $in: body.ids },
+        isRemove: true,
+      });
+
+      const newList = await this.pageModel.find({
+        project: body.projectId,
+        isRemove: true,
+      });
+      return {
+        isSuccess: true,
+        newList,
+      };
     } catch (error) {
       this.logger.error(error);
-      return;
+      return {
+        isSuccess: false,
+        newList: [],
+      };
+    }
+  }
+
+  async handleDeleteFolders(body: RestoreDto) {
+    try {
+      await this.folderModel.deleteMany({
+        _id: { $in: body.ids },
+        isRemove: true,
+      });
+      const newList = await this.folderModel.find({
+        project: body.projectId,
+      });
+      return {
+        isSuccess: true,
+        newList,
+      };
+    } catch (error) {
+      this.logger.error(error);
+      return {
+        isSuccess: false,
+        newList: [],
+      };
     }
   }
 }
