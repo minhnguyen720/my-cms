@@ -35,11 +35,11 @@ export const Dashboard: React.FC<StatsGridIconsProps> = ({
   projects,
 }) => {
   const { classes } = useStyles();
-  useHydrateAtoms([[statAtom, data]])
+  useHydrateAtoms([[statAtom, data]]);
   const statData = useAtomValue(statAtom);
 
   return (
-    <div className={classes.root}>
+    <>
       <Title order={2}>Welcome back!</Title>
       <Divider className="my-8" />
       <Title order={1} className="pb-8">
@@ -84,6 +84,6 @@ export const Dashboard: React.FC<StatsGridIconsProps> = ({
       </SimpleGrid>
 
       <DashboardProjects projects={projects} />
-    </div>
+    </>
   );
 };

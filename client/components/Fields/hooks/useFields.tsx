@@ -1,6 +1,6 @@
 import { useAtom } from "jotai";
 import { fieldsAtom } from "../atoms";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "next/navigation";
 import useGetBaseUrl from "@/hooks/utilities/getUrl";

@@ -5,6 +5,8 @@ export type FieldDocument = HydratedDocument<Field>;
 
 @Schema({ collection: 'fields' })
 export class Field {
+  _id: MongooseSchema.Types.ObjectId;
+
   @Prop()
   id?: string;
 

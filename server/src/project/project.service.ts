@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { Project } from 'src/schemas/project.schema';
-import { Model } from 'mongoose';
+import { Model, Schema } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import * as dayjs from 'dayjs';
@@ -65,10 +65,8 @@ export class ProjectService {
 
   async removeSelection(userId: string, ids: string[]) {
     try {
-      await this.projectModel.updateMany(
-        { _id: { $in: ids } },
-        { isRemove: true },
-      );
+      return await this.projectModel.find({ _id: { $in: { ids } } });
+
       return await this.getProjectsByUserId(userId);
     } catch (error) {
       return await this.getProjectsByUserId(userId);
@@ -76,16 +74,17 @@ export class ProjectService {
   }
 
   formatProjectData(
-    projects: (Document<unknown, any, Project> &
-      Project & {
-        _id: Types.ObjectId;
-      })[],
+    projects: (Document<unknown, object, Project> &
+      Project &
+      Required<{
+        _id: Schema.Types.ObjectId;
+      }>)[],
   ) {
     return projects.map((project) => {
       return {
         id: project._id,
         label: project.name,
-        href: `/project/${project._id}`,
+        href: `/application/project/${project._id}`,
         createdDate: project.createdDate,
         updatedDate: project.updatedDate,
         active: project.active,

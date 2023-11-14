@@ -53,11 +53,16 @@ const TrashbinBody = ({ initialData }) => {
 
   const handleOnOpen = () => {
     open();
-  }
+  };
 
   return (
     <>
-      <Modal title="System notice" opened={opened} onClose={handleOnClose} centered>
+      <Modal
+        title="System notice"
+        opened={opened}
+        onClose={handleOnClose}
+        centered
+      >
         <Text>Any data are selected will be removed permanently</Text>
         <Group className="mt-4" position="right">
           <Button
@@ -83,10 +88,7 @@ const TrashbinBody = ({ initialData }) => {
       />
       <Group className="my-2 sm:my-4">
         <Tooltip label="Remove from trash bin">
-          <ActionIcon
-            disabled={selected.length <= 0}
-            onClick={handleOnOpen}
-          >
+          <ActionIcon disabled={selected.length <= 0} onClick={handleOnOpen}>
             <IconTrash />
           </ActionIcon>
         </Tooltip>

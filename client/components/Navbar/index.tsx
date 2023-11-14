@@ -1,7 +1,7 @@
 import { SetStateAction, useEffect, useState } from "react";
-import { Divider, Navbar as MantineNavbar } from "@mantine/core";
+import { Box, Divider, Navbar as MantineNavbar } from "@mantine/core";
 import NavLink from "@/components/NavLink";
-import { IconHome2, IconTrash } from "@tabler/icons-react";
+import { IconHome2, IconKey } from "@tabler/icons-react";
 import UserFooter from "../UserFooter";
 import { Navlink } from "@/interfaces/NavLink";
 import { userData } from "@/static/dummyUser";
@@ -9,86 +9,86 @@ import { useLocalStorage } from "@mantine/hooks";
 
 interface Props {
   hidden: boolean;
-  hiddenBreakpoint: string;
   handleCurrentMenu: (menu: number) => void;
   currentMenu: number;
+  hiddenBreakpoint: string;
   setOpened: React.Dispatch<SetStateAction<boolean>>;
 }
 
 const navbarData: Navlink[] = [
-  { icon: IconHome2, href: "/", label: "Home" }
+  { icon: IconHome2, href: "/application/dashboard", label: "Home" },
+  { icon: IconKey, href: "/application/key", label: "Key Management" },
 ];
 
-const Navbar: React.FC<Props> = ({
-  hidden,
-  hiddenBreakpoint,
-  handleCurrentMenu,
-  currentMenu,
-  setOpened,
-}) => {
-  const [active, setActive] = useState<number | undefined>(0);
-  const [isMenuFocus, setIsMenuFocus] = useLocalStorage({
-    key: "isMenuFocus",
-    defaultValue: true,
-  });
-
-  useEffect(() => {
-    setActive(currentMenu);
-  }, [currentMenu]);
-
-  useEffect(() => {
-    if (!isMenuFocus) setActive(undefined);
-  }, [isMenuFocus]);
-
+const Navbar: React.FC<Props> = ({ hidden, setOpened }) => {
   return (
-    <MantineNavbar
-      width={{ sm: 200, lg: 250 }}
-      p="xs"
+    <Box
+      className="absolute z-[100] h-fit w-full bg-[#16171a] p-6"
       hidden={hidden}
-      hiddenBreakpoint={hiddenBreakpoint}
     >
-      <MantineNavbar.Section grow mt={"md"}>
-        {navbarData.map((item, index) => {
-          return (
-            <NavLink
-              active={index === active}
-              icon={<item.icon />}
-              href={item.href ? item.href : ""}
-              label={item.label}
-              key={index}
-              handleActive={() => {
-                if (!item.children) handleCurrentMenu(Number(index));
-
-                if (item.children === undefined) setOpened(false);
-
-                setActive(index);
-                setIsMenuFocus(true);
-              }}
-            >
-              {item.children &&
-                item.children?.length > 0 &&
-                item.children.map((el) => {
-                  return (
-                    <NavLink
-                      handleActive={() => {
-                        handleCurrentMenu(Number(index));
-                        setOpened(false);
-                      }}
-                      key={el.href}
-                      label={el.label}
-                      href={el.href ? el.href : ""}
-                    />
-                  );
-                })}
-            </NavLink>
-          );
-        })}
-      </MantineNavbar.Section>
-      <Divider />
-      <MantineNavbar.Section>
-        <UserFooter userData={userData} setIsMenuFocus={setIsMenuFocus} />
-      </MantineNavbar.Section>
-    </MantineNavbar>
+      <UserFooter userData={userData} />
+      {navbarData.map((item, index) => {
+        return (
+          <NavLink
+            icon={<item.icon />}
+            href={item.href ? item.href : ""}
+            label={item.label}
+            key={index}
+            setOpened={setOpened}
+          >
+            {item.children &&
+              item.children?.length > 0 &&
+              item.children.map((el) => {
+                return (
+                  <NavLink
+                    key={el.href}
+                    label={el.label}
+                    href={el.href ? el.href : ""}
+                    setOpened={setOpened}
+                  />
+                );
+              })}
+          </NavLink>
+        );
+      })}
+    </Box>
+    // <MantineNavbar
+    //   width={{ sm: 200, lg: 250 }}
+    //   p="xs"
+    //   hiddenBreakpoint={hiddenBreakpoint}
+    //   hidden={hidden}
+    // >
+    //   <MantineNavbar.Section grow mt={"md"}>
+    //     {navbarData.map((item, index) => {
+    //       return (
+    //         <NavLink
+    //           icon={<item.icon />}
+    //           href={item.href ? item.href : ""}
+    //           label={item.label}
+    //           key={index}
+    //           setOpened={setOpened}
+    //         >
+    //           {item.children &&
+    //             item.children?.length > 0 &&
+    //             item.children.map((el) => {
+    //               return (
+    //                 <NavLink
+    //                   key={el.href}
+    //                   label={el.label}
+    //                   href={el.href ? el.href : ""}
+    //                   setOpened={setOpened}
+    //                 />
+    //               );
+    //             })}
+    //         </NavLink>
+    //       );
+    //     })}
+    //   </MantineNavbar.Section>
+    //   <Divider />
+    //   <MantineNavbar.Section>
+    //     <UserFooter userData={userData} />
+    //   </MantineNavbar.Section>
+    // </MantineNavbar>
   );
 };
 

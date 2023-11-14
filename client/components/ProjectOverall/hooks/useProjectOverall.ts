@@ -1,13 +1,7 @@
 import { useEffect } from "react";
-import { Project } from "@/interfaces/Project";
-import { useAtom, useAtomValue } from "jotai";
-import {
-  datasourceAtom,
-  datasourceDefaultAtom,
-  notFoundAtom,
-  projectIdAtom,
-} from "@/atoms";
-import { ProjectTableItem } from "@/app/project/[projectNameId]/page";
+import { useAtom } from "jotai";
+import { datasourceAtom, notFoundAtom } from "@/atoms";
+import { ProjectTableItem } from "@/app/application/project/[projectNameId]/page";
 
 const useProjectOverall = (data: ProjectTableItem[]) => {
   const [datasource, setDataSource] = useAtom(datasourceAtom);

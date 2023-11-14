@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { Files } from 'src/schemas/files.schema';
 import * as fs from 'fs';
 
@@ -10,12 +10,31 @@ export class StorageService {
 
   private readonly logger = new Logger(StorageService.name);
 
-  async removeFileFromDisk(fileId: string) {
-    const file = await this.fileModel.findById(fileId);
-    fs.unlink(file.path, (err) => {
-      if (err) this.logger.error(`File not exist at : ${file.path}`);
-      else this.logger.log(`Deleted file: ${file.path}`);
-    });
+  async getFileDocumentById(fileId) {
+    try {
+      const file = await this.fileModel.findById(fileId);
+      if (file === null || file === undefined) throw 'File does not exist';
+      return file;
+    } catch (error) {
+      this.logger.error(error);
+    }
+  }
+
+  async removeFileFromDisk(path: string) {
+    try {
+      if (path === null || path === undefined) throw 'Path directory is null';
+      fs.unlink(path, (err) => {
+        if (err) this.logger.error(`File not exist at : ${path}`);
+        else this.logger.log(`Deleted file: ${path}`);
+      });
+    } catch (error) {
+      this.logger.error(error);
+    }
+  }
+
+  async removeDirectoryFromDisk(fileId: string) {
+    const file = await this.fileModel.findById({ _id: fileId });
+    fs.rmSync(file.destination, { recursive: true, force: true });
   }
 
   async checkDuplicate(fileId: string, fieldId: string) {

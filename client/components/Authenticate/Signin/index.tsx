@@ -61,7 +61,7 @@ export const Signin = ({ setView }) => {
         rt: res.data.refresh_token,
       });
 
-      router.push("/dashboard");
+      router.push("/application/dashboard");
     } catch (error: any) {
       console.error(error);
       deleteCookie("at");

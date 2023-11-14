@@ -5,11 +5,16 @@ import { useMediaQuery } from "@mantine/hooks";
 import SearchBar from "../SearchBar";
 import { useSearchBar } from "../SearchBar/hooks";
 import { ActionIcon, Group, Tooltip } from "@mantine/core";
-import { IconPlus, IconTrash } from "@tabler/icons-react";
-import { usePathname } from "next/navigation";
+import { IconPlus, IconReload } from "@tabler/icons-react";
+import { useParams, usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import useCurrentProject from "@/hooks/utilities/useCurrentProject";
 import { MdOutlineDeleteSweep } from "react-icons/md";
+import { useSetAtom } from "jotai";
+import { datasourceAtom } from "@/atoms";
+import axios from "axios";
+import useGetBaseUrl from "@/hooks/utilities/getUrl";
+import { getCookie } from "cookies-next";
 
 const ProjectTable: React.FC = () => {
   const { rows, items } = useProjectTable();
@@ -19,6 +24,19 @@ const ProjectTable: React.FC = () => {
   const navigator = useRouter();
   const currentPathname = usePathname();
   const { getCurrentId } = useCurrentProject();
+  const setDatasource = useSetAtom(datasourceAtom);
+  const [baseUrl] = useGetBaseUrl();
+  const params = useParams();
+  const at = getCookie("at");
+
+  const handleRefreshList = async () => {
+    const listRes = await axios.get(`${baseUrl}/page/${params.projectNameId}`, {
+      headers: {
+        Authorization: `Bearer ${at}`,
+      },
+    });
+    setDatasource(listRes.data);
+  };
 
   return (
     <>
@@ -43,10 +61,15 @@ const ProjectTable: React.FC = () => {
           <Tooltip label="Go to trash bin">
             <ActionIcon
               onClick={() => {
-                navigator.push(`/trashbin/${getCurrentId()}`);
+                navigator.push(`/application/trashbin/${params.projectNameId}`);
               }}
             >
-              <MdOutlineDeleteSweep size={24}/>
+              <MdOutlineDeleteSweep size={24} />
+            </ActionIcon>
+          </Tooltip>
+          <Tooltip label="Reload list">
+            <ActionIcon onClick={handleRefreshList}>
+              <IconReload size={24} />
             </ActionIcon>
           </Tooltip>
         </Group>

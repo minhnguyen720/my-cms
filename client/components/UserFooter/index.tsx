@@ -9,15 +9,14 @@ import { useRouter } from "next/navigation";
 
 interface Props {
   userData: User;
-  setIsMenuFocus: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const { Target, Dropdown, Label, Item } = Menu;
 
-const UserFooter: React.FC<Props> = ({ userData, setIsMenuFocus }) => {
+const UserFooter: React.FC<Props> = ({ userData }) => {
   const router = useRouter();
   const at = getCookie("at");
-  const ACCOUNT_URL = `/user/${userData.id}`;
+  const ACCOUNT_URL = `application/user/${userData.id}`;
   const [baseUrl] = useGetBaseUrl();
 
   const handleSignout = async () => {
@@ -33,7 +32,6 @@ const UserFooter: React.FC<Props> = ({ userData, setIsMenuFocus }) => {
       );
       if (res.status === 200) {
         deleteCookie("at");
-        setIsMenuFocus(false);
         router.push("/authenticate");
       } else {
         errorNotification("Something went wrong. Please try again");
@@ -45,7 +43,7 @@ const UserFooter: React.FC<Props> = ({ userData, setIsMenuFocus }) => {
 
   return (
     <Box py={"sm"}>
-      <Menu width={200} position="right-end">
+      <Menu width={200} position="right-start">
         <Target>
           <NavLink
             icon={
@@ -65,7 +63,6 @@ const UserFooter: React.FC<Props> = ({ userData, setIsMenuFocus }) => {
           <Item
             icon={<IconUser />}
             onClick={() => {
-              setIsMenuFocus(false);
               router.push(ACCOUNT_URL);
             }}
           >

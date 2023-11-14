@@ -5,6 +5,7 @@ import { AuthenticateDto } from './dto/authenticate.dto';
 import * as bcrypt from 'bcrypt';
 import { Tokens } from './types';
 import { Users } from 'src/schemas/users.schema';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +15,10 @@ export class AuthService {
   ) {}
 
   private readonly logger = new Logger(AuthService.name);
+
+  async getApiKey() {
+    return randomUUID();
+  }
 
   async isUserExist(body) {
     return await this.usersService.isUserExist(body);

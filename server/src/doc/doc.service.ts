@@ -86,6 +86,9 @@ export class DocService {
       active,
       isRemove,
     });
+    const page = await this.pageModel.findById(pageId);
+    page.docs.push(newDoc);
+    page.save();
 
     return newDoc;
   }

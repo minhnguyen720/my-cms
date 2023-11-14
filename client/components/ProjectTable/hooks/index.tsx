@@ -1,22 +1,32 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { List, Accordion, Stack, Text, Title } from "@mantine/core";
+import {
+  List,
+  Accordion,
+  Stack,
+  Text,
+  Title,
+  Group,
+  ActionIcon,
+  CopyButton,
+  Tooltip,
+} from "@mantine/core";
 import dayjs from "dayjs";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useAtomValue } from "jotai";
 import { datasourceAtom } from "@/atoms";
 import MoreActions from "../components/MoreAction";
-import useCurrentProject from "@/hooks/utilities/useCurrentProject";
 import OnlineBadge from "@/components/Badge";
+import { IconCheck, IconCopy } from "@tabler/icons-react";
 
 const { Item, Panel, Control } = Accordion;
 
 const useProjectTable = () => {
   const DATE_FORMAT = "DD/MM/YYYY";
   const router = useRouter();
-  const { getCurrentId } = useCurrentProject();
   const datasource = useAtomValue(datasourceAtom);
+  const params = useParams();
 
   const rows = useMemo(() => {
     try {
@@ -32,11 +42,38 @@ const useProjectTable = () => {
               <tr
                 key={element._id}
                 onDoubleClick={() => {
-                  router.push(`/project/${getCurrentId()}/${element._id}`);
+                  router.push(
+                    `/application/project/${params.projectNameId}/${element._id}`,
+                  );
                 }}
               >
                 <td>
                   <strong>{element.name}</strong>
+                </td>
+                <td>
+                  <Group>
+                    {element._id}
+                    <CopyButton value={element._id} timeout={2000}>
+                      {({ copied, copy }) => (
+                        <Tooltip
+                          label={copied ? "Copied" : "Copy"}
+                          withArrow
+                          position="right"
+                        >
+                          <ActionIcon
+                            color={copied ? "teal" : "gray"}
+                            onClick={copy}
+                          >
+                            {copied ? (
+                              <IconCheck size="1rem" />
+                            ) : (
+                              <IconCopy size="1rem" />
+                            )}
+                          </ActionIcon>
+                        </Tooltip>
+                      )}
+                    </CopyButton>
+                  </Group>
                 </td>
                 <td>
                   {dayjs(element.createdDate).format(DATE_FORMAT).toString()}
@@ -67,7 +104,7 @@ const useProjectTable = () => {
     } catch (error) {
       return <></>;
     }
-  }, [datasource, getCurrentId, router]);
+  }, [datasource, params.projectNameId, router]);
 
   const items = useMemo(() => {
     try {
@@ -95,6 +132,30 @@ const useProjectTable = () => {
                     <List.Item>
                       <strong>Name: </strong>
                       {element.name}
+                    </List.Item>
+                    <List.Item>
+                      <strong>ID: </strong>
+                      {element._id}
+                      <CopyButton value={element._id} timeout={2000}>
+                        {({ copied, copy }) => (
+                          <Tooltip
+                            label={copied ? "Copied" : "Copy"}
+                            withArrow
+                            position="right"
+                          >
+                            <ActionIcon
+                              color={copied ? "teal" : "gray"}
+                              onClick={copy}
+                            >
+                              {copied ? (
+                                <IconCheck size="1rem" />
+                              ) : (
+                                <IconCopy size="1rem" />
+                              )}
+                            </ActionIcon>
+                          </Tooltip>
+                        )}
+                      </CopyButton>
                     </List.Item>
                     <List.Item>
                       <strong>Created date: </strong>
