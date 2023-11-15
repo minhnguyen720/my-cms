@@ -8,7 +8,7 @@ import {
   Tooltip,
   Group,
 } from "@mantine/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
 import axios from "axios";

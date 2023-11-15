@@ -1,15 +1,14 @@
 import { Dashboard } from "@/components/Dashboard";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-
-export const revalidate = 10;
+import { revalidatePath } from "next/cache";
 
 const getActiveProjectLength = async () => {
+  revalidatePath("/application/dashboard");
   const cookieJar = cookies();
   try {
     const at = cookieJar.get("at")?.value;
     const res = await fetch("http://localhost:4000/project/dashboard-stat", {
-      cache: "no-store",
       method: "GET",
       headers: {
         Accept: "*/*",

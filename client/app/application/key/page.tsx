@@ -4,11 +4,9 @@ import useGetBaseUrl from "@/hooks/utilities/getUrl";
 import {
   Box,
   Button,
-  Code,
   CopyButton,
   Group,
   Paper,
-  Spoiler,
   Text,
   TextInput,
   Title,
@@ -16,33 +14,49 @@ import {
 import axios from "axios";
 import { getCookie } from "cookies-next";
 import React, { useEffect, useState } from "react";
-import { Prism } from "@mantine/prism";
+import ExamplePublicApi from "@/components/PublicApi";
 
 const getPageDataApiStructure = `http://localhost:4000/data?pg={pageId}&key={API_KEY}`;
 
-const getPageDataApiRes = `[
-  {
-    "_id": "6551d8319346901c602662dd",
-    "name": "world",
-    "project": "6551d7bc9346901c602662c5",
-    "docs": [
-      {
-        "_id": "6551dd9f9346901c6026647f",
-        "name": "foobar",
-        "fields": [
-          {
-            "_id": "65520b3ee4902286cafd7097",
-            "value": "<p>Welcome to my CMS</p>"
-          },
-          ...
-        ],
-        "description": "123"
-      },
-      ...
-    ]
-  },
-  ...
-]
+const getPageDataApiRes = `
+{
+  "_id": "65549082fe504a9200df7e82",
+  "name": "p1",
+  "docs": [
+    {
+      "_id": "6554cec76e878d8abb8f44e7",
+      "name": "hello",
+      "description": "1",
+      "fields": [
+        {
+          "_id": "6554d308abc60f04b2e6222a",
+          "label": "esfdsf",
+          "order": 0,
+          "value": "asasdsad"
+        }
+      ]
+    },
+    {
+      "_id": "6554ced26e878d8abb8f44e9",
+      "name": "world",
+      "description": "2",
+      "fields": [
+        {
+          "_id": "6554d323abc60f04b2e62246",
+          "label": "asasdasd",
+          "order": 0,
+          "value": "zxcvzxcvzcvzxcv"
+        }
+      ]
+    },
+    {
+      "_id": "6554ced76e878d8abb8f44eb",
+      "name": "foo",
+      "description": "",
+      "fields": []
+    }
+  ]
+}
 `;
 
 const Key = () => {
@@ -92,42 +106,11 @@ const Key = () => {
       <Title order={2} className="my-4">
         How to make an API call
       </Title>
-      <Title order={3} className="my-4">
-        Get page data
-      </Title>
-      <Group>
-        <Code className="w-[80%] text-base" block>
-          {getPageDataApiStructure}
-        </Code>
-        <CopyButton
-          value={
-            getPageDataApiStructure !== undefined ? getPageDataApiStructure : ""
-          }
-        >
-          {({ copied, copy }) => (
-            <Button
-              disabled={
-                getPageDataApiStructure === undefined ||
-                getPageDataApiStructure.trim().length === 0
-              }
-              color={copied ? "teal" : "blue"}
-              onClick={copy}
-            >
-              {copied ? "Copied line" : "Copy line"}
-            </Button>
-          )}
-        </CopyButton>
-      </Group>
-      <Box>{/* explain api param goes here */}</Box>
 
-      <Title order={3} className="my-4">
-        Example of API response
-      </Title>
-      <Spoiler maxHeight={200} showLabel="Show more" hideLabel="Hide">
-        <Prism language="json" className="w-fit min-w-[35rem] text-base">
-          {getPageDataApiRes}
-        </Prism>
-      </Spoiler>
+      <ExamplePublicApi
+        code={getPageDataApiStructure}
+        exampleRes={getPageDataApiRes}
+      />
     </Box>
   );
 };
