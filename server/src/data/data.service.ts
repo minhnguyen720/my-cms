@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { CheckKeyDto } from 'src/auth/dto/check-key.dto';
 import { Doc } from 'src/schemas/doc.schema';
 import { Field } from 'src/schemas/field.schema';
 import { Page } from 'src/schemas/page.schema';
 import { Project } from 'src/schemas/project.schema';
+import { Users } from 'src/schemas/users.schema';
 
 @Injectable()
 export class DataService {
@@ -13,7 +15,10 @@ export class DataService {
     @InjectModel(Project.name) private projectModel: Model<Project>,
     @InjectModel(Doc.name) private docModel: Model<Doc>,
     @InjectModel(Field.name) private fieldModel: Model<Field>,
+    @InjectModel(Users.name) private userModel: Model<Users>,
   ) {}
+
+  private logger = new Logger(DataService.name);
 
   async getPageDataByQuery(pageId: string) {
     try {
@@ -119,6 +124,35 @@ export class DataService {
       };
     }
   }
-}
+  //Utilities
+  async checkKey(checkKeyDto: CheckKeyDto): Promise<boolean> {
+    try {
+      const { type, id, key } = checkKeyDto;
 
-//Utilities
+      switch (type) {
+        case 'page':
+          const [page, pageOwner] = await Promise.all([
+            this.pageModel.findById(id),
+            this.userModel.findOne({
+              apikey: key,
+            }),
+          ]);
+
+          return page.createdUser.id === pageOwner.id;
+        case 'project':
+          const [project, projectOwner] = await Promise.all([
+            this.projectModel.findById(id),
+            this.userModel.findOne({
+              apikey: key,
+            }),
+          ]);
+
+          return project.createdUser === projectOwner.id;
+        default:
+          return false;
+      }
+    } catch (error) {
+      this.logger.error(error);
+    }
+  }
+}

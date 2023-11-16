@@ -71,7 +71,7 @@ const Key = () => {
           Authorization: `Bearer ${at}`,
         },
       });
-      setKey(keyRes.data);
+      setKey(keyRes.data.apikey);
     };
 
     initKey();

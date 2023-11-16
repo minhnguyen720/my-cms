@@ -12,6 +12,10 @@ export class ProjectService {
     @InjectModel(Project.name) private projectModel: Model<Project>,
   ) {}
 
+  async getProjectById(id) {
+    return await this.projectModel.findById(id);
+  }
+
   async create(userId: string, createProjectDto: CreateProjectDto) {
     await this.projectModel.create({
       owner: userId,

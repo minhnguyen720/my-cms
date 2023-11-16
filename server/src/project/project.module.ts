@@ -14,5 +14,6 @@ import { Page, PageSchema } from 'src/schemas/page.schema';
   ],
   controllers: [ProjectController],
   providers: [ProjectService],
+  exports: [ProjectService],
 })
 export class ProjectModule {}

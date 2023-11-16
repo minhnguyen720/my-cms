@@ -18,5 +18,6 @@ import { Users, UsersSchema } from 'src/schemas/users.schema';
   ],
   controllers: [PageController],
   providers: [PageService],
+  exports: [PageService],
 })
 export class PageModule {}

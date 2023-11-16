@@ -58,8 +58,8 @@ export class PageService {
         .create({
           ...createPageDto,
           isRemove: false,
-          createdUser: user._id,
-          updatedUser: user._id,
+          createdUser: user,
+          updatedUser: user,
           createdDate: dayjs().toString(),
           updatedDate: dayjs().toString(),
         })

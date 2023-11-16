@@ -4,9 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  Param,
   Post,
-  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -51,8 +49,8 @@ export class AuthController {
   }
 
   @Get('key')
-  async getApiKey() {
-    return await this.authService.getApiKey();
+  async getApiKey(@GetCurrentUserId() userId) {
+    return await this.authService.getApiKey(userId);
   }
 
   @Public()
@@ -94,12 +92,12 @@ export class AuthController {
       isSuccess: boolean;
       tokens: Tokens;
     } = await this.authService.signup(authDto);
-    if (res.isSuccess) {
-      await this.mailService.sendUserConfirmationCode(
-        res.user,
-        res.tokens.access_token,
-      );
-    }
+    // if (res.isSuccess) {
+    //   await this.mailService.sendUserConfirmationCode(
+    //     res.user,
+    //     res.tokens.access_token,
+    //   );
+    // }
 
     return res;
   }

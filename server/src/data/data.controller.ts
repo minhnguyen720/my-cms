@@ -12,7 +12,16 @@ export class DataController {
     @Query('pg') pageId: string,
     @Query('key') key: string,
   ) {
-    return await this.dataService.getPageDataByQuery(pageId);
+    const isValidKey = await this.dataService.checkKey({
+      type: 'page',
+      id: pageId,
+      key,
+    });
+    if (isValidKey) {
+      return await this.dataService.getPageDataByQuery(pageId);
+    } else {
+      return false;
+    }
   }
 
   @Get('project')
@@ -20,6 +29,15 @@ export class DataController {
     @Query('pj') projectId: string,
     @Query('key') key: string,
   ) {
-    return await this.dataService.getProjectDataByQuery(projectId);
+    const isValidKey = await this.dataService.checkKey({
+      type: 'project',
+      id: projectId,
+      key,
+    });
+    if (isValidKey) {
+      return await this.dataService.getProjectDataByQuery(projectId);
+    } else {
+      return false;
+    }
   }
 }
