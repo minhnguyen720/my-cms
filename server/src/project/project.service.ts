@@ -1,15 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { Project } from 'src/schemas/project.schema';
-import { Model } from 'mongoose';
+import { Model, Schema, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Document } from 'mongoose';
 import * as dayjs from 'dayjs';
+import { TrashService } from 'src/trash/trash.service';
 
 @Injectable()
 export class ProjectService {
   constructor(
     @InjectModel(Project.name) private projectModel: Model<Project>,
+    private readonly trashService: TrashService,
   ) {}
 
   async getProjectById(id) {
@@ -67,23 +69,16 @@ export class ProjectService {
     return { projects: result };
   }
 
-  async removeSelection(userId: string, ids: string[]) {
-    try {
-      await this.projectModel.updateMany(
-        { _id: { $in: ids } },
-        { isRemove: true },
-      );
-      return await this.getProjectsByUserId(userId);
-    } catch (error) {
-      return await this.getProjectsByUserId(userId);
-    }
+  async findMany(projectIds: string[]) {
+    return await this.projectModel.find({ _id: { $in: projectIds } });
   }
 
   formatProjectData(
-    projects: (Document<unknown, any, Project> &
-      Project & {
-        _id: Types.ObjectId;
-      })[],
+    projects: (Document<unknown, object, Project> &
+      Project &
+      Required<{
+        _id: Schema.Types.ObjectId;
+      }>)[],
   ) {
     return projects.map((project) => {
       return {

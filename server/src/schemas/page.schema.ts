@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
 import { Users } from './users.schema';
-import { Doc } from './doc.schema';
+import { Project } from './project.schema';
 
 export type PageDocument = HydratedDocument<Page>;
 
@@ -31,8 +31,8 @@ export class Page {
   updatedUser: Users;
 
   // _id of Project
-  @Prop()
-  project: string;
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Project' })
+  project: Project;
 
   @Prop()
   active: boolean;
@@ -43,8 +43,8 @@ export class Page {
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Users' })
   users: Users[];
 
-  @Prop({ type: MongooseSchema.Types.Array, ref: 'Doc' })
-  docs: Doc[];
+  // @Prop({ type: MongooseSchema.Types.Array, ref: 'Doc' })
+  // docs: Doc[];
 }
 
 export const PageSchema = SchemaFactory.createForClass(Page);

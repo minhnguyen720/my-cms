@@ -7,12 +7,10 @@ import { Button, Group, Modal, Stack, TextInput } from "@mantine/core";
 import { useAtomValue, useSetAtom } from "jotai";
 import { baseUrlAtom, datasourceAtom } from "@/atoms";
 import axios from "axios";
-import dayjs from "dayjs";
 import { useParams, useRouter } from "next/navigation";
 import { useDisclosure } from "@mantine/hooks";
 import { MESSAGES } from "@/constant";
 import { ProjectTableItem } from "../page";
-import useCurrentProject from "@/hooks/utilities/useCurrentProject";
 import {
   errorNotification,
   successNotification,

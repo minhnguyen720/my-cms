@@ -3,6 +3,7 @@ import { HydratedDocument, Schema as MongooseSchema } from 'mongoose';
 import { Transform } from 'class-transformer';
 import { Page } from './page.schema';
 import { Field } from './field.schema';
+import { Project } from './project.schema';
 
 export type DocDocument = HydratedDocument<Doc>;
 
@@ -18,6 +19,9 @@ export class Doc {
   // _id of page has this doc
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Page' })
   page: Page;
+
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Project' })
+  project: Project;
 
   @Prop()
   id?: string;
@@ -40,8 +44,8 @@ export class Doc {
   updatedUser: string;
 
   // data used for rendering purpose
-  @Prop({ type: MongooseSchema.Types.Array, ref: 'Field' })
-  fields: Field[];
+  // @Prop({ type: MongooseSchema.Types.Array, ref: 'Field' })
+  // fields: Field[];
 
   // is this document is visible for client
   @Prop()

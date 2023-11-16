@@ -10,12 +10,33 @@ export class StorageService {
 
   private readonly logger = new Logger(StorageService.name);
 
+  async getFileDocumentById(fileId) {
+    try {
+      const file = await this.fileModel.findById(fileId);
+      if (file === null || file === undefined) throw 'File does not exist';
+      return file;
+    } catch (error) {
+      this.logger.error(error);
+    }
+  }
+
   async removeFileFromDisk(fileId: string) {
-    const file = await this.fileModel.findById(fileId);
-    fs.unlink(file.path, (err) => {
-      if (err) this.logger.error(`File not exist at : ${file.path}`);
-      else this.logger.log(`Deleted file: ${file.path}`);
-    });
+    try {
+      const { path } = await this.getFileDocumentById(fileId);
+      if (path === null || path === undefined) throw 'Path directory is null';
+      fs.unlink(path, (err) => {
+        if (err)
+          this.logger.error(`[RemoveFileFromDisk] File not exist at : ${path}`);
+        else this.logger.log(`Deleted file: ${path}`);
+      });
+    } catch (error) {
+      this.logger.error(error);
+    }
+  }
+
+  async removeDirectoryFromDisk(fileId: string) {
+    const file = await this.fileModel.findById({ _id: fileId });
+    fs.rmSync(file.destination, { recursive: true, force: true });
   }
 
   async checkDuplicate(fileId: string, fieldId: string) {
@@ -39,7 +60,7 @@ export class StorageService {
       const isExist = await this.fileModel.exists({
         _id: fileId,
       });
-      if (isExist === null) throw 'File does not exist';
+      if (isExist === null) throw '[RemoveFromCollection] File does not exist';
 
       await this.fileModel.findByIdAndDelete(fileId);
       this.logger.log(`File ${fileId} had been removed`);

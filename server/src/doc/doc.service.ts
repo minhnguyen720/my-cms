@@ -72,20 +72,24 @@ export class DocService {
   }
 
   async create(createDocDto: CreateDocDto) {
-    const { name, description, pageId, parent, active, isRemove } =
+    const { name, description, pageId, parent, active, isRemove, project } =
       createDocDto;
     const newDoc = await this.docModel.create({
       createdDate: dayjs().toString(),
       updatedDate: dayjs().toString(),
       createdUser: 'admin',
       updatedUser: 'admin',
-      page: pageId,
+      page: new Types.ObjectId(pageId),
+      project: new Types.ObjectId(project),
       name,
       description,
       parent,
       active,
       isRemove,
     });
+    // const page = await this.pageModel.findById(pageId);
+    // page.docs.push(newDoc);
+    // page.save();
 
     return newDoc;
   }

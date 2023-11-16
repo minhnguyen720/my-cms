@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Body, Controller, Get, Query } from '@nestjs/common';
 import { DataService } from './data.service';
 import { Public } from 'src/common/decorators';
 
@@ -39,5 +39,10 @@ export class DataController {
     } else {
       return false;
     }
+  }
+
+  @Get('test')
+  async test(@Body() body) {
+    return await this.dataService.test(body);
   }
 }

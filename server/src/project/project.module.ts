@@ -4,6 +4,7 @@ import { ProjectController } from './project.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Project, ProjectSchema } from 'src/schemas/project.schema';
 import { Page, PageSchema } from 'src/schemas/page.schema';
+import { TrashModule } from 'src/trash/trash.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { Page, PageSchema } from 'src/schemas/page.schema';
       { name: Project.name, schema: ProjectSchema },
       { name: Page.name, schema: PageSchema },
     ]),
+    TrashModule,
   ],
   controllers: [ProjectController],
   providers: [ProjectService],

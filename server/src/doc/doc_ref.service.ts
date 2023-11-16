@@ -22,6 +22,7 @@ export class DocRefManagementService {
       this.docModel.findById(docId),
       this.fieldModel.findById(fieldId),
     ]);
+    if (doc === null) return;
     await doc.updateOne({ $pull: { fields: field._id } });
   }
 }

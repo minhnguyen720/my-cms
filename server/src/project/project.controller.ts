@@ -2,10 +2,14 @@ import { Controller, Get, Post, Body, Put } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { GetCurrentUserId } from 'src/common/decorators';
+import { TrashService } from 'src/trash/trash.service';
 
 @Controller('project')
 export class ProjectController {
-  constructor(private readonly projectService: ProjectService) {}
+  constructor(
+    private readonly projectService: ProjectService,
+    private readonly trashService: TrashService,
+  ) {}
 
   @Post()
   async create(
@@ -38,6 +42,8 @@ export class ProjectController {
     @GetCurrentUserId() userId: string,
     @Body() body: { ids: string[] },
   ) {
-    return await this.projectService.removeSelection(userId, body.ids);
+    const projects = await this.projectService.findMany(body.ids);
+    await this.trashService.handleDeleteProjects(projects);
+    return await this.projectService.findAll(userId);
   }
 }
