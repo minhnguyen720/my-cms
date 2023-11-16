@@ -112,9 +112,12 @@ export class UsersService {
       if (isDuplicateUserName !== null) throw 'This username already exist';
 
       const hash = this.hashData(authDto.password);
+      const userId = `USR${uuidv4()}`;
+      const apikey = this.hashData(authDto.username + userId);
 
       const newUser = await this.usersModel.create({
-        id: `USR${uuidv4()}`,
+        id: userId,
+        apikey,
         username: authDto.username,
         password: hash,
         role: 'admin',
