@@ -56,10 +56,9 @@ export class PageService {
       });
       await this.pageModel.create({
         ...createPageDto,
-        project: new Types.ObjectId(createPageDto.project),
         isRemove: false,
-        createdUser: user._id,
-        updatedUser: user._id,
+        createdUser: user,
+        updatedUser: user,
         createdDate: dayjs().toString(),
         updatedDate: dayjs().toString(),
       });

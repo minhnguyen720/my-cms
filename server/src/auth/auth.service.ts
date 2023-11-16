@@ -5,19 +5,37 @@ import { AuthenticateDto } from './dto/authenticate.dto';
 import * as bcrypt from 'bcrypt';
 import { Tokens } from './types';
 import { Users } from 'src/schemas/users.schema';
-import { randomUUID } from 'crypto';
+import { ProjectService } from 'src/project/project.service';
+import { PageService } from 'src/page/page.service';
+import { CheckKeyDto } from './dto/check-key.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private projectService: ProjectService,
+    private pageService: PageService,
   ) {}
 
   private readonly logger = new Logger(AuthService.name);
 
-  async getApiKey() {
-    return randomUUID();
+  async getApiKey(userId) {
+    try {
+      const user = await this.usersService.findUserById(userId);
+      if (user)
+        return {
+          apikey: user.apikey,
+        };
+      else {
+        throw 'User not found';
+      }
+    } catch (error) {
+      this.logger.error(error);
+      return {
+        apikey: undefined,
+      };
+    }
   }
 
   async isUserExist(body) {

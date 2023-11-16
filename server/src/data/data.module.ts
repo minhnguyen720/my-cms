@@ -6,6 +6,8 @@ import { Page, PageSchema } from 'src/schemas/page.schema';
 import { Project, ProjectSchema } from 'src/schemas/project.schema';
 import { Doc, DocSchema } from 'src/schemas/doc.schema';
 import { Field, FieldSchema } from 'src/schemas/field.schema';
+import { AuthModule } from 'src/auth/auth.module';
+import { Users, UsersSchema } from 'src/schemas/users.schema';
 
 @Module({
   imports: [
@@ -14,6 +16,7 @@ import { Field, FieldSchema } from 'src/schemas/field.schema';
       { name: Page.name, schema: PageSchema },
       { name: Doc.name, schema: DocSchema },
       { name: Field.name, schema: FieldSchema },
+      { name: Users.name, schema: UsersSchema },
     ]),
   ],
   controllers: [DataController],

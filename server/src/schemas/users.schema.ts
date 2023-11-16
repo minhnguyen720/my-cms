@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
 
 export type UsersDocument = HydratedDocument<Users>;
 
@@ -7,6 +7,9 @@ export type UsersDocument = HydratedDocument<Users>;
 export class Users {
   // @Prop({ type: Types.ObjectId })
   // _id: Types.ObjectId;
+
+  @Prop()
+  apikey: string;
 
   @Prop({ default: false })
   emailConfirm: boolean;

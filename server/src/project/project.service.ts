@@ -14,6 +14,10 @@ export class ProjectService {
     private readonly trashService: TrashService,
   ) {}
 
+  async getProjectById(id) {
+    return await this.projectModel.findById(id);
+  }
+
   async create(userId: string, createProjectDto: CreateProjectDto) {
     await this.projectModel.create({
       owner: userId,

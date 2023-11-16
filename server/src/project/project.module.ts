@@ -16,5 +16,6 @@ import { TrashModule } from 'src/trash/trash.module';
   ],
   controllers: [ProjectController],
   providers: [ProjectService],
+  exports: [ProjectService],
 })
 export class ProjectModule {}

@@ -13,6 +13,21 @@ export class UsersService {
 
   private readonly logger = new Logger(UsersService.name);
 
+  async findUserByKey(key) {
+    try {
+      const user = await this.usersModel.findOne({
+        apikey: key,
+      });
+      if (user === null || user === undefined) throw 'User not found';
+      else {
+        this.logger.log(`Found user ${user.username}`);
+      }
+      return user;
+    } catch (error) {
+      this.logger.error(error);
+    }
+  }
+
   async removeRtHash(userId: string) {
     try {
       await this.usersModel.updateOne(
@@ -112,9 +127,12 @@ export class UsersService {
       if (isDuplicateUserName !== null) throw 'This username already exist';
 
       const hash = this.hashData(authDto.password);
+      const userId = `USR${uuidv4()}`;
+      const apikey = this.hashData(authDto.username + userId);
 
       const newUser = await this.usersModel.create({
-        id: `USR${uuidv4()}`,
+        id: userId,
+        apikey,
         username: authDto.username,
         password: hash,
         role: 'admin',
