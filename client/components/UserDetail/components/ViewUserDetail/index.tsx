@@ -1,12 +1,9 @@
-import { User } from "@/interfaces/User";
+"use client";
+
 import {
-  Text,
   Avatar,
-  Title,
   Flex,
   Box,
-  Divider,
-  Group,
   AspectRatio,
   FileButton,
   Overlay,
@@ -14,7 +11,6 @@ import {
 import dayjs from "dayjs";
 import TextFieldDisplay from "./components/TextFieldDisplay";
 import { IconEdit } from "@tabler/icons-react";
-import path from "path";
 import {
   successNotification,
   errorNotification,
@@ -26,52 +22,60 @@ import axios from "axios";
 import { getCookie } from "cookies-next";
 import { redirect } from "next/navigation";
 import { useState } from "react";
+import { useAtomValue } from "jotai";
+import { userAtom } from "@/components/Navbar";
 
-interface Props {
-  userData: User;
-}
+interface Props {}
 
-const ViewUserDetail: React.FC<Props> = ({ userData }) => {
+const ViewUserDetail: React.FC<Props> = () => {
+  const user = useAtomValue(userAtom);
   const displayData = [
     {
       label: "Name",
-      text: userData.name,
+      text: typeof user !== "boolean" ? user.name : "",
     },
     {
       label: "Username",
-      text: userData.username,
+      text: typeof user !== "boolean" ? user.username : "",
     },
     {
       label: "Account created date",
-      text: dayjs(userData.createDated).format("DD/MM/YYYY").toString(),
+      text:
+        typeof user !== "boolean"
+          ? dayjs(user.createdDate).format("DD/MM/YYYY, hh:mm").toString()
+          : "",
     },
     {
       label: "Account last update",
-      text: dayjs(userData.updatedDate).format("DD/MM/YYYY").toString(),
+      text:
+        typeof user !== "boolean"
+          ? dayjs(user.updatedDate).format("DD/MM/YYYY, hh:mm").toString()
+          : "",
     },
     {
       label: "Email",
-      text: userData.email,
+      text: typeof user !== "boolean" ? user.email : "",
     },
   ];
   const { hovered, ref } = useHover();
   const [baseUrl] = useGetBaseUrl();
   const { showLoading, hideLoading } = useLoading();
   const [path, setPath] = useState(
-    userData.avatar.length > 0 ? userData.avatar : "",
+    typeof user !== "boolean" && user.avatar?.length > 0 ? user.avatar : "",
   );
   const at = getCookie("at");
 
   const upload = async (file: File) => {
     try {
+      if (typeof user === "boolean") return;
       showLoading();
       if (at === null || at === undefined) {
         redirect("/application/dashboard");
       }
 
       let formData = new FormData();
-      formData.append("bizFolder", `users/${userData.id}`); // must be appended first to make sure req.body is fully populated
-      formData.append("userId", userData.id);
+      formData.append("bizFolder", `users/${user.id}`); // must be appended first to make sure req.body is fully populated
+      formData.append("userId", user.id);
       formData.append("type", "avatar");
       formData.append("file", file);
       const res = await axios.post(`${baseUrl}/storage/store`, formData, {

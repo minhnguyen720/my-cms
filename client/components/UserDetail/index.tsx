@@ -5,15 +5,12 @@ import { Tabs } from "@mantine/core";
 import { IconUserCircle, IconUserCog } from "@tabler/icons-react";
 import ViewUserDetail from "./components/ViewUserDetail";
 import EditUserDetail from "./components/EditUserDetail";
-import { User } from "@/interfaces/User";
 
 const { List, Tab, Panel } = Tabs;
 
-interface Props {
-  userData: User;
-}
+interface Props {}
 
-const UserDetail: React.FC<Props> = ({ userData }) => {
+const UserDetail: React.FC<Props> = () => {
   return (
     <Tabs defaultValue="view" radius="md">
       <List>
@@ -25,7 +22,7 @@ const UserDetail: React.FC<Props> = ({ userData }) => {
         </Tab>
       </List>
       <Panel value="view" pt={"1.5rem"}>
-        <ViewUserDetail userData={userData} />
+        <ViewUserDetail />
       </Panel>
       <Panel value="edit" pt={"1.5rem"}>
         <EditUserDetail />

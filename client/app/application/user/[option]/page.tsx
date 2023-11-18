@@ -1,63 +1,53 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import useGetBaseUrl from "@/hooks/utilities/getUrl";
 import { getCookie } from "cookies-next";
+import { Button, PasswordInput, Stack, TextInput, Title } from "@mantine/core";
 import {
-  Box,
-  Button,
-  PasswordInput,
-  Stack,
-  Text,
-  TextInput,
-  Title,
-} from "@mantine/core";
-import { errorNotification } from "@/hooks/notifications/notificationPreset";
-import { useAtomValue } from "jotai";
-import { loadableUserAtom } from "@/components/Navbar";
+  errorNotification,
+  successNotification,
+} from "@/hooks/notifications/notificationPreset";
 import { useForm } from "@mantine/form";
+import axios from "axios";
+import { useAtom } from "jotai";
+import { userAsyncAtom } from "@/components/Navbar";
+import { useRouter } from "next/navigation";
 
 const UpdateUser = ({ params }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [baseUrl] = useGetBaseUrl();
   const at = getCookie("at");
-  const user = useAtomValue(loadableUserAtom);
   const form = useForm();
+  const [, updateUser] = useAtom(userAsyncAtom);
+  const router = useRouter();
 
-  const handleChangeName = () => {
+  const handleUpdateSecurity = async () => {
     try {
       setLoading(true);
-    } catch (error) {
-      console.error(error);
-      errorNotification("Fail to update your new name. Please try again.");
-    } finally {
-      form.reset();
-      setTimeout(() => {
-        setLoading(false);
-      }, 2000);
-    }
-  };
 
-  const handleChangePassword = () => {
-    try {
-      setLoading(true);
-    } catch (error) {
-      console.error(error);
-      errorNotification("Fail to update your new password. Please try again.");
-    } finally {
-      form.reset();
-      setTimeout(() => {
-        setLoading(false);
-      }, 2000);
-    }
-  };
+      const res = await axios.put(
+        `${baseUrl}/users/update/${params.option}`,
+        form.values,
+        {
+          headers: {
+            Authorization: `Bearer ${at}`,
+          },
+        },
+      );
 
-  const handleChangeEmail = () => {
-    try {
-      setLoading(true);
+      if (res.data.isSuccess) {
+        successNotification(`Update your ${params.option} success`);
+        updateUser();
+        router.push("/application/user");
+      } else
+        errorNotification(
+          res.data.message.length > 0
+            ? res.data.message
+            : `Fail to update your new ${params.option}. Please try again.`,
+        );
     } catch (error) {
       console.error(error);
-      errorNotification("Fail to update your new email. Please try again.");
     } finally {
       form.reset();
       setTimeout(() => {
@@ -70,7 +60,15 @@ const UpdateUser = ({ params }) => {
     name: (
       <Stack className="mx-auto w-1/2">
         <TextInput label="New name" {...form.getInputProps("name")} />
-        <Button className="w-fit" loading={loading} onClick={handleChangeName}>
+        <PasswordInput
+          label="Your password"
+          {...form.getInputProps("password")}
+        />
+        <Button
+          className="w-fit"
+          loading={loading}
+          onClick={handleUpdateSecurity}
+        >
           Update
         </Button>
       </Stack>
@@ -88,7 +86,7 @@ const UpdateUser = ({ params }) => {
         <Button
           className="w-fit"
           loading={loading}
-          onClick={handleChangePassword}
+          onClick={handleUpdateSecurity}
         >
           Update
         </Button>
@@ -101,7 +99,15 @@ const UpdateUser = ({ params }) => {
           {...form.getInputProps("currentEmail")}
         />
         <TextInput label="New email" {...form.getInputProps("newEmail")} />
-        <Button className="w-fit" loading={loading} onClick={handleChangeEmail}>
+        <PasswordInput
+          label="Your password"
+          {...form.getInputProps("password")}
+        />
+        <Button
+          className="w-fit"
+          loading={loading}
+          onClick={handleUpdateSecurity}
+        >
           Update
         </Button>
       </Stack>

@@ -13,6 +13,118 @@ export class UsersService {
 
   private readonly logger = new Logger(UsersService.name);
 
+  async updateUserName(
+    userId: string,
+    body: {
+      name: string;
+      password: string;
+    },
+  ) {
+    try {
+      const user = await this.usersModel.findOne({
+        id: userId,
+      });
+      if (user) {
+        if (!bcrypt.compareSync(body.password, user.password))
+          throw 'Wrong password';
+
+        await user.updateOne({
+          name: body.name,
+          updatedDate: dayjs().toDate(),
+        });
+
+        this.logger.log(`Update name for user ${userId} success`);
+        return {
+          isSuccess: true,
+          message: '',
+        };
+      } else {
+        this.logger.error('User is undefined');
+        return {
+          isSuccess: false,
+        };
+      }
+    } catch (error) {
+      this.logger.error(`Update name for user ${userId} fail`);
+      return {
+        isSuccess: false,
+        message: error,
+      };
+    }
+  }
+
+  async updateUserPassword(
+    userId: string,
+    body: {
+      currentPassword: string;
+      newPassword: string;
+    },
+  ) {
+    try {
+      const user = await this.usersModel.findOne({
+        id: userId,
+      });
+
+      if (!bcrypt.compareSync(body.currentPassword, user.password))
+        throw 'Wrong password';
+
+      const hash = this.hashData(body.newPassword);
+      await this.usersModel.updateOne({
+        password: hash,
+        updatedDate: dayjs().toDate(),
+      });
+
+      this.logger.log(`Update password for user ${userId} success`);
+      return {
+        isSuccess: true,
+        message: '',
+      };
+    } catch (error) {
+      this.logger.error(`Update password for user ${userId} fail`);
+      return {
+        isSuccess: false,
+        message: error,
+      };
+    }
+  }
+
+  async updateUserEmail(
+    userId: string,
+    body: {
+      currentEmail: string;
+      newEmail: string;
+      password: string;
+    },
+  ) {
+    try {
+      const user = await this.usersModel.findOne({
+        id: userId,
+      });
+
+      if (!bcrypt.compareSync(body.password, user.password))
+        throw 'Wrong password';
+      else if (user.email !== body.currentEmail) throw 'Wrong email';
+
+      await user.updateOne({
+        email: body.newEmail,
+        updatedDate: dayjs().toDate(),
+      });
+
+      this.logger.log(`Update email for user ${userId} success`);
+      return {
+        isSuccess: true,
+        message: '',
+      };
+    } catch (error) {
+      this.logger.error(`Update email for user ${userId} fail`);
+      this.logger.error(error);
+      return {
+        isSuccess: false,
+        message: error,
+      };
+    }
+  }
+
   async updateUserAvatar(userId, path) {
     await this.usersModel.findOneAndUpdate(
       {
@@ -29,7 +141,7 @@ export class UsersService {
       });
       if (user === null || user === undefined) throw 'User not found';
       else {
-        this.logger.log(`Found user ${user.username}`);
+        this.logger.log(`Found user ${user.id}`);
       }
       return user;
     } catch (error) {
@@ -56,14 +168,17 @@ export class UsersService {
 
   async initUserAtom(userId: string): Promise<Users> {
     try {
+      this.logger.log('Init user atom...');
       const user = await this.usersModel
         .findOne({
           id: userId,
         })
-        .select('_id userId email name role createdDate updatedDate avatar');
+        .select(
+          '_id userId username email name role createdDate updatedDate avatar',
+        );
       if (user === null || user === undefined) throw 'User not found';
       else {
-        this.logger.log(`Found user ${user.username}`);
+        this.logger.log(`Found user ${userId}`);
       }
       return user;
     } catch (error) {
@@ -73,12 +188,13 @@ export class UsersService {
 
   async findUserById(userId: string): Promise<Users> {
     try {
+      this.logger.log('Finding user by user id...');
       const user = await this.usersModel.findOne({
         id: userId,
       });
       if (user === null || user === undefined) throw 'User not found';
       else {
-        this.logger.log(`Found user ${user.username}`);
+        this.logger.log(`Found user ${userId}`);
       }
       return user;
     } catch (error) {
@@ -88,47 +204,15 @@ export class UsersService {
 
   async findOne(username: string): Promise<Users | undefined> {
     try {
+      this.logger.log('Finding user by username...');
       const user = await this.usersModel.findOne({ username: username });
       if (user === null || user === undefined) throw 'User not found';
       else {
-        this.logger.log(`Found user ${user.username}`);
+        this.logger.log(`Found user ${user.id}`);
       }
       return user;
     } catch (error) {
       this.logger.error(error);
-    }
-  }
-
-  async isUserExist(body: { username: string; email: string }) {
-    const [usernameCheck, emailCheck] = await Promise.all([
-      this.usersModel.exists({
-        username: body.username,
-      }),
-      this.usersModel.exists({
-        email: body.email,
-      }),
-    ]);
-
-    if (usernameCheck !== null && emailCheck !== null) {
-      return {
-        isSuccess: false,
-        message: 'This username and email are already used',
-      };
-    } else if (usernameCheck !== null) {
-      return {
-        isSuccess: false,
-        message: 'This username is already used',
-      };
-    } else if (emailCheck !== null) {
-      return {
-        isSuccess: false,
-        message: 'This email is already used',
-      };
-    } else {
-      return {
-        isSuccess: true,
-        message: '',
-      };
     }
   }
 
@@ -185,6 +269,7 @@ export class UsersService {
     }
   }
 
+  // Utilities
   hashData(data: string) {
     const saltRounds = 10;
     const salt = bcrypt.genSaltSync(saltRounds);
@@ -206,5 +291,38 @@ export class UsersService {
         new: true,
       },
     );
+  }
+
+  async isUserExist(body: { username: string; email: string }) {
+    const [usernameCheck, emailCheck] = await Promise.all([
+      this.usersModel.exists({
+        username: body.username,
+      }),
+      this.usersModel.exists({
+        email: body.email,
+      }),
+    ]);
+
+    if (usernameCheck !== null && emailCheck !== null) {
+      return {
+        isSuccess: false,
+        message: 'This username and email are already used',
+      };
+    } else if (usernameCheck !== null) {
+      return {
+        isSuccess: false,
+        message: 'This username is already used',
+      };
+    } else if (emailCheck !== null) {
+      return {
+        isSuccess: false,
+        message: 'This email is already used',
+      };
+    } else {
+      return {
+        isSuccess: true,
+        message: '',
+      };
+    }
   }
 }

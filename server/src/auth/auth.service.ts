@@ -5,9 +5,6 @@ import { AuthenticateDto } from './dto/authenticate.dto';
 import * as bcrypt from 'bcrypt';
 import { Tokens } from './types';
 import { Users } from 'src/schemas/users.schema';
-import { ProjectService } from 'src/project/project.service';
-import { PageService } from 'src/page/page.service';
-import { CheckKeyDto } from './dto/check-key.dto';
 
 @Injectable()
 export class AuthService {
@@ -55,6 +52,7 @@ export class AuthService {
     userId: string,
   ): Promise<{ user: Users | undefined; isAuth: boolean }> {
     try {
+      this.logger.log('Running authenticate service');
       const user = await this.usersService.findUserById(userId);
 
       return {

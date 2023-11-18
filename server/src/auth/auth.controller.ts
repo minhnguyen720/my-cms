@@ -97,12 +97,6 @@ export class AuthController {
       isSuccess: boolean;
       tokens: Tokens;
     } = await this.authService.signup(authDto);
-    // if (res.isSuccess) {
-    //   await this.mailService.sendUserConfirmationCode(
-    //     res.user,
-    //     res.tokens.access_token,
-    //   );
-    // }
 
     return res;
   }

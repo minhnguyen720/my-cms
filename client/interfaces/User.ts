@@ -16,7 +16,7 @@ export interface User {
   // Value use for login purpose
   password: string;
 
-  createDated?: Date;
+  createdDate?: Date;
 
   updatedDate?: Date;
 

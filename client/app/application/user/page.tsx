@@ -1,6 +1,6 @@
-import UserDetail from "@/components/UserDetail";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+"use client";
+
+import dynamic from "next/dynamic";
 
 interface Props {
   params: {
@@ -8,32 +8,12 @@ interface Props {
   };
 }
 
-const getProfile = async () => {
-  try {
-    const cookieJar = cookies();
-    const at = cookieJar.get("at");
-    if (at === undefined || at === null) {
-      redirect("/application/dashboard");
-    }
+const UserDetail = dynamic(() => import("@/components/UserDetail"), {
+  ssr: false,
+});
 
-    const profile = await fetch(`${process.env.BASE_URL}/auth/profile`, {
-      headers: {
-        Accept: "*/*",
-        Authorization: `Bearer ${at?.value}`,
-      },
-    });
-
-    return profile.json();
-  } catch (error) {
-    return {
-      isSuccess: false,
-    };
-  }
-};
-
-const UserDetailPage: React.FC<Props> = async () => {
-  const userData = await getProfile();
-  return <UserDetail userData={userData} />;
+const UserDetailPage: React.FC<Props> = () => {
+  return <UserDetail />;
 };
 
 export default UserDetailPage;
