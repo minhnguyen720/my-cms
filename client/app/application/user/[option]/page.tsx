@@ -16,37 +16,17 @@ import {
   errorNotification,
   successNotification,
 } from "@/hooks/notifications/notificationPreset";
-import { useForm, zodResolver } from "@mantine/form";
+import { useForm } from "@mantine/form";
 import axios from "axios";
 import { useAtom, useAtomValue } from "jotai";
 import { userAsyncAtom, userAtom } from "@/components/Navbar";
 import { useRouter } from "next/navigation";
-import { z } from "zod";
 
 const UpdateUser = ({ params }) => {
-  // const schema = z.object({
-  //   name: z
-  //     .string()
-  //     .min(5, { message: "Name should have at least 2 letters" })
-  //     .max(20, { message: "Name has at most 20 letters" }),
-  //   email: z.string().email({ message: "Invalid email" }),
-  //   password: z
-  //     .string()
-  //     .min(5, {
-  //       message:
-  //         "Invalid password. Password must has length from 5 to 30 character and can not have whitespace character.",
-  //     })
-  //     .max(30, {
-  //       message:
-  //         "Invalid password. Password must has length from 5 to 30 character and can not have whitespace character.",
-  //     }),
-  // });
   const [loading, setLoading] = useState<boolean>(false);
   const [baseUrl] = useGetBaseUrl();
   const at = getCookie("at");
-  const form = useForm({
-    // validate: zodResolver(schema),
-  });
+  const form = useForm({});
   const [, updateUser] = useAtom(userAsyncAtom);
   const router = useRouter();
   const [resendWait, setResendWait] = useState<boolean>(false);
