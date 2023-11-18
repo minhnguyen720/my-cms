@@ -7,8 +7,6 @@ import { PassportModule } from '@nestjs/passport';
 import { AccessTokenStrategy, RefreshTokenStrategy } from './strategies';
 import { MailModule } from 'src/mail/mail.module';
 import { ConfirmationModule } from 'src/confirmation/confirmation.module';
-import { PageModule } from 'src/page/page.module';
-import { ProjectModule } from 'src/project/project.module';
 @Module({
   imports: [
     UsersModule,
@@ -16,8 +14,6 @@ import { ProjectModule } from 'src/project/project.module';
     PassportModule,
     MailModule,
     ConfirmationModule,
-    PageModule,
-    ProjectModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, AccessTokenStrategy, RefreshTokenStrategy],

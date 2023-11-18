@@ -1,101 +1,43 @@
 "use client";
 
-import {
-  Avatar,
-  Center,
-  Stack,
-  TextInput,
-  Box,
-  PasswordInput,
-  Button,
-  Group,
-  Overlay,
-  FileButton,
-  AspectRatio,
-} from "@mantine/core";
-import { useEffect, useState } from "react";
-import useUserFormValidate from "../../hooks/useUserFormValidate";
-import { User } from "@/interfaces/User";
-import { useHover } from "@mantine/hooks";
-import { IconEdit } from "@tabler/icons-react";
+import { Button, Stack } from "@mantine/core";
+import { IconMail, IconLock, IconUser } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
 
-interface Props {
-  userData: User;
-}
-
-const EditUserDetail:React.FC<Props> = ({ userData }) => {
-  const { form } = useUserFormValidate(userData);
-  const { hovered, ref } = useHover();
-  const [avatar, setAvatar] = useState<File | null>(null);
-
-  useEffect(() => {
-    if (avatar !== null) console.log("avatar changed");
-  }, [avatar]);
+const EditUserDetail = () => {
+  const router = useRouter();
+  const handleUpdateOptions = (e) => {
+    router.push(`/application/user/${e.currentTarget.name}`);
+  };
 
   return (
-    <Box>
-      <AspectRatio
-        ratio={1 / 1}
-        maw={90}
-        sx={{ width: "content-fit" }}
-        mx="auto"
-        ref={ref}
+    <Stack className="w-fit">
+      <Button
+        name="name"
+        variant="light"
+        leftIcon={<IconUser />}
+        onClick={handleUpdateOptions}
       >
-        <Avatar src={userData.avatar} alt="user avatar" size={"lg"} />
-        {hovered && (
-          <FileButton onChange={setAvatar} accept="image/png,image/jpeg">
-            {(props) => (
-              <Overlay
-                {...props}
-                center
-                color="#000"
-                opacity={0.85}
-                className="w-full rounded"
-              >
-                <IconEdit />
-              </Overlay>
-            )}
-          </FileButton>
-        )}
-      </AspectRatio>
-
-      <Box
-        sx={{
-          padding: "2rem 25%",
-        }}
+        Change your name
+      </Button>
+      <Button
+        name="password"
+        variant="light"
+        leftIcon={<IconLock />}
+        onClick={handleUpdateOptions}
       >
-        <Stack spacing={"md"}>
-          <form onSubmit={form.onSubmit((values) => console.log(values))}>
-            <TextInput
-              label="Email"
-              withAsterisk
-              {...form.getInputProps("email")}
-            />
-            <TextInput
-              label="Name"
-              withAsterisk
-              {...form.getInputProps("name")}
-            />
-            <TextInput
-              label="Username"
-              withAsterisk
-              {...form.getInputProps("userName")}
-            />
-            <TextInput label="Bio" {...form.getInputProps("bio")} />
-            <PasswordInput
-              disabled
-              label="Password"
-              withAsterisk
-              {...form.getInputProps("password")}
-            />
-            <Group position="right" mt={"md"}>
-              <Button type="submit">Save</Button>
-            </Group>
-          </form>
-        </Stack>
-      </Box>
-    </Box>
+        Change password
+      </Button>
+      <Button
+        name="email"
+        variant="light"
+        leftIcon={<IconMail />}
+        onClick={handleUpdateOptions}
+      >
+        Change email
+      </Button>
+    </Stack>
   );
-}
+};
 
 export default EditUserDetail;

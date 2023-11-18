@@ -13,6 +13,15 @@ export class UsersService {
 
   private readonly logger = new Logger(UsersService.name);
 
+  async updateUserAvatar(userId, path) {
+    await this.usersModel.findOneAndUpdate(
+      {
+        id: userId,
+      },
+      { avatar: path },
+    );
+  }
+
   async findUserByKey(key) {
     try {
       const user = await this.usersModel.findOne({
@@ -40,6 +49,23 @@ export class UsersService {
         },
       );
       this.logger.log(`User ${userId} signout`);
+    } catch (error) {
+      this.logger.error(error);
+    }
+  }
+
+  async initUserAtom(userId: string): Promise<Users> {
+    try {
+      const user = await this.usersModel
+        .findOne({
+          id: userId,
+        })
+        .select('_id userId email name role createdDate updatedDate avatar');
+      if (user === null || user === undefined) throw 'User not found';
+      else {
+        this.logger.log(`Found user ${user.username}`);
+      }
+      return user;
     } catch (error) {
       this.logger.error(error);
     }
@@ -141,6 +167,7 @@ export class UsersService {
         gender: authDto.gender,
         email: authDto.email,
         name: authDto.name,
+        avatar: '',
       });
 
       return {

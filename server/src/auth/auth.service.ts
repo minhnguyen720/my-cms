@@ -14,8 +14,6 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-    private projectService: ProjectService,
-    private pageService: PageService,
   ) {}
 
   private readonly logger = new Logger(AuthService.name);
@@ -44,11 +42,7 @@ export class AuthService {
 
   async getProfile(userId: string) {
     try {
-      const user = await this.usersService.findUserById(userId);
-      return {
-        username: user.username,
-        userId: user.id,
-      };
+      return await this.usersService.findUserById(userId);
     } catch (error) {
       return {
         isFalse: true,
@@ -74,6 +68,10 @@ export class AuthService {
         isAuth: false,
       };
     }
+  }
+
+  async getProfileAtom(userId: string) {
+    return await this.usersService.initUserAtom(userId);
   }
 
   async signout(userId: string) {

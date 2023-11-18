@@ -33,6 +33,11 @@ export class AuthController {
     return await this.authService.getProfile(userId);
   }
 
+  @Get('profile/atom')
+  async getProfileAtom(@GetCurrentUserId() userId: string) {
+    return await this.authService.getProfileAtom(userId);
+  }
+
   @Public()
   @Post('signin')
   @HttpCode(HttpStatus.OK)

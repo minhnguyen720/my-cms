@@ -10,36 +10,15 @@ import { getCookie } from "cookies-next";
 
 export type User = {
   userId: string;
-  username: string;
+  name: string;
   at: string;
   rt: string;
+  avatar: string;
   // role: string;
-};
-
-const userAtom = atom<User | null>(null);
-
-export const useUser = () => {
-  const [user, setUser] = useAtom(userAtom);
-
-  const assignUser = (newUser: User) => {
-    setUser(newUser);
-  };
-
-  const getUser = () => {
-    return user;
-  };
-
-  const getUserAt = () => {
-    if (user === null) return undefined;
-    return user?.at;
-  };
-
-  return { getUser, assignUser, getUserAt };
 };
 
 const AuthenticateUser = ({ children }) => {
   const [baseUrl] = useGetBaseUrl();
-  const userHandler = useUser();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -81,7 +60,7 @@ const AuthenticateUser = ({ children }) => {
     };
 
     authenticateUser();
-  }, [baseUrl, pathname, router, userHandler]);
+  }, [baseUrl, pathname, router]);
 
   return <>{children}</>;
 };

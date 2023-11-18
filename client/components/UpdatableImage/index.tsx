@@ -49,7 +49,7 @@ const UpdatableImage: React.FC<Props> = ({
   const [baseUrl] = useGetBaseUrl();
   const at = getCookie("at");
   const [path, setPath] = useState<string | undefined | null>(() => {
-    if (src) return `${baseUrl}/storage${src}`;
+    if (src) return src;
     else return undefined;
   });
 
@@ -86,8 +86,7 @@ const UpdatableImage: React.FC<Props> = ({
       });
       if (res.data.isSuccess) {
         successNotification("Upload successfully");
-        const newPath = res.data.path;
-        setPath(`${baseUrl}/storage${newPath}`);
+        setPath(res.data.path);
       } else {
         errorNotification("Fail to upload file");
       }

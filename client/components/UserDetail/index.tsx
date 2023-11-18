@@ -1,19 +1,19 @@
 "use client";
 
-import { User } from "@/interfaces/User";
 import React from "react";
-import { Tabs, rem } from "@mantine/core";
+import { Tabs } from "@mantine/core";
 import { IconUserCircle, IconUserCog } from "@tabler/icons-react";
 import ViewUserDetail from "./components/ViewUserDetail";
 import EditUserDetail from "./components/EditUserDetail";
+import { User } from "@/interfaces/User";
 
 const { List, Tab, Panel } = Tabs;
 
 interface Props {
-  userData: User
+  userData: User;
 }
 
-const UserDetail:React.FC<Props> = ({ userData }) => {
+const UserDetail: React.FC<Props> = ({ userData }) => {
   return (
     <Tabs defaultValue="view" radius="md">
       <List>
@@ -28,10 +28,10 @@ const UserDetail:React.FC<Props> = ({ userData }) => {
         <ViewUserDetail userData={userData} />
       </Panel>
       <Panel value="edit" pt={"1.5rem"}>
-        <EditUserDetail userData={userData} />
+        <EditUserDetail />
       </Panel>
     </Tabs>
   );
-}
+};
 
 export default UserDetail;

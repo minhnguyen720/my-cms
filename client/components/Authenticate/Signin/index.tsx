@@ -2,7 +2,6 @@
 
 import { errorNotification } from "@/hooks/notifications/notificationPreset";
 import useGetBaseUrl from "@/hooks/utilities/getUrl";
-import { useUser } from "@/hooks/user/useUser";
 import {
   TextInput,
   Group,
@@ -18,7 +17,6 @@ import { setCookie, deleteCookie } from "cookies-next";
 
 export const Signin = ({ setView }) => {
   const [baseUrl] = useGetBaseUrl();
-  const userHanlder = useUser();
   const router = useRouter();
   const form = useForm({
     initialValues: {
@@ -40,26 +38,6 @@ export const Signin = ({ setView }) => {
 
       if (res.data.isFalse) throw res.data.message;
       setCookie("at", res.data.access_token);
-
-      let headersList = {
-        Accept: "*/*",
-        Authorization: `Bearer ${res.data.access_token}`,
-      };
-
-      let reqOptions = {
-        url: `${baseUrl}/auth/profile`,
-        method: "GET",
-        headers: headersList,
-      };
-
-      const user = await axios.request(reqOptions);
-      if (user.data.isFalse) throw user.data.message;
-
-      userHanlder.assignUser({
-        ...user.data,
-        at: res.data.access_token,
-        rt: res.data.refresh_token,
-      });
 
       router.push("/application/dashboard");
     } catch (error: any) {

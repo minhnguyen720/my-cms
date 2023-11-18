@@ -29,7 +29,5 @@ export interface User {
   // Number of projects that are assigned to a user
   assignedProjects?: number;
 
-  avatar?: string;
-
-  bio?:string;
+  avatar: string;
 }
