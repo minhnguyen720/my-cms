@@ -16,7 +16,7 @@ export interface User {
   // Value use for login purpose
   password: string;
 
-  createDated?: Date;
+  createdDate?: Date;
 
   updatedDate?: Date;
 
@@ -29,7 +29,5 @@ export interface User {
   // Number of projects that are assigned to a user
   assignedProjects?: number;
 
-  avatar?: string;
-
-  bio?:string;
+  avatar: string;
 }

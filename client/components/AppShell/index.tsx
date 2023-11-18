@@ -77,57 +77,6 @@ const AppShell: React.FC<Props> = ({ children }) => {
           setOpened={setOpened}
         />
         <div className="p-10">{children}</div>
-        {/* <MantineAppShell
-          navbar={
-            <Navbar
-              hidden={!opened}
-              hiddenBreakpoint="100000rem"
-              currentMenu={currentMenu}
-              handleCurrentMenu={handleCurrentMenu}
-              setOpened={setOpened}
-            />
-          }
-          header={
-            <Header height={{ base: 50, md: 70 }} p="md">
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  height: "100%",
-                }}
-              >
-                <ActionIcon
-                  size="xl"
-                  variant="transparent"
-                  className="mr-8"
-                  onClick={() => setOpened((o) => !o)}
-                >
-                  <IconBurger size="2.125rem" />
-                </ActionIcon>
-                <Group>
-                  <Image
-                    src={"/images/icon/android-chrome-192x192.png"}
-                    alt="my cms logo"
-                    width={40}
-                    height={40}
-                  />
-                  <Text>MyCMS</Text>
-                </Group>
-              </div>
-            </Header>
-          }
-          styles={(theme) => ({
-            main: {
-              backgroundColor:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[8]
-                  : theme.colors.gray[0],
-            },
-          })}
-        >
-          <Alert />
-          {children}
-        </MantineAppShell> */}
       </MantineProvider>
     </Box>
   );

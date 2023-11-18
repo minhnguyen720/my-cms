@@ -33,6 +33,11 @@ export class AuthController {
     return await this.authService.getProfile(userId);
   }
 
+  @Get('profile/atom')
+  async getProfileAtom(@GetCurrentUserId() userId: string) {
+    return await this.authService.getProfileAtom(userId);
+  }
+
   @Public()
   @Post('signin')
   @HttpCode(HttpStatus.OK)
@@ -92,12 +97,6 @@ export class AuthController {
       isSuccess: boolean;
       tokens: Tokens;
     } = await this.authService.signup(authDto);
-    // if (res.isSuccess) {
-    //   await this.mailService.sendUserConfirmationCode(
-    //     res.user,
-    //     res.tokens.access_token,
-    //   );
-    // }
 
     return res;
   }

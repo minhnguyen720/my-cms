@@ -19,6 +19,8 @@ import { join } from 'path';
 import * as fs from 'fs';
 import { Response } from 'express';
 import { FieldsService } from 'src/fields/fields.service';
+import { UsersService } from 'src/users/users.service';
+import { Public } from 'src/common/decorators';
 
 const uploadPath = process.env.UPLOAD_PATH || 'storage';
 
@@ -27,6 +29,7 @@ export class StorageController {
   constructor(
     private readonly storageService: StorageService,
     private readonly fieldsService: FieldsService,
+    private readonly userService: UsersService,
   ) {}
   private readonly logger = new Logger(StorageController.name);
 
@@ -86,31 +89,31 @@ export class StorageController {
         }
 
         await this.fieldsService.updateFieldByFieldId(req.body.fieldId, {
-          value: `${bizPath}/${file.originalname}`,
+          value: `${process.env.BASE_URL}/storage/${newFile._id}`,
           fileId: newFile._id,
         });
+      } else if (req.body.type === 'avatar') {
+        await this.userService.updateUserAvatar(
+          req.body.userId,
+          `${process.env.BASE_URL}/storage/${newFile._id}`,
+        );
       }
-
       return res.send({
         isSuccess,
-        path: `${bizPath}/${file.originalname}`,
+        path: `${process.env.BASE_URL}/storage/${newFile._id}`,
       });
     } catch (error) {
       this.logger.error(error);
     }
   }
 
-  @Get(':bizPath/:filename')
-  downloadFile(
-    @Res() res: Response,
-    @Param('bizPath') bizPath: string,
-    @Param('filename') filename: string,
-  ) {
-    const folderPath = bizPath ? '/' + bizPath : '';
-    const path = join(process.cwd(), '/', uploadPath, folderPath);
+  @Public()
+  @Get(':fileId')
+  async downloadFile(@Res() res: Response, @Param('fileId') fileId: string) {
+    const file = await this.storageService.getFileDocumentById(fileId);
 
-    return res.sendFile(filename, {
-      root: path,
+    return res.sendFile(file.filename, {
+      root: file.destination,
     });
   }
 

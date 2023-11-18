@@ -4,6 +4,7 @@ import { StorageController } from './storage.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Files, FilesSchema } from 'src/schemas/files.schema';
 import { FieldsModule } from 'src/fields/fields.module';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { FieldsModule } from 'src/fields/fields.module';
       },
     ]),
     forwardRef(() => FieldsModule),
+    UsersModule,
   ],
   controllers: [StorageController],
   providers: [StorageService],

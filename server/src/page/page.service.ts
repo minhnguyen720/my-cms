@@ -62,13 +62,6 @@ export class PageService {
         createdDate: dayjs().toString(),
         updatedDate: dayjs().toString(),
       });
-      // .then(async (result: any) => {
-      //   const project = await this.projectModel.findById(
-      //     createPageDto.project,
-      //   );
-      //   project.pages.push(result._id);
-      //   project.save();
-      // });
       const projectRes = await this.findPageBelongToProject(
         createPageDto.project,
       );
