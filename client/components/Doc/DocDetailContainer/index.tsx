@@ -1,6 +1,14 @@
 "use client";
 
-import { Stack, Group, Text, UnstyledButton } from "@mantine/core";
+import {
+  Stack,
+  Group,
+  Text,
+  UnstyledButton,
+  ActionIcon,
+  Tooltip,
+  Divider,
+} from "@mantine/core";
 import React from "react";
 import CreateNewField from "../../Fields/CreateNewField";
 import FormDetailItem from "../../FormDetailItem";
@@ -70,26 +78,19 @@ const DocDetailContainer = ({ switchProps }) => {
 
   return (
     <Stack>
-      <div className="flex flex-col">
-        <UnstyledButton
-          className="mb-5 text-lg font-bold"
-          onClick={backToPageOverall}
-        >
-          <Group>
-            <IconHome />
-            <Text>Back to page overall</Text>
-          </Group>
-        </UnstyledButton>
-        <UnstyledButton
-          className="mb-5 text-lg font-bold"
-          onClick={backToPrevious}
-        >
-          <Group>
+      <Group>
+        <Tooltip label="Back to previous page">
+          <ActionIcon onClick={backToPrevious}>
             <IconArrowLeft />
-            <Text>Back to previous page</Text>
-          </Group>
-        </UnstyledButton>
-      </div>
+          </ActionIcon>
+        </Tooltip>
+        <Tooltip label="Back to page overall">
+          <ActionIcon onClick={backToPageOverall}>
+            <IconHome />
+          </ActionIcon>
+        </Tooltip>
+      </Group>
+      <Divider className="my-2" />
       <Group>
         {/* <ManageOrderModal /> */}
         <CreateNewField fieldHandler={fieldHandler} />

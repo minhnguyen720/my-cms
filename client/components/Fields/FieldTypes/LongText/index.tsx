@@ -20,9 +20,11 @@ interface Props {
   active: boolean;
   fieldHandler: any;
   value?: any;
+  id: string;
 }
 
 const LongText: React.FC<Props> = ({
+  id,
   form,
   label,
   fieldId,
@@ -43,7 +45,7 @@ const LongText: React.FC<Props> = ({
     ],
     content: value,
     onUpdate(props) {
-      form.setFieldValue(fieldId, props.editor.getHTML());
+      form.setFieldValue(id, props.editor.getHTML());
     },
   });
 
@@ -53,7 +55,7 @@ const LongText: React.FC<Props> = ({
         className="basis-[90%]"
         withAsterisk={required}
         label={label}
-        {...form.getInputProps(fieldId)}
+        {...form.getInputProps(id)}
       >
         {active ? (
           <RichTextEditor editor={editor}>
@@ -108,6 +110,7 @@ const LongText: React.FC<Props> = ({
           required={required}
           active={active}
           fieldId={fieldId}
+          id={id}
           fieldHandler={fieldHandler}
         />
       </div>

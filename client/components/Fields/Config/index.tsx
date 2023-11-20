@@ -8,9 +8,11 @@ import {
   LoadingOverlay,
   Tooltip,
   Divider,
+  TextInput,
+  Text,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconSettings2 } from "@tabler/icons-react";
+import { IconCheck, IconSettings2 } from "@tabler/icons-react";
 import React, { useMemo, useState } from "react";
 import { FieldHandler } from "../hooks/useFields";
 import axios from "axios";
@@ -21,12 +23,15 @@ import {
   successNotification,
 } from "@/hooks/notifications/notificationPreset";
 import { getCookie } from "cookies-next";
+import { useForm } from "@mantine/form";
+import useLoading from "@/hooks/utilities/useLoading";
 
 interface Props {
   required: boolean;
   active: boolean;
   fieldId: string;
   fieldHandler: FieldHandler;
+  id: string;
 }
 
 const Config: React.FC<Props> = ({
@@ -34,6 +39,7 @@ const Config: React.FC<Props> = ({
   active,
   fieldId,
   fieldHandler,
+  id,
 }) => {
   const [opened, { open, close }] = useDisclosure(false);
   const [visible, modalOverlayHanlder] = useDisclosure(false);
@@ -44,9 +50,19 @@ const Config: React.FC<Props> = ({
   const [baseUrl] = useGetBaseUrl();
   const params = useParams();
   const at = getCookie("at");
+  const form = useForm({
+    initialValues: {
+      fieldId: fieldId,
+    },
+    validate: {
+      fieldId: (value) =>
+        /^[a-zA-Z0-9_]{5,40}$/.test(value) ? null : "Invalid field id",
+    },
+  });
+  const { showLoading, hideLoading } = useLoading();
 
   const defaultConfig = useMemo(() => {
-    const temp = [];
+    const temp: string[] = [];
     if (required) temp.push("required");
     if (active) temp.push("active");
     return temp;
@@ -73,7 +89,7 @@ const Config: React.FC<Props> = ({
   const handleDeleteField = async () => {
     try {
       const res = await axios.put(
-        `${baseUrl}/fields/${params.detailId}/${fieldId}`,
+        `${baseUrl}/fields/${params.detailId}/${id}`,
         {},
         {
           headers: {
@@ -93,6 +109,42 @@ const Config: React.FC<Props> = ({
     }
   };
 
+  const handleOnClose = () => {
+    form.reset();
+  };
+
+  const handleUpdateFieldId = async (values) => {
+    try {
+      showLoading();
+      const res = await axios.put(
+        `${baseUrl}/fields/fieldId`,
+        {
+          fieldId: values.fieldId,
+          detailId: id,
+          docId: params.detailId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${at}`,
+          },
+        },
+      );
+      if (res.data.isSuccess) {
+        successNotification("New field id is saved");
+        fieldHandler.updateFields(res.data.newData);
+      } else {
+        handleOnClose();
+        errorNotification("Fail to save new field id");
+      }
+    } catch (error) {
+      handleOnClose();
+      console.error(error);
+      errorNotification("Fail to save new field id");
+    } finally {
+      hideLoading();
+    }
+  };
+
   return (
     <div className="w-fit">
       <Modal centered opened={opened} onClose={close} title="Field controller">
@@ -100,11 +152,26 @@ const Config: React.FC<Props> = ({
         <Box className="switch_container mt-4">
           <Switch.Group onChange={handleOnChange} defaultValue={defaultConfig}>
             <Group py={4} className="switch_control">
-              <Switch label="Required" name="required" value={"required"} />
+              {/* <Switch label="Required" name="required" value={"required"} /> */}
               <Switch label="Active" name="active" value={"active"} />
             </Group>
           </Switch.Group>
           <Divider label="Danger zone" color="red" className="py-3" />
+
+          <Box className="mb-4">
+            <Text className="mb-2 text-sm">Update field id</Text>
+            <form
+              onSubmit={form.onSubmit((values) => handleUpdateFieldId(values))}
+            >
+              <Group>
+                <TextInput {...form.getInputProps("fieldId")} />
+                <ActionIcon type="submit">
+                  <IconCheck />
+                </ActionIcon>
+              </Group>
+            </form>
+          </Box>
+
           <Button color="red" variant="light" onClick={handleDeleteField}>
             Delete this field
           </Button>
@@ -113,7 +180,7 @@ const Config: React.FC<Props> = ({
         <Group position="right" className="mt-8">
           <Button
             onClick={() => {
-              fieldHandler.updateFieldConfig(config, fieldId);
+              fieldHandler.updateFieldConfig(config, id);
               close();
             }}
           >

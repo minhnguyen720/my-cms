@@ -49,10 +49,16 @@ export class DataService {
             doc: doc._id,
             active: true,
           })
-          .select('_id label order value');
+          .select('_id label order value fieldId');
+        const formatedFields = fields.reduce((result, item) => {
+          const { _id, label, order, value, fieldId } = item;
+          result[fieldId] = { _id, label, order, value };
+
+          return result;
+        }, {});
         const docData = {
           ...doc.toObject(),
-          fields: fields,
+          fields: formatedFields,
         };
         result.docs.push(docData);
       }
@@ -106,10 +112,17 @@ export class DataService {
               doc: doc._id,
               active: true,
             })
-            .select('_id label order value');
+            .select('_id label order value fieldId');
+
+          const formatedFields = fields.reduce((result, item) => {
+            const { _id, label, order, value, fieldId } = item;
+            result[fieldId] = { _id, label, order, value };
+
+            return result;
+          }, {});
           const docData = {
             ...doc.toObject(),
-            fields: fields,
+            fields: formatedFields,
           };
           pageData.docs.push(docData);
         }
@@ -125,7 +138,7 @@ export class DataService {
     }
   }
   //Utilities
-  async checkKey(checkKeyDto: CheckKeyDto): Promise<boolean> {
+  async checkKey(checkKeyDto: CheckKeyDto): Promise<boolean | any> {
     try {
       const { type, id, key } = checkKeyDto;
 
@@ -137,8 +150,9 @@ export class DataService {
               apikey: key,
             }),
           ]);
+          const populatedPage = await page.populate('createdUser');
 
-          return page.createdUser.id === pageOwner.id;
+          return populatedPage.createdUser.id === pageOwner.id;
         case 'project':
           const [project, projectOwner] = await Promise.all([
             this.projectModel.findById(id),
