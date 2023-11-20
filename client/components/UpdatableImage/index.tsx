@@ -33,6 +33,7 @@ interface Props {
   active: boolean;
   fieldHandler: FieldHandler;
   docId?: string;
+  id: string;
 }
 
 const UpdatableImage: React.FC<Props> = ({
@@ -40,6 +41,7 @@ const UpdatableImage: React.FC<Props> = ({
   alt,
   label,
   fieldHandler,
+  id,
   fieldId,
   required,
   active,
@@ -74,8 +76,8 @@ const UpdatableImage: React.FC<Props> = ({
       showLoading();
 
       let formData = new FormData();
-      formData.append("bizFolder", `uploadFolder-${fieldId}`); // must be appended first to make sure req.body is fully populated
-      formData.append("fieldId", fieldId);
+      formData.append("bizFolder", `uploadFolder-${id}`); // must be appended first to make sure req.body is fully populated
+      formData.append("fieldId", id);
       formData.append("type", "field-image");
       formData.append("docId", docId ? docId : "");
       formData.append("file", file);
@@ -179,6 +181,7 @@ const UpdatableImage: React.FC<Props> = ({
             active={active}
             fieldHandler={fieldHandler}
             fieldId={fieldId}
+            id={id}
           />
         </div>
       </div>

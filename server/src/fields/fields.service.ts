@@ -49,6 +49,26 @@ export class FieldsService {
     }
   }
 
+  async updateFieldId(newFieldId: string, detailId: string, docId: string) {
+    try {
+      await this.fieldModel.findByIdAndUpdate(detailId, {
+        fieldId: newFieldId,
+        updatedDate: dayjs().toDate(),
+      });
+      this.logger.log('Update field id success');
+      const newData = await this.fieldModel.find({ doc: docId });
+      return {
+        isSuccess: true,
+        newData,
+      };
+    } catch (error) {
+      this.logger.error(error);
+      return {
+        isSuccess: false,
+      };
+    }
+  }
+
   async updateFieldsByDocId(docId: string, body: any) {
     try {
       checkUndefined(docId, 'docId is undefined');
@@ -60,6 +80,7 @@ export class FieldsService {
       for (const [key, value] of Object.entries(body)) {
         await this.fieldModel.findByIdAndUpdate(key, {
           value: value,
+          updatedDate: dayjs().toDate(),
         });
       }
 
@@ -143,6 +164,7 @@ export class FieldsService {
         active: true,
         createdDate: dayjs().format('DD/MM/YYYY').toString(),
         updatedDate: dayjs().format('DD/MM/YYYY').toString(),
+        fieldId: body.fieldId,
       });
       // .then(async (result) => {
       //   await this.docRefManagement.addNewFieldRef(body.doc, result);

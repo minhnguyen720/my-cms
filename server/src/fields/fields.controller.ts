@@ -25,6 +25,15 @@ export class FieldsController {
     return await this.fieldsService.createNewFields(body);
   }
 
+  @Put('fieldId')
+  async updateFieldId(@Body() body) {
+    return await this.fieldsService.updateFieldId(
+      body.fieldId,
+      body.detailId,
+      body.docId,
+    );
+  }
+
   @Put('update-config')
   async updateFieldConfig(@Body() body: UpdateConfigDto) {
     return await this.fieldsService.updateFieldConfig(body);

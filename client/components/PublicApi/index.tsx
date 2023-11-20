@@ -13,11 +13,11 @@ import {
 import { Prism } from "@mantine/prism";
 import React from "react";
 
-const ExamplePublicApi = ({ code, exampleRes }) => {
+const ExamplePublicApi = ({ title, code, exampleRes }) => {
   return (
     <Box>
       <Title order={3} className="my-4">
-        Get page data
+        {title}
       </Title>
       <Group>
         <Code className="w-[80%] text-base" block>

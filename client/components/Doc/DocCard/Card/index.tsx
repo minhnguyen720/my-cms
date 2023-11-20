@@ -257,7 +257,6 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
               content={getFormattedTime(doc.updatedDate)}
             />
             <DetailItem label="Update by" content={doc.updatedUser} />
-            <DetailItem label="Number of fields" content={doc.fields?.length} />
             <DetailItem label="Description" content={doc.description} />
           </Text>
 

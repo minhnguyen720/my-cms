@@ -8,8 +8,8 @@ import Config from "../../Config";
 interface Props {
   label: string;
   placeholder?: string;
-  required?: boolean;
-  active?: boolean;
+  required: boolean;
+  active: boolean;
   icon?: ReactNode;
   fieldId: string;
   form: UseFormReturnType<any>;

@@ -23,8 +23,9 @@ const FormDetailItem: React.FC<Props> = ({ fieldHandler, form }) => {
         {fieldHandler.getFields().map((item) => {
           const textFieldProps = {
             form,
-            label: item.label,
-            fieldId: item._id,
+            id: item._id,
+            label: `${item.label} (fieldId: ${item.fieldId})`,
+            fieldId: item.fieldId,
             required: item.required,
             active: item.active,
             fieldHandler: fieldHandler,
@@ -38,11 +39,12 @@ const FormDetailItem: React.FC<Props> = ({ fieldHandler, form }) => {
             case "image":
               return (
                 <UpdatableImage
+                  id={item._id}
                   key={item._id}
                   alt={`atch_${item._id}`}
                   src={item.value}
-                  label={item.label}
-                  fieldId={item._id}
+                  label={`${item.label} (fieldId: ${item.fieldId})`}
+                  fieldId={item.fieldId}
                   fieldHandler={fieldHandler}
                   required={item.required}
                   active={item.active}

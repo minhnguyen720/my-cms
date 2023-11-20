@@ -18,7 +18,7 @@ export class Field {
 
   // for form query
   @Prop()
-  field_id: string;
+  fieldId: string;
 
   @Prop()
   label?: string;
