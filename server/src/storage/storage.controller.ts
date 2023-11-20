@@ -1,11 +1,8 @@
 import {
   Controller,
-  FileTypeValidator,
   Get,
   Logger,
-  MaxFileSizeValidator,
   Param,
-  ParseFilePipe,
   Post,
   Req,
   Res,
@@ -52,14 +49,7 @@ export class StorageController {
   async storeFile(
     @Req() req,
     @Res() res: Response,
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 300000 }),
-          new FileTypeValidator({ fileType: /(jpg|jpeg|png|webp)$/ }),
-        ],
-      }),
-    )
+    @UploadedFile()
     file: Express.Multer.File,
   ) {
     try {

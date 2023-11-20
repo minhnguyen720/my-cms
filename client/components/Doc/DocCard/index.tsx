@@ -8,6 +8,8 @@ import {
   TextInput,
   Button,
   Image,
+  UnstyledButton,
+  Text,
 } from "@mantine/core";
 import React, { useState } from "react";
 import CreateNewDocCard from "../CreateNewDocCard";
@@ -20,10 +22,14 @@ import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import { Document, Folder } from "@/interfaces/Project";
 import { useParams, useRouter } from "next/navigation";
+import useLoading from "@/hooks/utilities/useLoading";
+import { errorNotification } from "@/hooks/notifications/notificationPreset";
+import { IconArrowLeft } from "@tabler/icons-react";
 
 interface Props {
   docs: Document[];
   folders: Folder[];
+  mainPage: boolean;
 }
 
 const EmptySectionSVG = () => {
@@ -38,7 +44,7 @@ const EmptySectionSVG = () => {
   );
 };
 
-const DocCards: React.FC<Props> = ({ docs, folders }) => {
+const DocCards: React.FC<Props> = ({ docs, folders, mainPage }) => {
   const { folderList, folderHandler, confirmModal, renameModal } =
     useFolderCardAction(folders);
   const { docList, handler } = useCardAction(docs);
@@ -48,7 +54,9 @@ const DocCards: React.FC<Props> = ({ docs, folders }) => {
       renameValue: "",
     },
   });
+  const params = useParams();
   const navigator = useRouter();
+  const { showLoading, hideLoading } = useLoading();
 
   const [openerData, setOpenerData] = useState("");
   const updateOpenerData = (value) => {
@@ -60,10 +68,32 @@ const DocCards: React.FC<Props> = ({ docs, folders }) => {
     close();
     form.reset();
   };
-  const params = useParams();
+
+  const backToPrevious = () => {
+    try {
+      showLoading();
+      navigator.back();
+    } catch (error) {
+      errorNotification("Something went wrong. Moving back to Dashboard.");
+      navigator.push("/application/dashboard");
+    } finally {
+      hideLoading();
+    }
+  };
 
   return (
     <>
+      {!mainPage && (
+        <UnstyledButton
+          className="mb-5 text-lg font-bold"
+          onClick={backToPrevious}
+        >
+          <Group>
+            <IconArrowLeft />
+            <Text>Back to previous page</Text>
+          </Group>
+        </UnstyledButton>
+      )}
       <Modal
         opened={opened}
         onClose={handleCloseRenameModal}
@@ -130,7 +160,7 @@ const DocCards: React.FC<Props> = ({ docs, folders }) => {
         {docList.length > 0 ? (
           docList.map((doc) => {
             return (
-              <Grid.Col xs={6} md={4} key={doc._id}>
+              <Grid.Col xs={6} md={3} key={doc._id}>
                 <Card
                   doc={doc}
                   handler={handler}
@@ -140,6 +170,18 @@ const DocCards: React.FC<Props> = ({ docs, folders }) => {
             );
           })
         ) : (
+          // {docList.length > 0 ? (
+          //   docList.map((doc) => {
+          //     return (
+          //       <div className="mx-2 flex first:ml-0 last:mr-0" key={doc._id}>
+          //         <Card
+          //           doc={doc}
+          //           handler={handler}
+          //           updateOpenerData={updateOpenerData}
+          //         />
+          //       </div>
+          //     );
+          //   })
           <EmptySectionSVG />
         )}
       </Grid>

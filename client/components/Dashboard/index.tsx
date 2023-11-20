@@ -14,6 +14,7 @@ import { Navlink } from "@/interfaces/NavLink";
 import { useAtomValue } from "jotai";
 import { useHydrateAtoms } from "jotai/utils";
 import { statAtom } from "./atoms";
+import { userAtom } from "../Navbar";
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -37,10 +38,15 @@ export const Dashboard: React.FC<StatsGridIconsProps> = ({
   const { classes } = useStyles();
   useHydrateAtoms([[statAtom, data]]);
   const statData = useAtomValue(statAtom);
+  const user = useAtomValue(userAtom);
 
   return (
     <>
-      <Title order={2}>Welcome back!</Title>
+      <Title order={2}>
+        {typeof user !== "boolean"
+          ? `Greeting ${user.name}!`
+          : "Welcome to myCMS!"}
+      </Title>
       <Divider className="my-8" />
       <Title order={1} className="pb-8">
         Overview

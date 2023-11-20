@@ -1,21 +1,33 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { Project } from 'src/schemas/project.schema';
-import { Model, Schema, Types } from 'mongoose';
+import { Model, Schema } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as dayjs from 'dayjs';
-import { TrashService } from 'src/trash/trash.service';
 
 @Injectable()
 export class ProjectService {
   constructor(
     @InjectModel(Project.name) private projectModel: Model<Project>,
-    private readonly trashService: TrashService,
   ) {}
 
-  async getProjectById(id) {
-    return await this.projectModel.findById(id);
+  private readonly logger = new Logger(Project.name);
+
+  async getProjectById(id: string) {
+    try {
+      this.logger.log('Get project by ID');
+
+      const project = await this.projectModel.findById(id);
+      if (project === null) {
+        this.logger.error(`Project ${id} not found`);
+        return null;
+      }
+      return project;
+    } catch (error) {
+      this.logger.error('Fail to get project by ID');
+      return null;
+    }
   }
 
   async create(userId: string, createProjectDto: CreateProjectDto) {
@@ -32,12 +44,16 @@ export class ProjectService {
 
   async getDashboardStat(userId: string) {
     return Promise.all([
-      this.projectModel.find({ active: true, users: userId }).count().exec(),
-      this.projectModel.find({ active: false, users: userId }).count().exec(),
+      this.projectModel.find({ active: true, users: userId }),
+      this.projectModel.find({ active: false, users: userId }),
       this.getProjectsByUserId(userId),
     ]).then((values) => {
       const [activeLength, deactiveLength, projects] = values;
-      return { activeLength, deactiveLength, projects };
+      return {
+        activeLength: activeLength === null ? 0 : activeLength.length,
+        deactiveLength: deactiveLength === null ? 0 : deactiveLength.length,
+        projects,
+      };
     });
   }
 

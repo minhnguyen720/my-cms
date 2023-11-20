@@ -11,8 +11,9 @@ import {
   Button,
   Stack,
   Box,
+  UnstyledButton,
 } from "@mantine/core";
-import { IconZzz, IconTrash } from "@tabler/icons-react";
+import { IconZzz, IconTrash, IconArrowLeft } from "@tabler/icons-react";
 import { TbPlugConnected } from "react-icons/tb";
 import React, { useState } from "react";
 import useLoading from "@/hooks/utilities/useLoading";
@@ -23,6 +24,8 @@ import useGetBaseUrl from "@/hooks/utilities/getUrl";
 import { useDisclosure } from "@mantine/hooks";
 import { getCookie } from "cookies-next";
 import OnlineBadge from "../Badge";
+import { useParams, useRouter } from "next/navigation";
+import { errorNotification } from "@/hooks/notifications/notificationPreset";
 
 interface Props {
   page: Page;
@@ -38,6 +41,8 @@ const PageDetailToolbar: React.FC<Props> = ({ page }) => {
   const [updateOpened, updateHandler] = useDisclosure(false);
   const [deleteOpened, deleteHandler] = useDisclosure(false);
   const at = getCookie("at");
+  const router = useRouter();
+  const params = useParams();
 
   const handleUpdateStatus = async () => {
     try {
@@ -93,8 +98,29 @@ const PageDetailToolbar: React.FC<Props> = ({ page }) => {
     }
   };
 
+  const backToPageOverall = () => {
+    try {
+      showLoading();
+      router.push(`/application/project/${params.projectNameId}`);
+    } catch (error) {
+      errorNotification("Something went wrong. Moving back to Dashboard.");
+      router.push("/application/dashboard");
+    } finally {
+      hideLoading();
+    }
+  };
+
   return (
     <>
+      <UnstyledButton
+        className="mb-5 text-lg font-bold"
+        onClick={backToPageOverall}
+      >
+        <Group>
+          <IconArrowLeft />
+          <Text>Back to page overall</Text>
+        </Group>
+      </UnstyledButton>
       <Modal
         centered
         title="Update status confirmation"

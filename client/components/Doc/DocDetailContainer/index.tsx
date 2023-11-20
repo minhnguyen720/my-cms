@@ -1,6 +1,6 @@
 "use client";
 
-import { Stack, Group } from "@mantine/core";
+import { Stack, Group, Text, UnstyledButton } from "@mantine/core";
 import React from "react";
 import CreateNewField from "../../Fields/CreateNewField";
 import FormDetailItem from "../../FormDetailItem";
@@ -13,6 +13,10 @@ import useGetBaseUrl from "@/hooks/utilities/getUrl";
 import useFields from "@/components/Fields/hooks/useFields";
 import { useParams } from "next/navigation";
 import { getCookie } from "cookies-next";
+import { IconArrowLeft, IconHome } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
+import useLoading from "@/hooks/utilities/useLoading";
+import { errorNotification } from "@/hooks/notifications/notificationPreset";
 
 const DocDetailContainer = ({ switchProps }) => {
   const form = useForm();
@@ -20,6 +24,8 @@ const DocDetailContainer = ({ switchProps }) => {
   const fieldHandler = useFields();
   const params = useParams();
   const at = getCookie("at");
+  const router = useRouter();
+  const { showLoading, hideLoading } = useLoading();
 
   const handleDetailOnChange = async () => {
     await axios.put(
@@ -36,8 +42,54 @@ const DocDetailContainer = ({ switchProps }) => {
     );
   };
 
+  const backToPageOverall = () => {
+    try {
+      showLoading();
+      router.push(
+        `/application/project/${params.projectNameId}/${params.pageId}`,
+      );
+    } catch (error) {
+      errorNotification("Something went wrong. Moving back to Dashboard.");
+      router.push("/application/dashboard");
+    } finally {
+      hideLoading();
+    }
+  };
+
+  const backToPrevious = () => {
+    try {
+      showLoading();
+      router.back();
+    } catch (error) {
+      errorNotification("Something went wrong. Moving back to Dashboard.");
+      router.push("/application/dashboard");
+    } finally {
+      hideLoading();
+    }
+  };
+
   return (
     <Stack>
+      <div className="flex flex-col">
+        <UnstyledButton
+          className="mb-5 text-lg font-bold"
+          onClick={backToPageOverall}
+        >
+          <Group>
+            <IconHome />
+            <Text>Back to page overall</Text>
+          </Group>
+        </UnstyledButton>
+        <UnstyledButton
+          className="mb-5 text-lg font-bold"
+          onClick={backToPrevious}
+        >
+          <Group>
+            <IconArrowLeft />
+            <Text>Back to previous page</Text>
+          </Group>
+        </UnstyledButton>
+      </div>
       <Group>
         {/* <ManageOrderModal /> */}
         <CreateNewField fieldHandler={fieldHandler} />

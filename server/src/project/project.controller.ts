@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { GetCurrentUserId } from 'src/common/decorators';
@@ -22,6 +22,11 @@ export class ProjectController {
   @Get('dashboard-stat')
   async getDashboardStat(@GetCurrentUserId() userId: string) {
     return await this.projectService.getDashboardStat(userId);
+  }
+
+  @Get(':id')
+  async getProjectById(@Param('id') id: string) {
+    return await this.projectService.getProjectById(id);
   }
 
   @Get()
