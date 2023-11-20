@@ -46,7 +46,7 @@ const ProjectDetail: React.FC<any> = async ({ params }) => {
   return (
     <div className="px-5">
       <PageDetailToolbar page={page} />
-      <DocCards docs={res.docData} folders={res.folderData} />
+      <DocCards docs={res.docData} folders={res.folderData} mainPage={true} />
     </div>
   );
 };

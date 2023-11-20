@@ -48,10 +48,12 @@ interface Props {
 
 const DetailItem = ({ label, content }) => {
   return (
-    <p>
-      <span className="mr-2">{label}:</span>
-      {content}
-    </p>
+    <Box maw={400}>
+      <Text truncate>
+        <span className="mr-2">{label}:</span>
+        {content}
+      </Text>
+    </Box>
   );
 };
 
@@ -162,7 +164,7 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
           </Button>
         </Group>
       </Modal>
-      <div className="relative">
+      <div className="relative w-full">
         <Box className="absolute right-0 top-0 z-50 m-2">
           <Menu shadow="md" width={200}>
             <Menu.Target>
@@ -228,11 +230,19 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
             </Menu.Dropdown>
           </Menu>
         </Box>
-        <MantineCard shadow="sm" padding="lg" radius="md" withBorder>
+        <MantineCard
+          className="w-full"
+          shadow="sm"
+          padding="lg"
+          radius="md"
+          withBorder
+        >
           <Group position="apart" mt="md" mb="xs">
-            <Text weight={500} className="text-xl">
-              {doc.name}
-            </Text>
+            <Box maw={200}>
+              <Text weight={500} className="text-xl" truncate>
+                {doc.name}
+              </Text>
+            </Box>
             <OnlineBadge flag={doc.active} />
           </Group>
 
@@ -248,6 +258,7 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
             />
             <DetailItem label="Update by" content={doc.updatedUser} />
             <DetailItem label="Number of fields" content={doc.fields?.length} />
+            <DetailItem label="Description" content={doc.description} />
           </Text>
 
           <Button
@@ -257,7 +268,9 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
             mt="md"
             radius="md"
             onClick={() => {
-              navigator.push(`${currentPathname}/detail/${doc._id}`);
+              navigator.push(
+                `/application/project/${params.projectNameId}/${params.pageId}/detail/${doc._id}`,
+              );
             }}
           >
             Go to document detail

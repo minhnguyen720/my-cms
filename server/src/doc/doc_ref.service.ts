@@ -13,8 +13,8 @@ export class DocRefManagementService {
 
   async addNewFieldRef(docId: string, newField: any) {
     const doc = await this.docModel.findById(docId);
-    doc.fields.push(newField._id);
-    doc.save();
+    // doc.fields.push(newField._id);
+    // doc.save();
   }
 
   async removeNewFieldRef(docId: string, fieldId: string) {
