@@ -15,6 +15,24 @@ export class AuthService {
 
   private readonly logger = new Logger(AuthService.name);
 
+  async checkEmail(email: string) {
+    try {
+      const user = await this.usersService.findOneByEmail(email);
+      if (user === null || user === undefined)
+        return {
+          isValid: false,
+        };
+      return {
+        isValid: true,
+        user,
+      };
+    } catch (error) {
+      return {
+        isValid: false,
+      };
+    }
+  }
+
   async getApiKey(userId) {
     try {
       const user = await this.usersService.findUserById(userId);

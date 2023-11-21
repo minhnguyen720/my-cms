@@ -202,6 +202,22 @@ export class UsersService {
     }
   }
 
+  async findOneByEmail(email) {
+    try {
+      this.logger.log('Finding user by email...');
+      const user = await this.usersModel.findOne({
+        email: email,
+      });
+      if (user === null || user === undefined) throw 'User not found';
+      else {
+        this.logger.log(`Found user ${user.id}`);
+      }
+      return user;
+    } catch (error) {
+      this.logger.error(error);
+    }
+  }
+
   async findOne(username: string): Promise<Users | undefined> {
     try {
       this.logger.log('Finding user by username...');

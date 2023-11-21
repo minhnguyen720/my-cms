@@ -17,4 +17,18 @@ export class MailService {
       },
     });
   }
+
+  async sendResetPasswordCode(user, code: string) {
+    await this.mailerService.sendMail({
+      to: user.email,
+      // from: '"Support Team" <support@example.com>', // override default from
+      subject: 'Reset password code',
+      template: './forgetPass', // `.hbs` extension is appended automatically
+      context: {
+        // ✏️ filling curly brackets with content
+        name: user.name,
+        code,
+      },
+    });
+  }
 }

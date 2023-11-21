@@ -1,5 +1,6 @@
 "use client";
 
+import ForgetPassword from "@/components/Authenticate/ForgetPassword";
 import { Signin } from "@/components/Authenticate/Signin";
 import { Signup } from "@/components/Authenticate/Signup";
 import SignupConfirm from "@/components/Authenticate/SignupConfirm";
@@ -7,11 +8,12 @@ import { Box, Center, Loader, SegmentedControl, Title } from "@mantine/core";
 import React, { useState } from "react";
 
 const Authenticate = () => {
-  const [value, setValue] = useState("signin");
+  const [value, setValue] = useState("forget");
   const [signupData, setSignupData] = useState();
 
   const view = {
     signin: <Signin setView={setValue} />,
+    forget: <ForgetPassword setView={setValue}/>,
     signup: <Signup setView={setValue} setSignupData={setSignupData} />,
     confirm: <SignupConfirm signupData={signupData} setView={setValue} />,
     loading: (

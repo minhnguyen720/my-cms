@@ -39,6 +39,22 @@ export class AuthController {
   }
 
   @Public()
+  @Post('forget/auth-email')
+  @HttpCode(HttpStatus.OK)
+  async checkEmail(
+    @Body()
+    body: {
+      email: string;
+    },
+  ) {
+    const { isValid, user } = await this.authService.checkEmail(body.email);
+    if (isValid) {
+      await this.mailService.sendResetPasswordCode(user, user.email);
+    } else {
+    }
+  }
+
+  @Public()
   @Post('signin')
   @HttpCode(HttpStatus.OK)
   async signin(@Body() authDto: AuthenticateDto) {
