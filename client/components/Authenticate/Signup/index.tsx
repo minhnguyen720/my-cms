@@ -22,9 +22,9 @@ export const Signup = ({ setView, setSignupData }) => {
           ? null
           : "Invalid username. Username has length from 5 to 20 character and must not have whitespace character.",
       password: (value) =>
-        /^[^\s]{5,30}$/.test(value)
+        /^\S{10,}$/.test(value)
           ? null
-          : "Invalid password. Password must has length from 5 to 30 character and can not have whitespace character.",
+          : "Invalid password. Password must has at least 10 character and can not have whitespace character.",
       email: (value) =>
         /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)
           ? null

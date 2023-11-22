@@ -14,6 +14,7 @@ import { useForm } from "@mantine/form";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { setCookie, deleteCookie } from "cookies-next";
+import Link from "next/link";
 
 export const Signin = ({ setView }) => {
   const [baseUrl] = useGetBaseUrl();
@@ -62,15 +63,14 @@ export const Signin = ({ setView }) => {
             Your password
           </Text>
 
-          <Anchor
-            href="#"
-            onClick={(event) => event.preventDefault()}
-            pt={2}
-            fw={500}
-            fz="xs"
+          <Text
+            className="cursor-pointer text-sm text-cyan-400"
+            onClick={() => {
+              setView("forget");
+            }}
           >
             Forgot your password?
-          </Anchor>
+          </Text>
         </Group>
         <PasswordInput
           placeholder="Your password"

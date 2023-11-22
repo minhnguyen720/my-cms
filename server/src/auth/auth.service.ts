@@ -5,6 +5,7 @@ import { AuthenticateDto } from './dto/authenticate.dto';
 import * as bcrypt from 'bcrypt';
 import { Tokens } from './types';
 import { Users } from 'src/schemas/users.schema';
+import { ResetPassDto } from './dto/reset-pass.dto';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +15,25 @@ export class AuthService {
   ) {}
 
   private readonly logger = new Logger(AuthService.name);
+
+  async resetPassword(body: ResetPassDto) {
+    try {
+      const hash = this.usersService.hashData(body.password);
+      const user = await this.usersService.findOneByEmail(body.email);
+      await user.updateOne({
+        password: hash,
+      });
+      this.logger.log(`Reset password success for user ${user.id}`);
+      return {
+        isSuccess: true,
+      };
+    } catch (error) {
+      this.logger.error(error);
+      return {
+        isSuccess: false,
+      };
+    }
+  }
 
   async checkEmail(email: string) {
     try {

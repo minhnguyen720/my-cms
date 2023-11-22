@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -19,6 +20,7 @@ import { Users } from 'src/schemas/users.schema';
 import { MailService } from 'src/mail/mail.service';
 import { Tokens } from './types';
 import { ConfirmationService } from 'src/confirmation/confirmation.service';
+import { ResetPassDto } from './dto/reset-pass.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -39,6 +41,12 @@ export class AuthController {
   }
 
   @Public()
+  @Put('reset-pass')
+  async resetPassword(@Body() body: ResetPassDto) {
+    return await this.authService.resetPassword(body);
+  }
+
+  @Public()
   @Post('forget/auth-email')
   @HttpCode(HttpStatus.OK)
   async checkEmail(
@@ -49,9 +57,16 @@ export class AuthController {
   ) {
     const { isValid, user } = await this.authService.checkEmail(body.email);
     if (isValid) {
-      await this.mailService.sendResetPasswordCode(user, user.email);
-    } else {
+      const code = this.authService.getConfirmCode();
+      Promise.all([
+        this.mailService.sendResetPasswordCode(user, code),
+        this.confirmService.createNewRecord(code, user.email),
+      ]);
     }
+
+    return {
+      isValid,
+    };
   }
 
   @Public()

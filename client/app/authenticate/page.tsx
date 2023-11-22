@@ -7,20 +7,31 @@ import SignupConfirm from "@/components/Authenticate/SignupConfirm";
 import { Box, Center, Loader, SegmentedControl, Title } from "@mantine/core";
 import React, { useState } from "react";
 
+export type AuthenticateView =
+  | "signin"
+  | "forget"
+  | "signup"
+  | "confirm"
+  | "loading";
+
 const Authenticate = () => {
-  const [value, setValue] = useState("forget");
+  const [viewName, setViewName] = useState<AuthenticateView>("signin");
   const [signupData, setSignupData] = useState();
 
   const view = {
-    signin: <Signin setView={setValue} />,
-    forget: <ForgetPassword setView={setValue}/>,
-    signup: <Signup setView={setValue} setSignupData={setSignupData} />,
-    confirm: <SignupConfirm signupData={signupData} setView={setValue} />,
+    signin: <Signin setView={setViewName} />,
+    forget: <ForgetPassword setView={setViewName} />,
+    signup: <Signup setView={setViewName} setSignupData={setSignupData} />,
+    confirm: <SignupConfirm signupData={signupData} setView={setViewName} />,
     loading: (
       <Center className="h-screen">
         <Loader variant="bars" />
       </Center>
     ),
+  };
+
+  const rotateSigninSignup = (value: AuthenticateView) => {
+    setViewName(value);
   };
 
   return (
@@ -30,21 +41,22 @@ const Authenticate = () => {
         transform: "translate(-50%, -50%)",
       }}
     >
-      {value !== "confirm" && value !== "loading" && (
-        <>
-          <Title className="mb-5 animate-textFadeIn">Welcome to myCMS</Title>
-          <SegmentedControl
-            value={value}
-            className="mb-2 w-full"
-            onChange={setValue}
-            data={[
-              { label: "Sign in", value: "signin" },
-              { label: "Sign up", value: "signup" },
-            ]}
-          />
-        </>
-      )}
-      {view[value]}
+      {viewName === "signup" ||
+        (viewName === "signin" && (
+          <>
+            <Title className="mb-5 animate-textFadeIn">Welcome to myCMS</Title>
+            <SegmentedControl
+              value={viewName}
+              className="mb-2 w-full"
+              onChange={(value: AuthenticateView) => rotateSigninSignup(value)}
+              data={[
+                { label: "Sign in", value: "signin" },
+                { label: "Sign up", value: "signup" },
+              ]}
+            />
+          </>
+        ))}
+      {view[viewName]}
     </Box>
   );
 };
