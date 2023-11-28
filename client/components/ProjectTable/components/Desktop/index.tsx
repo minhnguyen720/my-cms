@@ -3,11 +3,7 @@
 import { Table } from "@mantine/core";
 import { useState } from "react";
 
-interface Props {
-  rows: JSX.Element | JSX.Element[];
-}
-
-const ProjectTableDesktop: React.FC<Props> = ({ rows }) => {
+const ProjectTableDesktop = ({ rows }) => {
   const [columns, setColumns] = useState([
     "Name",
     "Page ID",

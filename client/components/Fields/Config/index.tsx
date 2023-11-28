@@ -27,11 +27,11 @@ import { useForm } from "@mantine/form";
 import useLoading from "@/hooks/utilities/useLoading";
 
 interface Props {
-  required: boolean;
-  active: boolean;
-  fieldId: string;
-  fieldHandler: FieldHandler;
-  id: string;
+  required?: boolean;
+  active?: boolean;
+  fieldId?: string;
+  fieldHandler?: FieldHandler;
+  id?: string;
 }
 
 const Config: React.FC<Props> = ({
@@ -52,10 +52,10 @@ const Config: React.FC<Props> = ({
   const at = getCookie("at");
   const form = useForm({
     initialValues: {
-      fieldId: fieldId,
+      fieldId: fieldId ? fieldId : "",
     },
     validate: {
-      fieldId: (value) =>
+      fieldId: (value: string) =>
         /^[a-zA-Z0-9_]{5,40}$/.test(value) ? null : "Invalid field id",
     },
   });
@@ -98,7 +98,7 @@ const Config: React.FC<Props> = ({
         },
       );
       if (res.data.isSuccess) {
-        fieldHandler.updateFields(res.data.fieldData);
+        fieldHandler?.updateFields(res.data.fieldData);
         successNotification("Delete field successfully");
       } else {
         errorNotification("Fail to fetch new data");
@@ -131,7 +131,7 @@ const Config: React.FC<Props> = ({
       );
       if (res.data.isSuccess) {
         successNotification("New field id is saved");
-        fieldHandler.updateFields(res.data.newData);
+        fieldHandler?.updateFields(res.data.newData);
       } else {
         handleOnClose();
         errorNotification("Fail to save new field id");
@@ -180,7 +180,7 @@ const Config: React.FC<Props> = ({
         <Group position="right" className="mt-8">
           <Button
             onClick={() => {
-              fieldHandler.updateFieldConfig(config, id);
+              if (id) fieldHandler?.updateFieldConfig(config, id);
               close();
             }}
           >

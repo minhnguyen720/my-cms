@@ -23,17 +23,18 @@ import {
   successNotification,
 } from "@/hooks/notifications/notificationPreset";
 import { getCookie } from "cookies-next";
+import { MESSAGES } from "@/constant";
 
 interface Props {
-  src: string;
-  alt: string;
-  label: string;
-  fieldId: string;
-  required: boolean;
-  active: boolean;
-  fieldHandler: FieldHandler;
+  src?: string;
+  alt?: string;
+  label?: string;
+  fieldId?: string;
+  required?: boolean;
+  active?: boolean;
+  fieldHandler?: FieldHandler;
   docId?: string;
-  id: string;
+  id?: string;
 }
 
 const UpdatableImage: React.FC<Props> = ({
@@ -74,12 +75,16 @@ const UpdatableImage: React.FC<Props> = ({
   const upload = async (file: File) => {
     try {
       showLoading();
+      if (docId === undefined || id === undefined) {
+        errorNotification(MESSAGES.GENERAL_MESSAGE);
+        return;
+      }
 
       let formData = new FormData();
       formData.append("bizFolder", `uploadFolder-${id}`); // must be appended first to make sure req.body is fully populated
       formData.append("fieldId", id);
       formData.append("type", "field-image");
-      formData.append("docId", docId ? docId : "");
+      formData.append("docId", docId);
       formData.append("file", file);
       const res = await axios.post(`${baseUrl}/storage/store`, formData, {
         headers: {

@@ -14,13 +14,13 @@ import Config from "../../Config";
 
 interface Props {
   label?: string;
-  form: UseFormReturnType<any>;
-  fieldId: string;
-  required: boolean;
-  active: boolean;
-  fieldHandler: any;
+  form?: UseFormReturnType<any>;
+  fieldId?: string;
+  required?: boolean;
+  active?: boolean;
+  fieldHandler?: any;
   value?: any;
-  id: string;
+  id?: string;
 }
 
 const LongText: React.FC<Props> = ({
@@ -45,76 +45,80 @@ const LongText: React.FC<Props> = ({
     ],
     content: value,
     onUpdate(props) {
-      form.setFieldValue(id, props.editor.getHTML());
+      if (form && id) form.setFieldValue(id, props.editor.getHTML());
     },
   });
 
   return (
-    <div className="form_item flex">
-      <Input.Wrapper
-        className="basis-[90%]"
-        withAsterisk={required}
-        label={label}
-        {...form.getInputProps(id)}
-      >
-        {active ? (
-          <RichTextEditor editor={editor}>
-            <RichTextEditor.Toolbar sticky stickyOffset={60}>
-              <RichTextEditor.ControlsGroup>
-                <RichTextEditor.Bold />
-                <RichTextEditor.Italic />
-                <RichTextEditor.Underline />
-                <RichTextEditor.Strikethrough />
-                <RichTextEditor.ClearFormatting />
-                <RichTextEditor.Highlight />
-                <RichTextEditor.Code />
-              </RichTextEditor.ControlsGroup>
+    <>
+      {form && id && (
+        <div className="form_item flex">
+          <Input.Wrapper
+            className="basis-[90%]"
+            withAsterisk={required}
+            label={label}
+            {...form.getInputProps(id)}
+          >
+            {active ? (
+              <RichTextEditor editor={editor}>
+                <RichTextEditor.Toolbar sticky stickyOffset={60}>
+                  <RichTextEditor.ControlsGroup>
+                    <RichTextEditor.Bold />
+                    <RichTextEditor.Italic />
+                    <RichTextEditor.Underline />
+                    <RichTextEditor.Strikethrough />
+                    <RichTextEditor.ClearFormatting />
+                    <RichTextEditor.Highlight />
+                    <RichTextEditor.Code />
+                  </RichTextEditor.ControlsGroup>
 
-              <RichTextEditor.ControlsGroup>
-                <RichTextEditor.H1 />
-                <RichTextEditor.H2 />
-                <RichTextEditor.H3 />
-                <RichTextEditor.H4 />
-              </RichTextEditor.ControlsGroup>
+                  <RichTextEditor.ControlsGroup>
+                    <RichTextEditor.H1 />
+                    <RichTextEditor.H2 />
+                    <RichTextEditor.H3 />
+                    <RichTextEditor.H4 />
+                  </RichTextEditor.ControlsGroup>
 
-              <RichTextEditor.ControlsGroup>
-                <RichTextEditor.Blockquote />
-                <RichTextEditor.Hr />
-                <RichTextEditor.BulletList />
-                <RichTextEditor.OrderedList />
-                <RichTextEditor.Subscript />
-                <RichTextEditor.Superscript />
-              </RichTextEditor.ControlsGroup>
+                  <RichTextEditor.ControlsGroup>
+                    <RichTextEditor.Blockquote />
+                    <RichTextEditor.Hr />
+                    <RichTextEditor.BulletList />
+                    <RichTextEditor.OrderedList />
+                    <RichTextEditor.Subscript />
+                    <RichTextEditor.Superscript />
+                  </RichTextEditor.ControlsGroup>
 
-              <RichTextEditor.ControlsGroup>
-                <RichTextEditor.Link />
-                <RichTextEditor.Unlink />
-              </RichTextEditor.ControlsGroup>
+                  <RichTextEditor.ControlsGroup>
+                    <RichTextEditor.Link />
+                    <RichTextEditor.Unlink />
+                  </RichTextEditor.ControlsGroup>
 
-              <RichTextEditor.ControlsGroup>
-                <RichTextEditor.AlignLeft />
-                <RichTextEditor.AlignCenter />
-                <RichTextEditor.AlignJustify />
-                <RichTextEditor.AlignRight />
-              </RichTextEditor.ControlsGroup>
-            </RichTextEditor.Toolbar>
+                  <RichTextEditor.ControlsGroup>
+                    <RichTextEditor.AlignLeft />
+                    <RichTextEditor.AlignCenter />
+                    <RichTextEditor.AlignJustify />
+                    <RichTextEditor.AlignRight />
+                  </RichTextEditor.ControlsGroup>
+                </RichTextEditor.Toolbar>
 
-            <RichTextEditor.Content />
-          </RichTextEditor>
-        ) : (
-          <Text>Editor is disabled</Text>
-        )}
-      </Input.Wrapper>
-      <div className="ml-3 flex items-center">
-        <Config
-          required={required}
-          active={active}
-          fieldId={fieldId}
-          id={id}
-          fieldHandler={fieldHandler}
-        />
-      </div>
-    </div>
+                <RichTextEditor.Content />
+              </RichTextEditor>
+            ) : (
+              <Text>Editor is disabled</Text>
+            )}
+          </Input.Wrapper>
+          <div className="ml-3 flex items-center">
+            <Config
+              required={required}
+              active={active}
+              fieldId={fieldId}
+              id={id}
+              fieldHandler={fieldHandler}
+            />
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

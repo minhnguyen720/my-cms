@@ -19,6 +19,7 @@ import { AtGuard } from './common/guards';
 import { MailModule } from './mail/mail.module';
 import { ConfirmationModule } from './confirmation/confirmation.module';
 import { DataModule } from './data/data.module';
+import { DevtoolsModule } from '@nestjs/devtools-integration';
 
 @Module({
   imports: [
@@ -26,6 +27,9 @@ import { DataModule } from './data/data.module';
     ProjectModule,
     MongooseModule.forRoot('mongodb://127.0.0.1:27017', {
       dbName: 'myCMSPrototype',
+    }),
+    DevtoolsModule.register({
+      http: process.env.NODE_ENV !== 'production',
     }),
     ConfigModule.forRoot({ isGlobal: true }),
     PageModule,

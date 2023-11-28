@@ -16,8 +16,8 @@ export interface FieldHandler {
   updateFields: (newValue: any) => void;
   updateFieldConfig: (
     config: {
-      active: boolean;
-      required: boolean;
+      active: boolean | undefined;
+      required: boolean | undefined;
     },
     fieldId: string,
   ) => Promise<void>;
@@ -31,7 +31,7 @@ const useFields = () => {
   const { showLoading, hideLoading } = useLoading();
   const at = getCookie("at");
 
-  const initFieldDetail = useCallback(async () => {
+  const initFieldDetail = useCallback(async (): Promise<void> => {
     const res = await axios.get(`${baseUrl}/fields/${params.detailId}`, {
       headers: {
         Authorization: `Bearer ${at}`,
@@ -45,21 +45,21 @@ const useFields = () => {
     initFieldDetail();
   }, [baseUrl, initFieldDetail, params.detailId, setFields]);
 
-  const getFields = () => {
+  const getFields = (): any[] => {
     return fields;
   };
 
-  const updateFields = (newValue) => {
+  const updateFields = (newValue: any): void => {
     setFields(newValue);
   };
 
   const updateFieldConfig = async (
     config: {
-      active: boolean;
-      required: boolean;
+      active: boolean | undefined;
+      required: boolean | undefined;
     },
     fieldId: string,
-  ) => {
+  ): Promise<void> => {
     try {
       showLoading();
 

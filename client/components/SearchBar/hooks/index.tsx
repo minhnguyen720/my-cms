@@ -1,31 +1,35 @@
 import useProjectOverall from "@/components/ProjectOverall/hooks/useProjectOverall";
 import { useAtom } from "jotai";
-import { searchAtom } from "@/atoms";
+import { datasourceAtom, searchAtom } from "@/atoms";
 
 export const useSearchBar = () => {
   const [searchValue, jotaiSetSearchValue] = useAtom(searchAtom);
-  const { datasource, setDataSource, datasourceDefault } = useProjectOverall();
+  // const { datasource, setDataSource } = useProjectOverall();
+  const [datasource, setDatasource] = useAtom(datasourceAtom);
 
   const handleSearch = () => {
-    const result = datasource.pages.filter((item) => {
+    if (typeof datasource === "boolean") return;
+    const result = datasource.filter((item) => {
       return (
-        item.name.includes(searchValue) ||
-        item.createdUser.includes(searchValue) ||
-        item.updatedUser.includes(searchValue)
+        item?.name?.includes(searchValue) ||
+        item?.createdUser.username.includes(searchValue) ||
+        item?.updatedUser.username.includes(searchValue)
       );
     });
 
-    setDataSource((prev) => {
-      return {
-        ...prev,
-        pages: result,
-      };
+    setDatasource((prev) => {
+      if (typeof prev !== "boolean")
+        return {
+          ...prev,
+          pages: result,
+        };
+      else return [];
     });
   };
 
   const handleReset = () => {
     setSearchValue("");
-    setDataSource(datasourceDefault);
+    // setDataSource(datasourceDefault);
   };
 
   const setSearchValue = (value: string) => {

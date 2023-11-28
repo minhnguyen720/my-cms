@@ -11,10 +11,10 @@ import { Tips } from "./components/Tips";
 import { useMediaQuery } from "@mantine/hooks";
 
 interface Props {
-  handleSearch?: (value: string) => void;
-  handleReset?: () => void;
-  searchValue?: string;
-  setSearchValue?: React.Dispatch<React.SetStateAction<string>>;
+  handleSearch: (value: string) => void;
+  handleReset: () => void;
+  searchValue: string;
+  setSearchValue: (value: string) => void;
   placeholder?: string;
 }
 
@@ -26,29 +26,31 @@ const SearchBar: React.FC<Props> = ({
   placeholder,
 }) => {
   const { classes } = useStyles();
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const matches = useMediaQuery("(max-width: 474px)");
 
   useEffect(() => {
-    window.addEventListener(
-      "keydown",
-      getHotkeyHandler([
-        [
-          "shift + S",
-          (e) => {
-            e.preventDefault();
-            if (inputRef.current !== null) inputRef.current.focus();
-          },
-        ],
-        [
-          "shift + B",
-          (e) => {
-            e.preventDefault();
-            if (inputRef.current !== null) inputRef.current.blur();
-          },
-        ],
-      ]),
-    );
+    if (inputRef.current) {
+      window.addEventListener(
+        "keydown",
+        getHotkeyHandler([
+          [
+            "shift + S",
+            (e) => {
+              e.preventDefault();
+              if (inputRef.current !== null) inputRef.current.focus();
+            },
+          ],
+          [
+            "shift + B",
+            (e) => {
+              e.preventDefault();
+              if (inputRef.current !== null) inputRef.current.blur();
+            },
+          ],
+        ]),
+      );
+    }
   }, [inputRef]);
 
   const [opened, { open, close }] = useDisclosure(false);
@@ -76,7 +78,7 @@ const SearchBar: React.FC<Props> = ({
                 "shift+R",
                 () => {
                   handleReset();
-                  inputRef.current.blur();
+                  if (inputRef.current) inputRef.current.blur();
                 },
               ],
             ])}

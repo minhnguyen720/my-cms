@@ -6,14 +6,14 @@ import { UseFormReturnType } from "@mantine/form";
 import Config from "../../Config";
 
 interface Props {
-  label: string;
+  label?: string;
   placeholder?: string;
-  required: boolean;
-  active: boolean;
+  required?: boolean;
+  active?: boolean;
   icon?: ReactNode;
-  fieldId: string;
-  form: UseFormReturnType<any>;
-  fieldHandler: any;
+  fieldId?: string;
+  form?: UseFormReturnType<any>;
+  fieldHandler?: any;
   value?: any;
 }
 
@@ -29,26 +29,30 @@ const Text: React.FC<Props> = ({
   value,
 }) => {
   return (
-    <div className="flex">
-      <TextInput
-        className="basis-[90%]"
-        label={label}
-        placeholder={placeholder && placeholder}
-        withAsterisk={required}
-        icon={icon && icon}
-        disabled={!active}
-        defaultValue={value}
-        {...form.getInputProps(fieldId)}
-      />
-      <div className="ml-2 flex items-end">
-        <Config
-          required={required}
-          active={active}
-          fieldId={fieldId}
-          fieldHandler={fieldHandler}
-        />
-      </div>
-    </div>
+    <>
+      {form && fieldId && (
+        <div className="flex">
+          <TextInput
+            className="basis-[90%]"
+            label={label}
+            placeholder={placeholder && placeholder}
+            withAsterisk={required}
+            icon={icon && icon}
+            disabled={!active}
+            defaultValue={value}
+            {...form.getInputProps(fieldId)}
+          />
+          <div className="ml-2 flex items-end">
+            <Config
+              required={required}
+              active={active}
+              fieldId={fieldId}
+              fieldHandler={fieldHandler}
+            />
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
