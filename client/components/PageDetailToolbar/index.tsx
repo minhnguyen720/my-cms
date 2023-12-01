@@ -15,100 +15,21 @@ import {
 } from "@mantine/core";
 import { IconZzz, IconTrash, IconArrowLeft } from "@tabler/icons-react";
 import { TbPlugConnected } from "react-icons/tb";
-import React, { useState } from "react";
-import useLoading from "@/hooks/utilities/useLoading";
-import useAlert from "../Alert/hooks";
-import { ALERT_CODES } from "@/constant";
-import axios from "axios";
-import useGetBaseUrl from "@/hooks/utilities/getUrl";
+import React from "react";
 import { useDisclosure } from "@mantine/hooks";
-import { getCookie } from "cookies-next";
 import OnlineBadge from "../Badge";
-import { useParams, useRouter } from "next/navigation";
-import { errorNotification } from "@/hooks/notifications/notificationPreset";
+import { useBackToPage, useMoveToTrash, useUpdateStatus } from "./hooks";
 
 interface Props {
   page: Page;
 }
 
 const PageDetailToolbar: React.FC<Props> = ({ page }) => {
-  const { showLoading, hideLoading } = useLoading();
-  const { openAlert } = useAlert();
-  const [pageStatus, setPageStatus] = useState<boolean>(
-    page.active ? page.active : false,
-  );
-  const [baseUrl] = useGetBaseUrl();
-  const [updateOpened, updateHandler] = useDisclosure(false);
   const [deleteOpened, deleteHandler] = useDisclosure(false);
-  const at = getCookie("at");
-  const router = useRouter();
-  const params = useParams();
-
-  const handleUpdateStatus = async () => {
-    try {
-      showLoading();
-      const res = await axios.put(
-        `${baseUrl}/page/status`,
-        {
-          id: page._id,
-          value: !page.active,
-          projectId: page.project,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${at}`,
-          },
-        },
-      );
-      if (res.data.isSuccess) {
-        setPageStatus((prev) => {
-          return !prev;
-        });
-        openAlert("Update status success", ALERT_CODES.SUCCESS);
-      } else {
-        openAlert("Update status failed", ALERT_CODES.ERROR);
-      }
-      updateHandler.close();
-    } catch (error) {
-      openAlert("Update status failed", ALERT_CODES.ERROR);
-    } finally {
-      hideLoading();
-    }
-  };
-
-  const handleMoveToTrashBin = async () => {
-    try {
-      showLoading();
-
-      const res = await axios.put(`${baseUrl}/page/movetotrash`, {
-        headers: {
-          Authorization: `Bearer ${at}`,
-        },
-      });
-
-      if (res.data.isSuccess) {
-        openAlert("Delete page successfully", ALERT_CODES.SUCCESS);
-      } else {
-        openAlert("Fail to delete this page", ALERT_CODES.ERROR);
-      }
-    } catch (error) {
-      openAlert("Fail to delete this page", ALERT_CODES.ERROR);
-    } finally {
-      hideLoading();
-    }
-  };
-
-  const backToPageOverall = () => {
-    try {
-      showLoading();
-      router.push(`/application/project/${params.projectNameId}`);
-    } catch (error) {
-      errorNotification("Something went wrong. Moving back to Dashboard.");
-      router.push("/application/dashboard");
-    } finally {
-      hideLoading();
-    }
-  };
+  const { pageStatus, updateOpened, updateHandler, handleUpdateStatus } =
+    useUpdateStatus(page);
+  const { handleMoveToTrashBin } = useMoveToTrash();
+  const { backToPageOverall } = useBackToPage();
 
   return (
     <>

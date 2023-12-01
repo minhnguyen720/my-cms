@@ -6,7 +6,6 @@ import { Page, PageSchema } from 'src/schemas/page.schema';
 import { Project, ProjectSchema } from 'src/schemas/project.schema';
 import { Doc, DocSchema } from 'src/schemas/doc.schema';
 import { Field, FieldSchema } from 'src/schemas/field.schema';
-import { AuthModule } from 'src/auth/auth.module';
 import { Users, UsersSchema } from 'src/schemas/users.schema';
 
 @Module({

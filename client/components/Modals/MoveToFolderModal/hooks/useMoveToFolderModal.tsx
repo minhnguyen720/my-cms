@@ -2,8 +2,6 @@ import useGetBaseUrl from "@/hooks/utilities/getUrl";
 import { useDisclosure } from "@mantine/hooks";
 import axios from "axios";
 import { useState } from "react";
-import useAlert from "@/components/Alert/hooks";
-import { ALERT_CODES } from "@/constant";
 import { useLocalStorage } from "@mantine/hooks";
 import { getCookie } from "cookies-next";
 import {
@@ -18,7 +16,6 @@ const useMoveToFolderModal = (pageId: string) => {
 
   const [opened, { open, close }] = useDisclosure(false);
   const [baseUrl] = useGetBaseUrl();
-  const { openAlert } = useAlert();
   const [localFetchedFolders, setLocalFetchedFolders] = useLocalStorage<any[]>({
     key: "localFetchedFolders",
   });

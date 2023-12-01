@@ -1,5 +1,4 @@
 import { baseUrlAtom, currentUserAtom } from "@/atoms";
-import { ALERT_CODES } from "@/constant";
 import {
   Modal,
   TextInput,
@@ -14,15 +13,14 @@ import { IconFolderPlus } from "@tabler/icons-react";
 import axios from "axios";
 import { useAtomValue } from "jotai";
 import React from "react";
-import useAlert from "../Alert/hooks";
 import { useParams } from "next/navigation";
 import { Folder } from "@/interfaces/Project";
 import { getCookie } from "cookies-next";
+import { errorNotification, successNotification } from "@/hooks/notifications/notificationPreset";
 
 const CreateNewFolder = ({ updateFolderList }) => {
   const [opened, { open, close }] = useDisclosure(false);
   const baseUrl = useAtomValue(baseUrlAtom);
-  const { openAlert } = useAlert();
   const currentUser = useAtomValue(currentUserAtom);
   const { pageId, projectNameId } = useParams();
   const at = getCookie("at");
@@ -55,15 +53,16 @@ const CreateNewFolder = ({ updateFolderList }) => {
 
       if (res.data.isSuccess) {
         updateFolderList(res.data.latestFolderList);
-        openAlert("Create new folder successfully", ALERT_CODES.SUCCESS);
+        successNotification("Create new folder successfully");
         close();
       } else {
         close();
-        openAlert("Fail to create new folder", ALERT_CODES.ERROR);
+        errorNotification("Fail to create new folder");
       }
     } catch (error: any) {
       close();
-      openAlert(error, ALERT_CODES.ERROR);
+      console.error(error);
+      errorNotification("Fail to create new folder");
     }
   };
 
