@@ -1,15 +1,13 @@
-import useAlert from "@/components/Alert/hooks";
-import { ALERT_CODES } from "@/constant";
 import useGetBaseUrl from "@/hooks/utilities/getUrl";
 import { Folder } from "@/interfaces/Project";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
 import { getCookie } from "cookies-next";
+import { errorNotification, successNotification } from "@/hooks/notifications/notificationPreset";
 
 const useFolderCardAction = (folders: Folder[]) => {
   const [folderList, setFolderList] = useState<Folder[]>([]);
-  const { openAlert } = useAlert();
   const [baseUrl] = useGetBaseUrl();
   const [renameOpened, renameHandler] = useDisclosure(false);
   const [opened, handler] = useDisclosure(false);
@@ -21,7 +19,7 @@ const useFolderCardAction = (folders: Folder[]) => {
     }, 200);
   }, [folders]);
 
-  const add = (item) => {
+  const add = (item: Folder) => {
     setFolderList((prev) => [...prev, item]);
   };
 
@@ -40,21 +38,23 @@ const useFolderCardAction = (folders: Folder[]) => {
         },
       });
       if (res.data.isSuccess && res.data.latestFolderList !== undefined) {
-        openAlert("Delete folder success", ALERT_CODES.SUCCESS);
+        successNotification("Delete folder success");
         update(res.data.latestFolderList);
         handler.close();
       } else {
-        openAlert("Delete folder fail", ALERT_CODES.ERROR);
+        errorNotification("Delete folder fail");
         handler.close();
       }
     } catch (error) {
       console.error(error);
-      openAlert("Delete folder fail", ALERT_CODES.ERROR);
+      errorNotification("Delete folder fail");
       handler.close();
     }
   };
 
-  const rename = async (values, docId) => {
+  const rename = async (values: {
+    renameValue: string
+  }, docId: string) => {
     try {
       const body = {
         folderId: folders,
@@ -69,16 +69,16 @@ const useFolderCardAction = (folders: Folder[]) => {
         },
       });
       if (res.data.isSuccess && res.data.latestFolderList !== undefined) {
-        openAlert("Rename folder success", ALERT_CODES.SUCCESS);
+        successNotification("Rename folder success")
         update(res.data.latestFolderList);
         renameHandler.close();
       } else {
-        openAlert("Rename folder fail", ALERT_CODES.ERROR);
+        errorNotification("Rename folder fail")
         renameHandler.close();
       }
     } catch (error) {
       console.error(error);
-      openAlert("Rename folder fail", ALERT_CODES.ERROR);
+      errorNotification("Rename folder fail")
       renameHandler.close();
     }
   };

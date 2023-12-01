@@ -8,23 +8,16 @@ import {
   Tooltip,
   Group,
 } from "@mantine/core";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
-import axios from "axios";
-import useGetBaseUrl from "@/hooks/utilities/getUrl";
 import ActiveSwitch from "../ActiveSwitch";
-import useProjectSelection from "../../hooks/useProjectSelection";
+import useProjectSelection from "../../hooks/useProjectSelection.hook";
 import { Navlink } from "@/interfaces/NavLink";
 import DashboardToolbar from "../DashboardToolbar";
-import { useSetAtom } from "jotai";
-import { statAtom } from "../../atoms";
-import { getCookie } from "cookies-next";
-import {
-  errorNotification,
-  successNotification,
-} from "@/hooks/notifications/notificationPreset";
 import { IconCheck, IconCopy } from "@tabler/icons-react";
+import { useDashboardActiveSwitch as useDashboardActiveSwitch } from "./hooks/activeSwitch.hook";
+import { useSearchProject } from "./hooks/searchProject.hook";
 
 interface Props {
   projects: Navlink[];
@@ -32,75 +25,18 @@ interface Props {
 
 const DashboardProjects: React.FC<Props> = ({ projects }) => {
   const router = useRouter();
-  const [baseUrl] = useGetBaseUrl();
-  const setStatData = useSetAtom(statAtom);
 
-  const [searchValue, setSearchValue] = useState("");
-  const [searchResult, setSearchResult] = useState<Navlink[]>(() => {
-    if (projects) return projects;
-    else return [];
-  });
-
+  const {onChangeDashboardActiveSwitch} = useDashboardActiveSwitch();
   const { toggleAll, toggleRow, selection } = useProjectSelection();
-
-  const updateResult = async () => {
-    const res = await axios.get(`${baseUrl}/project`, {
-      headers: {
-        Authorization: `Bearer ${getCookie("at")}`,
-      },
-    });
-    setSearchResult(res.data.projects);
-  };
-
-  const handleSearch = (value: string) => {
-    setSearchResult(() => {
-      return projects.filter((item) => {
-        return item.label.toLowerCase().includes(value.toLowerCase());
-      });
-    });
-    setSearchValue("");
-  };
-
-  const handleReset = () => {
-    setSearchResult(projects);
-    setSearchValue("");
-  };
-
-  const updateSearchResult = (value) => {
-    setSearchResult(value);
-  };
-
-  const onChangeActiveSwitch = async (event) => {
-    try {
-      const res = await axios.put(
-        `${baseUrl}/project/active/toggle`,
-        {
-          id: event.currentTarget.id,
-          value: event.currentTarget.checked,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${getCookie("at")}`,
-          },
-        },
-      );
-      setStatData([
-        { title: "Active project", value: res.data.activeLength.toString() },
-        {
-          title: "Deactive project",
-          value: res.data.deactiveLength.toString(),
-        },
-      ]);
-      if (res.data.success) {
-        successNotification("Deactive successful");
-      } else {
-        errorNotification("Deactive failed");
-      }
-    } catch (error) {
-      errorNotification("Deactive failed");
-      console.error(error);
-    }
-  };
+  const {
+    searchResult,
+    searchValue,
+    handleReset,
+    handleSearch,
+    updateSearchResult,
+    setSearchValue,
+    updateResult
+  } = useSearchProject(projects);
 
   return (
     <div className="pb-12">
@@ -196,7 +132,7 @@ const DashboardProjects: React.FC<Props> = ({ projects }) => {
                       <td>
                         <ActiveSwitch
                           element={element}
-                          onChange={onChangeActiveSwitch}
+                          onChange={onChangeDashboardActiveSwitch}
                         />
                       </td>
                     </tr>

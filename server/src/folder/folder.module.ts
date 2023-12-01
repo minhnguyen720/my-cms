@@ -19,8 +19,8 @@ import { Doc, DocSchema } from 'src/schemas/doc.schema';
       },
       {
         name: Doc.name,
-        schema: DocSchema
-      }
+        schema: DocSchema,
+      },
     ]),
   ],
   controllers: [FolderController],

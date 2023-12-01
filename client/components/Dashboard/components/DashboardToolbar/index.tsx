@@ -4,9 +4,14 @@ import { IconTrash, IconZzz } from "@tabler/icons-react";
 import { useAtomValue } from "jotai";
 import React from "react";
 import { selectionAtom } from "../../atoms";
-import useToolbar from "../../hooks/useToolbar";
+import useToolbar from "../../hooks/useToolbar.hook";
 
-const DashboardToolbar = ({ create, updateSearchResult }) => {
+interface Props {
+  create: () => Promise<void>;
+  updateSearchResult: (value: any) => void;
+}
+
+const DashboardToolbar: React.FC<Props> = ({ create, updateSearchResult }) => {
   const selection = useAtomValue(selectionAtom);
   const toolbar = useToolbar();
 

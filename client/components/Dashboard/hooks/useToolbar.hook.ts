@@ -1,16 +1,14 @@
 import useGetBaseUrl from "@/hooks/utilities/getUrl";
 import axios from "axios";
-import useProjectSelection from "./useProjectSelection";
+import useProjectSelection from "./useProjectSelection.hook";
 import useLoading from "@/hooks/utilities/useLoading";
-import useAlert from "@/components/Alert/hooks";
-import { ALERT_CODES } from "@/constant";
 import { getCookie } from "cookies-next";
+import { errorNotification, successNotification } from "@/hooks/notifications/notificationPreset";
 
 const useToolbar = () => {
   const [baseUrl] = useGetBaseUrl();
   const { selection, updateSelection } = useProjectSelection();
   const { showLoading, hideLoading } = useLoading();
-  const { openAlert } = useAlert();
   const at = getCookie("at");
 
   const doRemove = async () => {
@@ -27,10 +25,10 @@ const useToolbar = () => {
           },
         },
       );
-      openAlert("Remove the selected projects succesful", ALERT_CODES.SUCCESS);
+      successNotification("Remove the selected projects succesful")
       return res.data.projects;
     } catch (error) {
-      openAlert("Remove the selected projects failed", ALERT_CODES.ERROR);
+      errorNotification("Remove the selected projects failed")
       const res = await axios.get(`${baseUrl}/project`, {
         headers: {
           Authorization: `Bearer ${at}`,
