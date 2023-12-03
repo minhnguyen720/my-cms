@@ -1,7 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverActions: true,
+  reactStrictMode: false,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  experimental:{
+    optimizePackageImports:['@mantine/core','@mantine/hooks']
   },
   async rewrites() {
     return [

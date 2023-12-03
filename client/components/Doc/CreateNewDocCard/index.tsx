@@ -1,4 +1,6 @@
 import { baseUrlAtom } from "@/atoms";
+import { MESSAGES } from "@/constant";
+import { errorNotification } from "@/hooks/notifications/notificationPreset";
 import {
   ActionIcon,
   Button,
@@ -33,14 +35,18 @@ const CreateNewDocCard: React.FC<Props> = ({ addDocItem }) => {
 
   const handleCreateNewDoc = async (values: createNewDocDto) => {
     try {
+      const parent = folderId !== null && folderId !== undefined ? folderId : pageId;
+      if(parent === undefined) {
+        errorNotification(MESSAGES.GENERAL_MESSAGE);
+        return;
+      }
       const res = await axios.post(
         `${baseUrl}/doc`,
         {
           ...values,
           pageId,
           project: projectNameId,
-          parent:
-            folderId !== null || folderId !== undefined ? folderId : pageId,
+          parent,
           active: true,
           isRemove: false,
         },

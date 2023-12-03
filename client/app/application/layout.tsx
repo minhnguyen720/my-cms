@@ -1,8 +1,8 @@
 import AuthenticateUser from "@/hooks/user/useUser";
 import AppShell from "@/components/AppShell";
-import JotaiProviders from "@/components/Providers";
+import JotaiProviders from "@/components/JotaiProvider";
 
-export default async function AppLayout({
+export default function AppLayout({
   children,
 }: {
   children: React.ReactNode;
