@@ -3,8 +3,6 @@
 import { GeneralNotFound } from "@/components/GeneralNotFound";
 import ProjectTable from "@/components/ProjectTable";
 import {
-  Badge,
-  Button,
   Card,
   Center,
   Divider,
@@ -12,6 +10,7 @@ import {
   Loader,
   Text,
   Title,
+  Pagination
 } from "@mantine/core";
 import useProjectOverall from "./hooks/useProjectOverall";
 import { ProjectTableItem } from "@/app/application/project/[projectNameId]/page";
@@ -115,7 +114,10 @@ const ProjectOverall: React.FC<Props> = ({ id, data }) => {
               <Loader py={"10%"} variant="bars" />
             </Center>
           ) : (
+            <>
             <ProjectTable />
+            <Pagination />
+            </>
           )}
         </>
       )}

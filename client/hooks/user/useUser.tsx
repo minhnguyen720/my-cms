@@ -1,11 +1,10 @@
 "use client";
 
-import { atom, useAtom } from "jotai";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { usePathname, useRouter, redirect } from "next/navigation";
 import useGetBaseUrl from "../utilities/getUrl";
 import axios from "axios";
 import { errorNotification } from "../notifications/notificationPreset";
+import { useEffect } from "react";
 import { getCookie } from "cookies-next";
 
 export type User = {
@@ -28,7 +27,7 @@ const AuthenticateUser = ({ children }) => {
         localStorage.setItem("currentPage", pathname);
         const at = getCookie("at");
         if (at?.trim().length === 0 || at === null || at === undefined) {
-          router.push("/authenticate");
+          redirect("/authenticate");
         }
 
         const headersList = {
@@ -54,7 +53,7 @@ const AuthenticateUser = ({ children }) => {
       } catch (error) {
         errorNotification("Unauthorized");
         setTimeout(() => {
-          router.push("/authenticate");
+          redirect("/authenticate");
         }, 2100);
       }
     };
