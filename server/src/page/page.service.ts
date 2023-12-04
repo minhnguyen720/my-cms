@@ -1,8 +1,8 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { CreatePageDto } from './dto/create-page.dto';
 import { Page } from 'src/schemas/page.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { Project } from 'src/schemas/project.schema';
 import * as dayjs from 'dayjs';
 import { MoveToTrashDto } from './dto/movetotrash.dto';
@@ -16,6 +16,9 @@ export class PageService {
     @InjectModel(Users.name) private userModel: Model<Users>,
   ) {}
 
+  private readonly logger = new Logger(PageService.name);
+  private readonly perPage: number = 5;
+
   async findPageBelongToProject(projectId: string) {
     try {
       const pages = await this.pageModel
@@ -23,12 +26,57 @@ export class PageService {
           project: projectId,
           isRemove: false,
         })
+        .sort({ createdDate: -1 })
+        .limit(this.perPage)
         .populate('createdUser', null, Users.name)
         .populate('updatedUser', null, Users.name)
         .exec();
       return pages;
     } catch (error) {
-      console.error(error);
+      this.logger.error(error);
+      return {
+        success: false,
+        message: error,
+      };
+    }
+  }
+
+  async getDataByPageNumber(perPage: number, page: number, projectId: string) {
+    try {
+      const pages = await this.pageModel
+        .find({
+          project: projectId,
+          isRemove: false,
+        })
+        .limit(perPage)
+        .skip(perPage * (page - 1))
+        .populate('createdUser', null, Users.name)
+        .populate('updatedUser', null, Users.name)
+        .exec();
+      return {
+        isSuccess: true,
+        pages,
+      };
+    } catch (error) {
+      this.logger.error(error);
+      return {
+        isSuccess: false,
+        message: error,
+      };
+    }
+  }
+
+  async getTotalPages(projectId: string) {
+    try {
+      const total = await this.pageModel
+        .find({
+          project: projectId,
+          isRemove: false,
+        })
+        .countDocuments();
+      return total;
+    } catch (error) {
+      this.logger.error(error);
       return {
         success: false,
         message: error,
@@ -59,8 +107,8 @@ export class PageService {
         isRemove: false,
         createdUser: user,
         updatedUser: user,
-        createdDate: dayjs().toString(),
-        updatedDate: dayjs().toString(),
+        createdDate: dayjs().toDate(),
+        updatedDate: dayjs().toDate(),
       });
       const projectRes = await this.findPageBelongToProject(
         createPageDto.project,

@@ -11,10 +11,10 @@ export class Project {
   id?: string;
 
   @Prop()
-  createdDate: string;
+  createdDate: Date;
 
   @Prop()
-  updatedDate: string;
+  updatedDate: Date;
 
   @Prop()
   createdUser: string;

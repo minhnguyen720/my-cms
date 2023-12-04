@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Put, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Query } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { GetCurrentUserId } from 'src/common/decorators';
@@ -11,12 +11,21 @@ export class ProjectController {
     private readonly trashService: TrashService,
   ) {}
 
-  @Post()
-  async create(
-    @GetCurrentUserId() userId,
-    @Body() createProjectDto: CreateProjectDto,
+  // Static routes
+  @Get()
+  async findAll(@GetCurrentUserId() userId: string) {
+    return await this.projectService.findAll(userId);
+  }
+
+  @Get('pg')
+  async getDataByPage(
+    @GetCurrentUserId() userId: string,
+    @Query('perPage') perPage: string,
+    @Query('page') page: string,
   ) {
-    return this.projectService.create(userId, createProjectDto);
+    const perPageNum = parseInt(perPage, 10);
+    const pageNum = parseInt(page, 10);
+    return await this.projectService.getDataByPage(perPageNum, pageNum, userId);
   }
 
   @Get('dashboard-stat')
@@ -24,14 +33,17 @@ export class ProjectController {
     return await this.projectService.getDashboardStat(userId);
   }
 
-  @Get(':id')
-  async getProjectById(@Param('id') id: string) {
-    return await this.projectService.getProjectById(id);
+  @Get('total')
+  async getTotal(@GetCurrentUserId() userId: string) {
+    return await this.projectService.getTotalProject(userId);
   }
 
-  @Get()
-  async findAll(@GetCurrentUserId() userId: string) {
-    return await this.projectService.findAll(userId);
+  @Post()
+  async create(
+    @GetCurrentUserId() userId: string,
+    @Body() createProjectDto: CreateProjectDto,
+  ) {
+    return this.projectService.create(userId, createProjectDto);
   }
 
   @Put('active/toggle')
@@ -50,5 +62,11 @@ export class ProjectController {
     const projects = await this.projectService.findMany(body.ids);
     await this.trashService.handleDeleteProjects(projects);
     return await this.projectService.findAll(userId);
+  }
+
+  // Dynamic routes
+  @Get(':id')
+  async getProjectById(@Param('id') id: string) {
+    return await this.projectService.getProjectById(id);
   }
 }

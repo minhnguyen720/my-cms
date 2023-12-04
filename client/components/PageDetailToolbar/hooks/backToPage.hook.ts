@@ -1,7 +1,7 @@
 import { errorNotification } from "@/hooks/notifications/notificationPreset";
 import useLoading from "@/hooks/utilities/useLoading";
 import { useParams } from "next/navigation";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export const useBackToPage = () => {
   const { showLoading, hideLoading } = useLoading();
@@ -21,6 +21,6 @@ export const useBackToPage = () => {
   };
 
   return {
-    backToPageOverall
-  }
+    backToPageOverall,
+  };
 };
