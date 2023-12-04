@@ -17,6 +17,7 @@ export class PageService {
   ) {}
 
   private readonly logger = new Logger(PageService.name);
+  private readonly perPage: number = 5;
 
   async findPageBelongToProject(projectId: string) {
     try {
@@ -25,7 +26,8 @@ export class PageService {
           project: projectId,
           isRemove: false,
         })
-        .limit(5)
+        .sort({ createdDate: -1 })
+        .limit(this.perPage)
         .populate('createdUser', null, Users.name)
         .populate('updatedUser', null, Users.name)
         .exec();
@@ -105,8 +107,8 @@ export class PageService {
         isRemove: false,
         createdUser: user,
         updatedUser: user,
-        createdDate: dayjs().toString(),
-        updatedDate: dayjs().toString(),
+        createdDate: dayjs().toDate(),
+        updatedDate: dayjs().toDate(),
       });
       const projectRes = await this.findPageBelongToProject(
         createPageDto.project,

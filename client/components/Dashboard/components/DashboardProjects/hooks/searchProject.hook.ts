@@ -12,12 +12,20 @@ export const useSearchProject = (projects: Navlink[]) => {
   });
   const [baseUrl] = useGetBaseUrl();
 
-  const updateResult = async () => {
-    const res = await axios.get(`${baseUrl}/project`, {
-      headers: {
-        Authorization: `Bearer ${getCookie("at")}`,
+  const updateResult = async (perPage: number, value: number) => {
+    // const res = await axios.get(`${baseUrl}/project`, {
+    //   headers: {
+    //     Authorization: `Bearer ${getCookie("at")}`,
+    //   },
+    // });
+    const res = await axios.get(
+      `${baseUrl}/project/pg?perPage=${perPage}&page=${value}`,
+      {
+        headers: {
+          Authorization: `Bearer ${getCookie("at")}`,
+        },
       },
-    });
+    );
     setSearchResult(res.data.projects);
   };
 
@@ -46,6 +54,6 @@ export const useSearchProject = (projects: Navlink[]) => {
     handleSearch,
     updateSearchResult,
     setSearchValue,
-    updateResult
+    updateResult,
   };
 };

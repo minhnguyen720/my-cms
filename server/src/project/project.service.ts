@@ -13,6 +13,7 @@ export class ProjectService {
   ) {}
 
   private readonly logger = new Logger(Project.name);
+  private readonly perPage: number = 2;
 
   async getProjectById(id: string) {
     try {
@@ -36,8 +37,8 @@ export class ProjectService {
       users: [userId],
       createdUser: userId,
       updatedUser: userId,
-      createdDate: dayjs().toString(),
-      updatedDate: dayjs().toString(),
+      createdDate: dayjs().toDate(),
+      updatedDate: dayjs().toDate(),
       ...createProjectDto,
     });
   }
@@ -63,12 +64,17 @@ export class ProjectService {
         .find({
           users: userId,
         })
+        .sort({
+          createdDate: -1,
+        })
         .limit(perPage)
         .skip(perPage * (page - 1));
 
+      const formatedProjects = this.formatProjectData(projects);
+
       return {
         isSuccess: true,
-        projects: projects,
+        projects: formatedProjects,
       };
     } catch (error) {
       this.logger.error(error);
@@ -79,7 +85,12 @@ export class ProjectService {
   }
 
   async getProjectsByUserId(userId: string) {
-    const result = await this.projectModel.find({ users: userId }).limit(2);
+    const result = await this.projectModel
+      .find({ users: userId })
+      .sort({
+        createdDate: -1,
+      })
+      .limit(this.perPage);
     return this.formatProjectData(result);
   }
 

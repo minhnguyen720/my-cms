@@ -17,9 +17,10 @@ import { GetCurrentUserId } from 'src/common/decorators';
 export class PageController {
   constructor(private readonly pageService: PageService) {}
 
+  //static routes
   @Post()
   async create(
-    @GetCurrentUserId() userId,
+    @GetCurrentUserId() userId: string,
     @Body() createPageDto: CreatePageDto,
   ) {
     return await this.pageService.create(userId, createPageDto);
@@ -30,16 +31,6 @@ export class PageController {
     @Body() body: { id: string; value: boolean; projectId: string },
   ) {
     return await this.pageService.updateStatus(body);
-  }
-
-  @Get(':projectId')
-  async findPageBelongToProject(@Param('projectId') projectId: string) {
-    return await this.pageService.findPageBelongToProject(projectId);
-  }
-
-  @Get(':projectId/total')
-  async getTotal(@Param('projectId') projectId: string) {
-    return await this.pageService.getTotalPages(projectId);
   }
 
   @Get()
@@ -57,14 +48,25 @@ export class PageController {
     );
   }
 
+  @Put('movetotrash')
+  async moveToTrash(@Body() body: MoveToTrashDto) {
+    return await this.pageService.moveToTrash(body);
+  }
+
+  //dynamic routes
+  @Get(':projectId')
+  async findPageBelongToProject(@Param('projectId') projectId: string) {
+    return await this.pageService.findPageBelongToProject(projectId);
+  }
+
   @Get('key/:id')
   async findOne(@Param('id') id: string) {
     return await this.pageService.findOne(id);
   }
 
-  @Put('movetotrash')
-  async moveToTrash(@Body() body: MoveToTrashDto) {
-    return await this.pageService.moveToTrash(body);
+  @Get(':projectId/total')
+  async getTotal(@Param('projectId') projectId: string) {
+    return await this.pageService.getTotalPages(projectId);
   }
 
   @Delete(':projectId/:pageId')

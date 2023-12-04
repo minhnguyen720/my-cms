@@ -7,7 +7,7 @@ import { selectionAtom } from "../../atoms";
 import useToolbar from "../../hooks/useToolbar.hook";
 
 interface Props {
-  create: () => Promise<void>;
+  create: (perPage: number, activePage: number) => Promise<void>;
   updateSearchResult: (value: any) => void;
 }
 
