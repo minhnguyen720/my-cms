@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname, useRouter, redirect } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import useGetBaseUrl from "../utilities/getUrl";
 import axios from "axios";
 import { errorNotification } from "../notifications/notificationPreset";
@@ -27,7 +27,7 @@ const AuthenticateUser = ({ children }) => {
         localStorage.setItem("currentPage", pathname);
         const at = getCookie("at");
         if (at?.trim().length === 0 || at === null || at === undefined) {
-          redirect("/authenticate");
+          router.push("/authenticate");
         }
 
         const headersList = {
@@ -53,7 +53,7 @@ const AuthenticateUser = ({ children }) => {
       } catch (error) {
         errorNotification("Unauthorized");
         setTimeout(() => {
-          redirect("/authenticate");
+          router.push("/authenticate");
         }, 2100);
       }
     };

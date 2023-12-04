@@ -29,11 +29,13 @@ const useStyles = createStyles((theme) => ({
 interface StatsGridIconsProps {
   data: { title: string; value: string }[];
   projects: Navlink[];
+  totalPages: number;
 }
 
 export const Dashboard: React.FC<StatsGridIconsProps> = ({
   data,
   projects,
+  totalPages,
 }) => {
   const { classes } = useStyles();
   useHydrateAtoms([[statAtom, data]]);
@@ -89,7 +91,7 @@ export const Dashboard: React.FC<StatsGridIconsProps> = ({
         })}
       </SimpleGrid>
 
-      <DashboardProjects projects={projects} />
+      <DashboardProjects projects={projects} totalPages={totalPages} />
     </>
   );
 };

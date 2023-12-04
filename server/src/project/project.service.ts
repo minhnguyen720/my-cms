@@ -57,9 +57,37 @@ export class ProjectService {
     });
   }
 
+  async getDataByPage(perPage: number, page: number, userId: string) {
+    try {
+      const projects = await this.projectModel
+        .find({
+          users: userId,
+        })
+        .limit(perPage)
+        .skip(perPage * (page - 1));
+
+      return {
+        isSuccess: true,
+        projects: projects,
+      };
+    } catch (error) {
+      this.logger.error(error);
+      return {
+        isSuccess: false,
+      };
+    }
+  }
+
   async getProjectsByUserId(userId: string) {
-    const result = await this.projectModel.find({ users: userId });
+    const result = await this.projectModel.find({ users: userId }).limit(2);
     return this.formatProjectData(result);
+  }
+
+  async getTotalProject(userId: string) {
+    const result = await this.projectModel
+      .find({ users: userId })
+      .countDocuments();
+    return result;
   }
 
   async toggleActive(userId: string, body: { id: string; value: boolean }) {

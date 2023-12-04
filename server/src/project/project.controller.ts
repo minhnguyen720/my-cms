@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Put, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Query } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { GetCurrentUserId } from 'src/common/decorators';
@@ -24,6 +24,11 @@ export class ProjectController {
     return await this.projectService.getDashboardStat(userId);
   }
 
+  @Get('total')
+  async getTotal(@GetCurrentUserId() userId: string) {
+    return await this.projectService.getTotalProject(userId);
+  }
+
   @Get(':id')
   async getProjectById(@Param('id') id: string) {
     return await this.projectService.getProjectById(id);
@@ -32,6 +37,17 @@ export class ProjectController {
   @Get()
   async findAll(@GetCurrentUserId() userId: string) {
     return await this.projectService.findAll(userId);
+  }
+
+  @Get()
+  async getDataByPage(
+    @Query('perPage') perPage: string,
+    @Query('page') page: string,
+    @GetCurrentUserId() userId: string,
+  ) {
+    const perPageNum = parseInt(perPage, 10);
+    const pageNum = parseInt(page, 10);
+    return await this.projectService.getDataByPage(perPageNum, pageNum, userId);
   }
 
   @Put('active/toggle')

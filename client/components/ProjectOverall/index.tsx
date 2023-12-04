@@ -10,9 +10,9 @@ import {
   Loader,
   Text,
   Title,
-  Pagination
+  Pagination,
 } from "@mantine/core";
-import useProjectOverall from "./hooks/useProjectOverall";
+import useProjectOverall from "./hooks/useProjectOverall.hook";
 import { ProjectTableItem } from "@/app/application/project/[projectNameId]/page";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -20,13 +20,14 @@ import useGetBaseUrl from "@/hooks/utilities/getUrl";
 import { getCookie } from "cookies-next";
 import OnlineBadge from "../Badge";
 import dayjs from "dayjs";
-import { userAgent } from "next/server";
 import { useAtomValue } from "jotai";
 import { userAtom } from "../Navbar";
+import { usePagination } from "./hooks/usePagination.hook";
 
 interface Props {
   id?: string;
   data?: ProjectTableItem[];
+  totalPages: number;
 }
 
 interface ProjectData {
@@ -41,12 +42,15 @@ interface ProjectData {
   users: string[];
 }
 
-const ProjectOverall: React.FC<Props> = ({ id, data }) => {
-  const { notfound, datasource } = useProjectOverall(data);
+export const perPage = 5;
+
+const ProjectOverall: React.FC<Props> = ({ id, data, totalPages }) => {
+  const { notfound } = useProjectOverall(data);
   const [baseUrl] = useGetBaseUrl();
   const [project, setProject] = useState<ProjectData | null>(null);
   const at = getCookie("at");
   const user = useAtomValue(userAtom);
+  const { handleOnChange } = usePagination();
 
   useEffect(() => {
     const init = async () => {
@@ -60,7 +64,6 @@ const ProjectOverall: React.FC<Props> = ({ id, data }) => {
           },
         );
         setProject(projectRes.data);
-        console.log(projectRes.data);
       } catch (error) {}
     };
 
@@ -115,8 +118,13 @@ const ProjectOverall: React.FC<Props> = ({ id, data }) => {
             </Center>
           ) : (
             <>
-            <ProjectTable />
-            <Pagination />
+              <ProjectTable />
+              <Pagination
+                total={Math.ceil(totalPages / perPage)}
+                onChange={(value) => {
+                  handleOnChange(value);
+                }}
+              />
             </>
           )}
         </>

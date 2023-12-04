@@ -6,6 +6,7 @@ import {
   Param,
   Delete,
   Put,
+  Query,
 } from '@nestjs/common';
 import { PageService } from './page.service';
 import { CreatePageDto } from './dto/create-page.dto';
@@ -34,6 +35,26 @@ export class PageController {
   @Get(':projectId')
   async findPageBelongToProject(@Param('projectId') projectId: string) {
     return await this.pageService.findPageBelongToProject(projectId);
+  }
+
+  @Get(':projectId/total')
+  async getTotal(@Param('projectId') projectId: string) {
+    return await this.pageService.getTotalPages(projectId);
+  }
+
+  @Get()
+  async getDataByPageNumber(
+    @Query('perPage') perPage: string,
+    @Query('page') page: string,
+    @Query('projectId') projectId: string,
+  ) {
+    const perPageNum = parseInt(perPage, 10);
+    const pageNum = parseInt(page, 10);
+    return await this.pageService.getDataByPageNumber(
+      perPageNum,
+      pageNum,
+      projectId,
+    );
   }
 
   @Get('key/:id')

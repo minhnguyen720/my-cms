@@ -7,6 +7,7 @@ import {
   ActionIcon,
   Tooltip,
   Group,
+  Pagination,
 } from "@mantine/core";
 import React from "react";
 import { useRouter } from "next/navigation";
@@ -18,15 +19,23 @@ import DashboardToolbar from "../DashboardToolbar";
 import { IconCheck, IconCopy } from "@tabler/icons-react";
 import { useDashboardActiveSwitch as useDashboardActiveSwitch } from "./hooks/activeSwitch.hook";
 import { useSearchProject } from "./hooks/searchProject.hook";
+import useLoading from "@/hooks/utilities/useLoading";
+import axios from "axios";
+import useGetBaseUrl from "@/hooks/utilities/getUrl";
+import { getCookie } from "cookies-next";
+import { errorNotification } from "@/hooks/notifications/notificationPreset";
 
 interface Props {
   projects: Navlink[];
+  totalPages: number;
 }
 
-const DashboardProjects: React.FC<Props> = ({ projects }) => {
-  const router = useRouter();
+export const perPage = 2;
 
-  const {onChangeDashboardActiveSwitch} = useDashboardActiveSwitch();
+const DashboardProjects: React.FC<Props> = ({ projects, totalPages }) => {
+  const router = useRouter();
+  const { showLoading, hideLoading } = useLoading();
+  const { onChangeDashboardActiveSwitch } = useDashboardActiveSwitch();
   const { toggleAll, toggleRow, selection } = useProjectSelection();
   const {
     searchResult,
@@ -35,8 +44,33 @@ const DashboardProjects: React.FC<Props> = ({ projects }) => {
     handleSearch,
     updateSearchResult,
     setSearchValue,
-    updateResult
+    updateResult,
   } = useSearchProject(projects);
+  const [baseUrl] = useGetBaseUrl();
+  const at = getCookie("at");
+
+  const handlePagination = async (value: number) => {
+    try {
+      showLoading();
+      const res = await axios.get(
+        `${baseUrl}/project?perPage=${perPage}&page=${value}`,
+        {
+          headers: {
+            Authorization: `Bearer ${at}`,
+          },
+        },
+      );
+      console.log(res.data);
+      if (!res.data.isSuccess) {
+        errorNotification("Fail to fetch new page");
+        return;
+      }
+      updateSearchResult(res.data.projects);
+    } catch (error) {
+    } finally {
+      hideLoading();
+    }
+  };
 
   return (
     <div className="pb-12">
@@ -140,6 +174,12 @@ const DashboardProjects: React.FC<Props> = ({ projects }) => {
               })}
           </tbody>
         </Table>
+        <Pagination
+          total={Math.ceil(totalPages / perPage)}
+          onChange={(value) => {
+            handlePagination(value);
+          }}
+        />
       </div>
     </div>
   );

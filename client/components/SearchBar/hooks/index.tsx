@@ -1,4 +1,4 @@
-import useProjectOverall from "@/components/ProjectOverall/hooks/useProjectOverall";
+import useProjectOverall from "@/components/ProjectOverall/hooks/useProjectOverall.hook";
 import { useAtom } from "jotai";
 import { datasourceAtom, searchAtom } from "@/atoms";
 
