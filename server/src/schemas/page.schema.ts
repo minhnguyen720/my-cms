@@ -18,10 +18,10 @@ export class Page {
   name: string;
 
   @Prop()
-  createdDate: string;
+  createdDate: Date;
 
   @Prop()
-  updatedDate: string;
+  updatedDate: Date;
 
   // user id
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Users' })

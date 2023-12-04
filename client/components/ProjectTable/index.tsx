@@ -8,7 +8,6 @@ import { ActionIcon, Group, Tooltip } from "@mantine/core";
 import { IconPlus, IconReload } from "@tabler/icons-react";
 import { useParams, usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
-import useCurrentProject from "@/hooks/utilities/useCurrentProject";
 import { MdOutlineDeleteSweep } from "react-icons/md";
 import { useSetAtom } from "jotai";
 import { datasourceAtom } from "@/atoms";
@@ -23,7 +22,6 @@ const ProjectTable: React.FC = () => {
     useSearchBar();
   const navigator = useRouter();
   const currentPathname = usePathname();
-  const { getCurrentId } = useCurrentProject();
   const setDatasource = useSetAtom(datasourceAtom);
   const [baseUrl] = useGetBaseUrl();
   const params = useParams();

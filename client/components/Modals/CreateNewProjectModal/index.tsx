@@ -12,9 +12,15 @@ import {
   errorNotification,
   successNotification,
 } from "@/hooks/notifications/notificationPreset";
+import { useAtomValue, useSetAtom } from "jotai";
+import {
+  perPage,
+  projectTableCurrentPageAtom,
+  projectTotalPagesAtom,
+} from "@/components/Dashboard/components/DashboardProjects";
 
 interface Props {
-  updateNewList: () => Promise<void>;
+  updateNewList: (perPage: number, activePage: number) => Promise<void>;
 }
 
 type Ref = HTMLDivElement;
@@ -24,6 +30,8 @@ const CreateNewProjectModal = forwardRef<Ref, Props>((props, ref) => {
   const [opened, handler] = useDisclosure(false);
   const [baseUrl] = useGetBaseUrl();
   const { showLoading, hideLoading } = useLoading();
+  const setTotalPage = useSetAtom(projectTotalPagesAtom);
+  const activePage = useAtomValue(projectTableCurrentPageAtom);
 
   const form = useForm({
     initialValues: {
@@ -45,7 +53,11 @@ const CreateNewProjectModal = forwardRef<Ref, Props>((props, ref) => {
       await axios.post(`${baseUrl}/project`, body, {
         headers: headers,
       });
-      await updateNewList();
+      await updateNewList(perPage, activePage);
+      const totalPageRes = await axios.get(`${baseUrl}/project/total`, {
+        headers: headers,
+      });
+      setTotalPage(totalPageRes.data);
       handler.close();
       form.reset();
       successNotification("Create new project success");

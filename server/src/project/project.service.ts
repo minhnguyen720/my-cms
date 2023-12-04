@@ -13,6 +13,7 @@ export class ProjectService {
   ) {}
 
   private readonly logger = new Logger(Project.name);
+  private readonly perPage: number = 2;
 
   async getProjectById(id: string) {
     try {
@@ -36,8 +37,8 @@ export class ProjectService {
       users: [userId],
       createdUser: userId,
       updatedUser: userId,
-      createdDate: dayjs().toString(),
-      updatedDate: dayjs().toString(),
+      createdDate: dayjs().toDate(),
+      updatedDate: dayjs().toDate(),
       ...createProjectDto,
     });
   }
@@ -57,9 +58,47 @@ export class ProjectService {
     });
   }
 
+  async getDataByPage(perPage: number, page: number, userId: string) {
+    try {
+      const projects = await this.projectModel
+        .find({
+          users: userId,
+        })
+        .sort({
+          createdDate: -1,
+        })
+        .limit(perPage)
+        .skip(perPage * (page - 1));
+
+      const formatedProjects = this.formatProjectData(projects);
+
+      return {
+        isSuccess: true,
+        projects: formatedProjects,
+      };
+    } catch (error) {
+      this.logger.error(error);
+      return {
+        isSuccess: false,
+      };
+    }
+  }
+
   async getProjectsByUserId(userId: string) {
-    const result = await this.projectModel.find({ users: userId });
+    const result = await this.projectModel
+      .find({ users: userId })
+      .sort({
+        createdDate: -1,
+      })
+      .limit(this.perPage);
     return this.formatProjectData(result);
+  }
+
+  async getTotalProject(userId: string) {
+    const result = await this.projectModel
+      .find({ users: userId })
+      .countDocuments();
+    return result;
   }
 
   async toggleActive(userId: string, body: { id: string; value: boolean }) {

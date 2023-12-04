@@ -33,6 +33,34 @@ async function getProjectData(id: string) {
   }
 }
 
+async function totalPages(id: string) {
+  const cookieJar = cookies();
+  try {
+    const at = cookieJar.get("at")?.value;
+
+    if (at === undefined || at?.length === 0) redirect("/authenticate");
+
+    const res = await fetch(`http://localhost:4000/page/${id}/total`, {
+      cache: "no-store",
+      method: "GET",
+      headers: {
+        Accept: "*/*",
+        Authorization: `Bearer ${at}`,
+      },
+    });
+
+    if (res.status === 401) redirect("authenticate");
+    else if (!res.ok) {
+      throw new Error("Failed to fetch data");
+    }
+
+    return res.json();
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
+
 interface Props {
   params: {
     projectNameId: string;
@@ -59,7 +87,14 @@ const ProjectOverallPage: React.FC<Props> = async ({
 }) => {
   try {
     const data: ProjectTableItem[] = await getProjectData(projectNameId);
-    return <ProjectOverall id={projectNameId} data={data} />;
+    const totalPageCount = await totalPages(projectNameId);
+    return (
+      <ProjectOverall
+        id={projectNameId}
+        data={data}
+        totalPages={totalPageCount}
+      />
+    );
   } catch (error) {
     console.error(error);
     return <GeneralNotFound />;
