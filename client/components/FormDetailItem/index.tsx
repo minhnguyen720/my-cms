@@ -4,7 +4,7 @@ import Text from "@/components/Fields/FieldTypes/Text";
 import LongText from "@/components/Fields/FieldTypes/LongText";
 import { Affix, Button, Stack, Transition, rem } from "@mantine/core";
 import { UseFormReturnType } from "@mantine/form";
-import UpdatableImage from "../UpdatableImage";
+import UploadMedia from "../UploadMedia";
 import { IconArrowUp } from "@tabler/icons-react";
 import { useWindowScroll } from "@mantine/hooks";
 import { FieldHandler } from "../Fields/hooks/useFields";
@@ -36,9 +36,9 @@ const FormDetailItem: React.FC<Props> = ({ fieldHandler, form }) => {
               return <Text {...textFieldProps} key={item._id} />;
             case "longText":
               return <LongText {...textFieldProps} key={item._id} />;
-            case "image":
+            case "media":
               return (
-                <UpdatableImage
+                <UploadMedia
                   id={item._id}
                   key={item._id}
                   alt={`atch_${item._id}`}
@@ -51,20 +51,20 @@ const FormDetailItem: React.FC<Props> = ({ fieldHandler, form }) => {
                   docId={item.doc}
                 />
               );
-            // case "image_text":
-            //   return (
-            //     <ImageText
-            //       src={item.value}
-            //       alt={`atch_${index}`}
-            //       key={index}
-            //       fieldId={item.field_id}
-            //       form={form}
-            //       isUseEditor={item.isUseEditor}
-            //       label={item.label}
-            //       active={item.active}
-            //       required={item.required}
-            //     />
-            //   );
+            case "mediaAndEditor":
+              return (
+                <ImageText
+                  src={item.value}
+                  alt={`atch_${index}`}
+                  key={index}
+                  fieldId={item.field_id}
+                  form={form}
+                  isUseEditor={item.isUseEditor}
+                  label={item.label}
+                  active={item.active}
+                  required={item.required}
+                />
+              );
             default:
               return;
           }

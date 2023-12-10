@@ -37,7 +37,7 @@ interface Props {
   id?: string;
 }
 
-const UpdatableImage: React.FC<Props> = ({
+const UploadMedia: React.FC<Props> = ({
   src,
   alt,
   label,
@@ -196,4 +196,4 @@ const UpdatableImage: React.FC<Props> = ({
   return <>{view[viewName]}</>;
 };
 
-export default UpdatableImage;
+export default UploadMedia;

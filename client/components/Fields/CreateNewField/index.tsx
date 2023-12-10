@@ -5,9 +5,7 @@ import {
   Grid,
   Group,
   Modal,
-  Paper,
   Select,
-  Switch,
   Text,
   TextInput,
   Tooltip,
@@ -118,9 +116,9 @@ const CreateNewField: React.FC<Props> = ({ fieldHandler }) => {
                 placeholder="Pick one"
                 data={[
                   { label: "Editor", value: "longText" },
-                  // { label: "Short text", value: "shortText" },
-                  { label: "Image", value: "image" },
-                  // { label: "imageText", value: "imageText" },
+                  { label: "Plain text", value: "shortText" },
+                  { label: "Media", value: "media" },
+                  // { label: "Media and Editor", value: "mediaAndEditor" },
                 ]}
                 dropdownPosition="bottom"
                 nothingFound="Nothing here"

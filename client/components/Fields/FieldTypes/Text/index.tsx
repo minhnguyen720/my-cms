@@ -1,6 +1,6 @@
 "use client";
 
-import { TextInput } from "@mantine/core";
+import { TextInput, Textarea } from "@mantine/core";
 import { ReactNode } from "react";
 import { UseFormReturnType } from "@mantine/form";
 import Config from "../../Config";
@@ -32,10 +32,23 @@ const Text: React.FC<Props> = ({
     <>
       {form && fieldId && (
         <div className="flex">
-          <TextInput
+          {/* <TextInput
             className="basis-[90%]"
             label={label}
             placeholder={placeholder && placeholder}
+            withAsterisk={required}
+            icon={icon && icon}
+            disabled={!active}
+            defaultValue={value}
+            {...form.getInputProps(fieldId)}
+          /> */}
+          <Textarea
+            className="basis-[90%]"
+            autosize
+            label={label}
+            placeholder={placeholder && placeholder}
+            maxRows={20}
+            size="lg"
             withAsterisk={required}
             icon={icon && icon}
             disabled={!active}
