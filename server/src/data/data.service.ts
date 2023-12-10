@@ -20,6 +20,32 @@ export class DataService {
 
   private logger = new Logger(DataService.name);
 
+  async getDocById(docId: string, key: string) {
+    const [doc, fields, user] = await Promise.all([
+      this.docModel.findById(docId).select('_id name description createdDate'),
+      this.fieldModel
+        .find({
+          doc: docId,
+          active: true,
+        })
+        .select('_id label order value fieldId'),
+      this.userModel.find({
+        apikey: key,
+      }),
+    ]);
+    const formatedFields = fields.reduce((result, item) => {
+      const { _id, label, order, value, fieldId } = item;
+      result[fieldId] = { _id, label, order, value };
+
+      return result;
+    }, {});
+    return {
+      ...doc.toObject(),
+      author: user[0].name,
+      fields: formatedFields,
+    };
+  }
+
   async getPageDataByQuery(pageId: string) {
     try {
       const [page, docs] = await Promise.all([
@@ -112,7 +138,7 @@ export class DataService {
               doc: doc._id,
               active: true,
             })
-            .select('_id label order value fieldId');
+            .select('_id label order value fieldId createdDate');
 
           const formatedFields = fields.reduce((result, item) => {
             const { _id, label, order, value, fieldId } = item;
@@ -162,6 +188,8 @@ export class DataService {
           ]);
 
           return project.createdUser === projectOwner.id;
+        case 'doc':
+          const [doc] = await Promise.all([this.docModel.findById(id)]);
         default:
           return false;
       }

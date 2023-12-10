@@ -7,6 +7,21 @@ import { Public } from 'src/common/decorators';
 export class DataController {
   constructor(private readonly dataService: DataService) {}
 
+  @Get('doc')
+  async getDocById(@Query('id') docId: string, @Query('key') key: string) {
+    // const isValidKey = await this.dataService.checkKey({
+    //   type: 'doc',
+    //   id: docId,
+    //   key,
+    // });
+    // if (isValidKey) {
+    //   return await this.dataService.getDocById(docId);
+    // } else {
+    //   return false;
+    // }
+    return await this.dataService.getDocById(docId, key);
+  }
+
   @Get('page')
   async getPageDataByQuery(
     @Query('pg') pageId: string,

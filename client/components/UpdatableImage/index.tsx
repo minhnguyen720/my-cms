@@ -118,7 +118,7 @@ const UpdatableImage: React.FC<Props> = ({
           <Stack>
             <FileButton
               onChange={upload}
-              accept="image/png,image/jpeg,image/svg,image/svg+xml"
+              accept="image/png,image/jpeg,image/svg,image/svg+xml,video/mp4,video/x-m4v,video/*"
             >
               {(props) => (
                 <Tooltip label="Upload">

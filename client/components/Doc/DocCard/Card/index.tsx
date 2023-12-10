@@ -8,6 +8,7 @@ import {
   Box,
   ActionIcon,
   Modal,
+  CopyButton,
 } from "@mantine/core";
 import { getFormattedTime } from "@/hooks/utilities/dayjs";
 import {
@@ -61,7 +62,6 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
   const [opened, { open, close }] = useDisclosure(false);
   const [baseUrl] = useGetBaseUrl();
   const params = useParams();
-  const currentPathname = usePathname();
   const navigator = useRouter();
   const { showLoading, hideLoading } = useLoading();
   const at = getCookie("at");
@@ -246,34 +246,38 @@ const Card: React.FC<Props> = ({ doc, handler, updateOpenerData }) => {
             <OnlineBadge flag={doc.active} />
           </Group>
 
-          <Text size="sm" color="dimmed">
-            <DetailItem
-              label="Created date"
-              content={getFormattedTime(doc.createdDate)}
-            />
-            <DetailItem label="Created by" content={doc.createdUser} />
-            <DetailItem
-              label="Last update"
-              content={getFormattedTime(doc.updatedDate)}
-            />
-            <DetailItem label="Update by" content={doc.updatedUser} />
-            <DetailItem label="Description" content={doc.description} />
-          </Text>
+          <DetailItem
+            label="Created date"
+            content={getFormattedTime(doc.createdDate)}
+          />
+          <DetailItem label="Created by" content={doc.createdUser} />
+          <DetailItem
+            label="Last update"
+            content={getFormattedTime(doc.updatedDate)}
+          />
+          <DetailItem label="Update by" content={doc.updatedUser} />
+          <DetailItem label="Description" content={doc.description} />
 
-          <Button
-            variant="light"
-            color="blue"
-            fullWidth
-            mt="md"
-            radius="md"
-            onClick={() => {
-              navigator.push(
-                `/application/project/${params.projectNameId}/${params.pageId}/detail/${doc._id}`,
-              );
-            }}
-          >
-            Go to document detail
-          </Button>
+          <Group className="mt-2">
+            <Button
+              variant="light"
+              color="blue"
+              onClick={() => {
+                navigator.push(
+                  `/application/project/${params.projectNameId}/${params.pageId}/detail/${doc._id}`,
+                );
+              }}
+            >
+              Go to detail
+            </Button>
+            <CopyButton value={doc._id}>
+              {({ copied, copy }) => (
+                <Button color={copied ? "teal" : "blue"} onClick={copy}>
+                  {copied ? "Copied ID" : "Copy ID"}
+                </Button>
+              )}
+            </CopyButton>
+          </Group>
         </MantineCard>
       </div>
     </>

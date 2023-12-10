@@ -3,7 +3,7 @@ import useProjectTable from "./hooks";
 import ProjectTableDesktop from "./components/Desktop";
 import { useMediaQuery } from "@mantine/hooks";
 import SearchBar from "../SearchBar";
-import { useSearchBar } from "../SearchBar/hooks";
+import { useSearchBar } from "../SearchBar/hooks/searchbar.hook";
 import { ActionIcon, Group, Tooltip } from "@mantine/core";
 import { IconPlus, IconReload } from "@tabler/icons-react";
 import { useParams, usePathname } from "next/navigation";
