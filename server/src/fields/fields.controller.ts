@@ -54,8 +54,9 @@ export class FieldsController {
     @Param('docId') docId: string,
     @Param('fieldId') fieldId: string,
   ) {
+    console.log(fieldId);
     const target = await this.fieldsService.getFieldById(fieldId);
-    if (target.type === 'image') {
+    if (target.type === 'media') {
       Promise.all([
         this.storageService.removeFromCollection(target.fileId),
         this.storageService.removeFileFromDisk(target.fileId),

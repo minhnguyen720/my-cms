@@ -14,7 +14,7 @@ interface Props {
   form: UseFormReturnType<any>;
 }
 
-const FormDetailItem: React.FC<Props> = ({ fieldHandler, form }) => {
+const FormDetailItems: React.FC<Props> = ({ fieldHandler, form }) => {
   const [scroll, scrollTo] = useWindowScroll();
 
   return (
@@ -24,11 +24,13 @@ const FormDetailItem: React.FC<Props> = ({ fieldHandler, form }) => {
           const textFieldProps = {
             form,
             id: item._id,
-            label: `${item.label} (fieldId: ${item.fieldId})`,
+            label: `${item.label}`,
             fieldId: item.fieldId,
             required: item.required,
             active: item.active,
             fieldHandler: fieldHandler,
+            createdDate: item.createdDate,
+            updatedDate: item.updatedDate,
             value: item.value ? item.value : "",
           };
           switch (item.type) {
@@ -87,4 +89,4 @@ const FormDetailItem: React.FC<Props> = ({ fieldHandler, form }) => {
   );
 };
 
-export default FormDetailItem;
+export default FormDetailItems;

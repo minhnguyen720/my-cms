@@ -11,7 +11,7 @@ import {
 } from "@mantine/core";
 import React from "react";
 import CreateNewField from "../../Fields/CreateNewField";
-import FormDetailItem from "../../FormDetailItem";
+import FormDetailItems from "../../FormDetailItems";
 import ManageOrderModal from "../../Modals/ManageOrderModal";
 import SaveButton from "../../SaveButton";
 import { useForm } from "@mantine/form";
@@ -102,7 +102,7 @@ const DocDetailContainer = ({ switchProps }) => {
         <ActiveSwitch element={switchProps} onChange={handleDetailOnChange} />
       </Group>
 
-      <FormDetailItem form={form} fieldHandler={fieldHandler} />
+      <FormDetailItems form={form} fieldHandler={fieldHandler} />
     </Stack>
   );
 };

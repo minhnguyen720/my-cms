@@ -48,10 +48,10 @@ export class Field {
   order: number;
 
   @Prop()
-  createdDate: string;
+  createdDate: Date;
 
   @Prop()
-  updatedDate: string;
+  updatedDate: Date;
 
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Doc' })
   doc: Doc;

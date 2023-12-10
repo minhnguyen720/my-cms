@@ -162,8 +162,8 @@ export class FieldsService {
         label: body.name,
         order,
         active: true,
-        createdDate: dayjs().format('DD/MM/YYYY').toString(),
-        updatedDate: dayjs().format('DD/MM/YYYY').toString(),
+        createdDate: dayjs().toDate(),
+        updatedDate: dayjs().toDate(),
         fieldId: body.fieldId,
       });
       // .then(async (result) => {
