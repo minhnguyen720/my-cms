@@ -197,30 +197,4 @@ export class DataService {
       this.logger.error(error);
     }
   }
-
-  async test(body) {
-    try {
-      const pageObjectId = new Types.ObjectId(body.pageId);
-      const projectObjectId = new Types.ObjectId(body.projectId);
-      const docs = await this.docModel.find({
-        page: pageObjectId,
-        project: projectObjectId,
-      });
-
-      const imageFields = [];
-      for (const doc of docs) {
-        const result = await this.fieldModel.findOne({
-          type: 'image',
-          page: pageObjectId,
-          project: projectObjectId,
-          doc: doc._id,
-        });
-        imageFields.push(result);
-      }
-
-      return imageFields;
-    } catch (error) {
-      return error;
-    }
-  }
 }

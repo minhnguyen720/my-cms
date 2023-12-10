@@ -55,9 +55,4 @@ export class DataController {
       return false;
     }
   }
-
-  @Get('test')
-  async test(@Body() body) {
-    return await this.dataService.test(body);
-  }
 }
