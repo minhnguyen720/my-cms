@@ -17,6 +17,36 @@ export class FieldsService {
   ) {}
   private readonly logger = new Logger(FieldsService.name);
 
+  async swapOrder(from: string, to: string) {
+    try {
+      const [fromField, toField] = await Promise.all([
+        this.fieldModel.findById(from),
+        this.fieldModel.findById(to),
+      ]);
+      if (fromField === undefined || toField === undefined)
+        return {
+          isSuccess: false,
+        };
+
+      await Promise.all([
+        fromField.updateOne({
+          order: toField.order,
+        }),
+        toField.updateOne({
+          order: fromField.order,
+        }),
+      ]);
+      return {
+        isSuccess: true,
+      };
+    } catch (error) {
+      this.logger.error(error);
+      return {
+        isSuccess: false,
+      };
+    }
+  }
+
   async deleteFieldByFieldId(docId: string, fieldId: string) {
     try {
       await this.docRefManagement.removeNewFieldRef(docId, fieldId);
@@ -129,9 +159,11 @@ export class FieldsService {
       const isDocExist = await this.docService.hasDoc(docId);
       if (!isDocExist) throw 'Field does not exist';
 
-      const fieldData = await this.fieldModel.find({
-        doc: docId,
-      });
+      const fieldData = await this.fieldModel
+        .find({
+          doc: docId,
+        })
+        .sort({ order: 1 });
 
       return {
         isSuccess: true,

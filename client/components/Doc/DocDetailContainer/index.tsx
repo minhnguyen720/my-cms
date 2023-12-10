@@ -21,7 +21,7 @@ import useGetBaseUrl from "@/hooks/utilities/getUrl";
 import useFields from "@/components/Fields/hooks/useFields";
 import { useParams } from "next/navigation";
 import { getCookie } from "cookies-next";
-import { IconArrowLeft, IconHome } from "@tabler/icons-react";
+import { IconArrowLeft, IconHome, IconList } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import useLoading from "@/hooks/utilities/useLoading";
 import { errorNotification } from "@/hooks/notifications/notificationPreset";
@@ -92,13 +92,13 @@ const DocDetailContainer = ({ switchProps }) => {
       </Group>
       <Divider className="my-2" />
       <Group>
-        {/* <ManageOrderModal /> */}
         <CreateNewField fieldHandler={fieldHandler} />
         <SaveButton
           fieldHandler={fieldHandler}
           docId={params.detailId}
           form={form}
         />
+        <ManageOrderModal fieldHandler={fieldHandler} />
         <ActiveSwitch element={switchProps} onChange={handleDetailOnChange} />
       </Group>
 

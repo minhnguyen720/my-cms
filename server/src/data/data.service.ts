@@ -189,7 +189,17 @@ export class DataService {
 
           return project.createdUser === projectOwner.id;
         case 'doc':
-          const [doc] = await Promise.all([this.docModel.findById(id)]);
+          const [doc, keyOwner] = await Promise.all([
+            this.docModel.findById(id),
+            this.userModel.findOne({
+              apikey: key,
+            }),
+          ]);
+
+          if (doc === undefined) break;
+
+          return doc.createdUser === keyOwner.username;
+
         default:
           return false;
       }
