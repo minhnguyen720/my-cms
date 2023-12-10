@@ -51,20 +51,20 @@ const FormDetailItem: React.FC<Props> = ({ fieldHandler, form }) => {
                   docId={item.doc}
                 />
               );
-            case "mediaAndEditor":
-              return (
-                <ImageText
-                  src={item.value}
-                  alt={`atch_${index}`}
-                  key={index}
-                  fieldId={item.field_id}
-                  form={form}
-                  isUseEditor={item.isUseEditor}
-                  label={item.label}
-                  active={item.active}
-                  required={item.required}
-                />
-              );
+            // case "mediaAndEditor":
+            //   return (
+            //     <ImageText
+            //       src={item.value}
+            //       alt={`atch_${index}`}
+            //       key={index}
+            //       fieldId={item.field_id}
+            //       form={form}
+            //       isUseEditor={item.isUseEditor}
+            //       label={item.label}
+            //       active={item.active}
+            //       required={item.required}
+            //     />
+            //   );
             default:
               return;
           }
