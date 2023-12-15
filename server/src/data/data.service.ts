@@ -20,6 +20,32 @@ export class DataService {
 
   private logger = new Logger(DataService.name);
 
+  async getDocById(docId: string, key: string) {
+    const [doc, fields, user] = await Promise.all([
+      this.docModel.findById(docId).select('_id name description createdDate'),
+      this.fieldModel
+        .find({
+          doc: docId,
+          active: true,
+        })
+        .select('_id label order value fieldId'),
+      this.userModel.find({
+        apikey: key,
+      }),
+    ]);
+    const formatedFields = fields.reduce((result, item) => {
+      const { _id, label, order, value, fieldId } = item;
+      result[fieldId] = { _id, label, order, value };
+
+      return result;
+    }, {});
+    return {
+      ...doc.toObject(),
+      author: user[0].name,
+      fields: formatedFields,
+    };
+  }
+
   async getPageDataByQuery(pageId: string) {
     try {
       const [page, docs] = await Promise.all([
@@ -112,7 +138,7 @@ export class DataService {
               doc: doc._id,
               active: true,
             })
-            .select('_id label order value fieldId');
+            .select('_id label order value fieldId createdDate');
 
           const formatedFields = fields.reduce((result, item) => {
             const { _id, label, order, value, fieldId } = item;
@@ -162,37 +188,23 @@ export class DataService {
           ]);
 
           return project.createdUser === projectOwner.id;
+        case 'doc':
+          const [doc, keyOwner] = await Promise.all([
+            this.docModel.findById(id),
+            this.userModel.findOne({
+              apikey: key,
+            }),
+          ]);
+
+          if (doc === undefined) break;
+
+          return doc.createdUser === keyOwner.username;
+
         default:
           return false;
       }
     } catch (error) {
       this.logger.error(error);
-    }
-  }
-
-  async test(body) {
-    try {
-      const pageObjectId = new Types.ObjectId(body.pageId);
-      const projectObjectId = new Types.ObjectId(body.projectId);
-      const docs = await this.docModel.find({
-        page: pageObjectId,
-        project: projectObjectId,
-      });
-
-      const imageFields = [];
-      for (const doc of docs) {
-        const result = await this.fieldModel.findOne({
-          type: 'image',
-          page: pageObjectId,
-          project: projectObjectId,
-          doc: doc._id,
-        });
-        imageFields.push(result);
-      }
-
-      return imageFields;
-    } catch (error) {
-      return error;
     }
   }
 }

@@ -188,6 +188,7 @@ const DashboardProjects: React.FC<Props> = ({ projects, totalPages }) => {
         </tbody>
       </Table>
       <Pagination
+        className="mt-3"
         value={activePage}
         total={Math.ceil(total / perPage)}
         onChange={(value) => {

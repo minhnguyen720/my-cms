@@ -1,10 +1,8 @@
-import useProjectOverall from "@/components/ProjectOverall/hooks/useProjectOverall.hook";
 import { useAtom } from "jotai";
 import { datasourceAtom, searchAtom } from "@/atoms";
 
 export const useSearchBar = () => {
   const [searchValue, jotaiSetSearchValue] = useAtom(searchAtom);
-  // const { datasource, setDataSource } = useProjectOverall();
   const [datasource, setDatasource] = useAtom(datasourceAtom);
 
   const handleSearch = () => {
@@ -29,7 +27,6 @@ export const useSearchBar = () => {
 
   const handleReset = () => {
     setSearchValue("");
-    // setDataSource(datasourceDefault);
   };
 
   const setSearchValue = (value: string) => {

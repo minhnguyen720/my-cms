@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { DataService } from './data.service';
 import { Public } from 'src/common/decorators';
 
@@ -6,6 +6,20 @@ import { Public } from 'src/common/decorators';
 @Controller('data')
 export class DataController {
   constructor(private readonly dataService: DataService) {}
+
+  @Get('doc')
+  async getDocById(@Query('id') docId: string, @Query('key') key: string) {
+    const isValidKey = await this.dataService.checkKey({
+      type: 'doc',
+      id: docId,
+      key,
+    });
+    if (isValidKey) {
+      return await this.dataService.getDocById(docId, key);
+    } else {
+      return false;
+    }
+  }
 
   @Get('page')
   async getPageDataByQuery(
@@ -39,10 +53,5 @@ export class DataController {
     } else {
       return false;
     }
-  }
-
-  @Get('test')
-  async test(@Body() body) {
-    return await this.dataService.test(body);
   }
 }

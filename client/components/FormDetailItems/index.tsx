@@ -4,7 +4,7 @@ import Text from "@/components/Fields/FieldTypes/Text";
 import LongText from "@/components/Fields/FieldTypes/LongText";
 import { Affix, Button, Stack, Transition, rem } from "@mantine/core";
 import { UseFormReturnType } from "@mantine/form";
-import UpdatableImage from "../UpdatableImage";
+import UploadMedia from "../UploadMedia";
 import { IconArrowUp } from "@tabler/icons-react";
 import { useWindowScroll } from "@mantine/hooks";
 import { FieldHandler } from "../Fields/hooks/useFields";
@@ -14,7 +14,7 @@ interface Props {
   form: UseFormReturnType<any>;
 }
 
-const FormDetailItem: React.FC<Props> = ({ fieldHandler, form }) => {
+const FormDetailItems: React.FC<Props> = ({ fieldHandler, form }) => {
   const [scroll, scrollTo] = useWindowScroll();
 
   return (
@@ -24,11 +24,13 @@ const FormDetailItem: React.FC<Props> = ({ fieldHandler, form }) => {
           const textFieldProps = {
             form,
             id: item._id,
-            label: `${item.label} (fieldId: ${item.fieldId})`,
+            label: `${item.label}`,
             fieldId: item.fieldId,
             required: item.required,
             active: item.active,
             fieldHandler: fieldHandler,
+            createdDate: item.createdDate,
+            updatedDate: item.updatedDate,
             value: item.value ? item.value : "",
           };
           switch (item.type) {
@@ -36,9 +38,9 @@ const FormDetailItem: React.FC<Props> = ({ fieldHandler, form }) => {
               return <Text {...textFieldProps} key={item._id} />;
             case "longText":
               return <LongText {...textFieldProps} key={item._id} />;
-            case "image":
+            case "media":
               return (
-                <UpdatableImage
+                <UploadMedia
                   id={item._id}
                   key={item._id}
                   alt={`atch_${item._id}`}
@@ -51,7 +53,7 @@ const FormDetailItem: React.FC<Props> = ({ fieldHandler, form }) => {
                   docId={item.doc}
                 />
               );
-            // case "image_text":
+            // case "mediaAndEditor":
             //   return (
             //     <ImageText
             //       src={item.value}
@@ -87,4 +89,4 @@ const FormDetailItem: React.FC<Props> = ({ fieldHandler, form }) => {
   );
 };
 
-export default FormDetailItem;
+export default FormDetailItems;

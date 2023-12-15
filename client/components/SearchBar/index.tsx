@@ -1,13 +1,6 @@
 import { ActionIcon, Box, Flex, Group, TextInput } from "@mantine/core";
-import { getHotkeyHandler, useDisclosure } from "@mantine/hooks";
-import {
-  IconSearch,
-  IconRefresh,
-  IconInfoCircleFilled,
-} from "@tabler/icons-react";
+import { IconSearch, IconRefresh } from "@tabler/icons-react";
 import { useStyles } from "./style";
-import { useEffect, useRef } from "react";
-import { Tips } from "./components/Tips";
 import { useMediaQuery } from "@mantine/hooks";
 
 interface Props {
@@ -26,62 +19,13 @@ const SearchBar: React.FC<Props> = ({
   placeholder,
 }) => {
   const { classes } = useStyles();
-  const inputRef = useRef<HTMLInputElement>(null);
   const matches = useMediaQuery("(max-width: 474px)");
-
-  useEffect(() => {
-    if (inputRef.current) {
-      window.addEventListener(
-        "keydown",
-        getHotkeyHandler([
-          [
-            "shift + S",
-            (e) => {
-              e.preventDefault();
-              if (inputRef.current !== null) inputRef.current.focus();
-            },
-          ],
-          [
-            "shift + B",
-            (e) => {
-              e.preventDefault();
-              if (inputRef.current !== null) inputRef.current.blur();
-            },
-          ],
-        ]),
-      );
-    }
-  }, [inputRef]);
-
-  const [opened, { open, close }] = useDisclosure(false);
 
   return (
     <>
-      <Tips opened={opened} close={close} />
       <Flex>
-        <Box className="my-auto mr-2 text-center">
-          <ActionIcon onClick={open}>
-            <IconInfoCircleFilled />
-          </ActionIcon>
-        </Box>
         <Box className={matches ? "basis-[100%]" : "basis-[60%]"}>
           <TextInput
-            ref={inputRef}
-            onKeyDown={getHotkeyHandler([
-              [
-                "Enter",
-                () => {
-                  handleSearch(searchValue);
-                },
-              ],
-              [
-                "shift+R",
-                () => {
-                  handleReset();
-                  if (inputRef.current) inputRef.current.blur();
-                },
-              ],
-            ])}
             placeholder={
               placeholder
                 ? placeholder

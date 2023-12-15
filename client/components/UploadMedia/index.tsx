@@ -37,7 +37,7 @@ interface Props {
   id?: string;
 }
 
-const UpdatableImage: React.FC<Props> = ({
+const UploadMedia: React.FC<Props> = ({
   src,
   alt,
   label,
@@ -118,7 +118,7 @@ const UpdatableImage: React.FC<Props> = ({
           <Stack>
             <FileButton
               onChange={upload}
-              accept="image/png,image/jpeg,image/svg,image/svg+xml"
+              accept="image/png,image/jpeg,image/svg,image/svg+xml,video/mp4,video/x-m4v,video/*"
             >
               {(props) => (
                 <Tooltip label="Upload">
@@ -196,4 +196,4 @@ const UpdatableImage: React.FC<Props> = ({
   return <>{view[viewName]}</>;
 };
 
-export default UpdatableImage;
+export default UploadMedia;

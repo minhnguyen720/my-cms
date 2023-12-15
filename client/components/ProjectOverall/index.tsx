@@ -120,6 +120,7 @@ const ProjectOverall: React.FC<Props> = ({ id, data, totalPages }) => {
             <>
               <ProjectTable />
               <Pagination
+                className="mt-3"
                 total={Math.ceil(totalPages / perPage)}
                 onChange={(value) => {
                   handleOnChange(value);

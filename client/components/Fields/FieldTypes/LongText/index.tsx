@@ -11,6 +11,7 @@ import SubScript from "@tiptap/extension-subscript";
 import { UseFormReturnType } from "@mantine/form";
 import { Input, Text } from "@mantine/core";
 import Config from "../../Config";
+import FieldHeader from "../../FieldHeader";
 
 interface Props {
   label?: string;
@@ -21,6 +22,8 @@ interface Props {
   fieldHandler?: any;
   value?: any;
   id?: string;
+  updatedDate: string;
+  createdDate: string;
 }
 
 const LongText: React.FC<Props> = ({
@@ -32,6 +35,8 @@ const LongText: React.FC<Props> = ({
   active,
   fieldHandler,
   value,
+  updatedDate,
+  createdDate,
 }) => {
   const editor = useEditor({
     extensions: [
@@ -51,12 +56,18 @@ const LongText: React.FC<Props> = ({
 
   return (
     <>
+      <FieldHeader
+        fieldId={fieldId ? fieldId : ""}
+        label={label}
+        createdDate={createdDate}
+        updatedDate={updatedDate}
+      />
       {form && id && (
         <div className="form_item flex">
           <Input.Wrapper
             className="basis-[90%]"
             withAsterisk={required}
-            label={label}
+            // label={label}
             {...form.getInputProps(id)}
           >
             {active ? (
