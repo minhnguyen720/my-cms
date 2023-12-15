@@ -68,7 +68,7 @@ const Text: React.FC<Props> = ({
               icon={icon && icon}
               disabled={!active}
               defaultValue={value}
-              {...form.getInputProps(fieldId)}
+              {...form.getInputProps(id)}
             />
             <div className="ml-2 flex items-end">
               <Config
